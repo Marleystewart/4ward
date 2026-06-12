@@ -58,3 +58,98 @@ nextBtn.addEventListener('click', () => {
 });
 
 goTo(1);
+
+// --- Résumé upload: read it, prefill the profile, review it ---
+(function resumeUpload() {
+  const btn = document.getElementById('resumeBtn');
+  const fileInput = document.getElementById('resumeFile');
+  if (!btn || !fileInput || typeof FigAI === 'undefined') return;
+
+  const statusEl = document.getElementById('resumeStatus');
+  const feedbackEl = document.getElementById('resumeFeedback');
+  const keyAsk = document.getElementById('resumeKeyAsk');
+  let pending = null;
+
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function setStatus(msg, kind) {
+    statusEl.hidden = false;
+    statusEl.className = 'resume-status' + (kind ? ' ' + kind : '');
+    statusEl.textContent = msg;
+  }
+
+  function mergeLines(existing, arr) {
+    const cur = (existing || '').split('\n').map((s) => s.trim()).filter(Boolean);
+    const seen = new Set(cur.map((s) => s.toLowerCase()));
+    (arr || []).forEach((item) => {
+      const t = (item || '').trim();
+      if (t && !seen.has(t.toLowerCase())) { cur.push(t); seen.add(t.toLowerCase()); }
+    });
+    return cur.join('\n');
+  }
+
+  function fillFromResume(data) {
+    const setIfEmpty = (id, val) => { const el = document.getElementById(id); if (el && val && !el.value.trim()) el.value = val; };
+    setIfEmpty('major', data.major);
+    setIfEmpty('school', data.school);
+    const exp = document.getElementById('experience'); if (exp) exp.value = mergeLines(exp.value, data.experience);
+    const act = document.getElementById('activities'); if (act) act.value = mergeLines(act.value, data.activities);
+    const sk = document.getElementById('skills'); if (sk) sk.value = mergeLines(sk.value, data.skills);
+  }
+
+  function renderFeedback(feedback) {
+    if (!feedback || !feedback.length) { feedbackEl.hidden = true; return; }
+    feedbackEl.hidden = false;
+    feedbackEl.innerHTML = '<h4>Résumé feedback</h4>' + feedback.map((f) =>
+      `<div class="resume-fb-row"><strong>${esc(f.title)}</strong><p>${esc(f.detail)}</p></div>`
+    ).join('');
+  }
+
+  async function runParse() {
+    if (!pending) return;
+    keyAsk.hidden = true;
+    setStatus('Reading your résumé…', 'loading');
+    feedbackEl.hidden = true;
+    try {
+      const data = await FigAI.parseResume(pending.data, pending.mediaType);
+      fillFromResume(data);
+      try { localStorage.setItem('figuredResumeFeedback', JSON.stringify(data.feedback || [])); } catch (e) { /* ignore */ }
+      const filled = [data.experience, data.activities, data.skills].reduce((n, a) => n + (a ? a.length : 0), 0);
+      setStatus(`Done — read your résumé and filled in ${filled} item${filled === 1 ? '' : 's'}. Edit anything below.`, 'ok');
+      renderFeedback(data.feedback);
+    } catch (e) {
+      setStatus('Could not read that résumé: ' + e.message, 'error');
+    }
+  }
+
+  btn.addEventListener('click', () => fileInput.click());
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+    const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (isPdf) {
+        pending = { data: String(reader.result).split(',')[1] || '', mediaType: 'application/pdf', name: file.name };
+      } else {
+        pending = { data: String(reader.result), mediaType: 'text/plain', name: file.name };
+      }
+      if (!FigAI.hasKey()) {
+        keyAsk.hidden = false;
+        setStatus('Résumé ready — enable AI below to read it.', '');
+        document.getElementById('resumeKey').focus();
+        return;
+      }
+      runParse();
+    };
+    if (isPdf) reader.readAsDataURL(file); else reader.readAsText(file);
+  });
+
+  document.getElementById('resumeKeySave').addEventListener('click', () => {
+    const v = document.getElementById('resumeKey').value.trim();
+    if (!v) { document.getElementById('resumeKey').focus(); return; }
+    FigAI.setKey(v);
+    runParse();
+  });
+})();

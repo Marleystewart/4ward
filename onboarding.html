@@ -96,6 +96,27 @@
           <p class="eyebrow">Step 3 of 4</p>
           <h2>Your experience.</h2>
           <p class="ob-desc">Internships, jobs, research, freelance — anything real. No experience yet? Leave it blank.</p>
+
+          <div class="resume-drop" id="resumeDrop">
+            <input type="file" id="resumeFile" accept="application/pdf,.pdf,.txt,text/plain" hidden />
+            <button type="button" class="resume-btn" id="resumeBtn">
+              <span class="resume-icon" aria-hidden="true">📄</span>
+              <span class="resume-btn-copy"><strong>Have a résumé? Upload it</strong><small>We'll read it, fill this in for you, and give honest feedback to improve it.</small></span>
+            </button>
+            <p class="ob-hint">Optional — PDF or text. No résumé yet? That's exactly what we're here to fix. Just list your experience below.</p>
+
+            <div class="resume-keyask" id="resumeKeyAsk" hidden>
+              <p>Reading résumés uses AI. Paste your Anthropic key to enable it (stored only in this browser):</p>
+              <div class="resume-keyrow">
+                <input class="ob-input" id="resumeKey" type="password" placeholder="sk-ant-…" autocomplete="off" />
+                <button type="button" class="primary-button" id="resumeKeySave">Enable</button>
+              </div>
+            </div>
+
+            <div class="resume-status" id="resumeStatus" hidden></div>
+            <div class="resume-feedback" id="resumeFeedback" hidden></div>
+          </div>
+
           <div class="ob-fields">
             <label class="ob-label">
               Work &amp; internship experience
@@ -130,6 +151,7 @@
         </div>
       </main>
     </div>
-    <script src="./onboarding.js"></script>
+    <script src="./ai.js?v=2"></script>
+    <script src="./onboarding.js?v=2"></script>
   </body>
 </html>

@@ -211,5 +211,67 @@ Hard rules:
     return full;
   }
 
-  return { getKey, setKey, hasKey, generateInsights, chatStream };
+  // --- Résumé reading + review ---
+  const RESUME_SCHEMA = {
+    type: 'object',
+    properties: {
+      major: { type: 'string' },
+      school: { type: 'string' },
+      experience: { type: 'array', items: { type: 'string' } },
+      activities: { type: 'array', items: { type: 'string' } },
+      skills: { type: 'array', items: { type: 'string' } },
+      feedback: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            title: { type: 'string' },
+            detail: { type: 'string' },
+          },
+          required: ['title', 'detail'],
+          additionalProperties: false,
+        },
+      },
+    },
+    required: ['major', 'school', 'experience', 'activities', 'skills', 'feedback'],
+    additionalProperties: false,
+  };
+
+  const RESUME_SYSTEM = `You are Figured, an honest but encouraging mentor reading a college student's résumé. Two jobs:
+
+1. EXTRACT what's really on the résumé into the schema. Do not invent anything. If a field isn't present, return an empty string or empty array.
+   - experience: each entry as a short line like "Role, Organization (dates)".
+   - activities: clubs, teams, leadership, volunteering — one short line each.
+   - skills: concrete skills/tools listed — one per item.
+   - major / school: their current degree and institution if shown, else "".
+
+2. REVIEW the résumé. feedback = 3-4 specific, actionable improvements in Figured's voice: honest, warm, never harsh. Point at real things (weak bullet points, missing metrics, no clear summary, formatting, gaps for their apparent goal). Each: title = the fix in a few words, detail = one concrete sentence on how. If the résumé is strong, still give the next-level improvements. No generic filler. Plain text, no markdown.`;
+
+  // fileData: base64 (PDF) or raw text (txt). Returns parsed profile + feedback.
+  async function parseResume(fileData, mediaType) {
+    let content;
+    if (mediaType === 'application/pdf') {
+      content = [
+        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: fileData } },
+        { type: 'text', text: "Extract this student's résumé into the schema and give improvement feedback." },
+      ];
+    } else {
+      content = [{ type: 'text', text: "Student résumé text:\n\n" + fileData + "\n\nExtract into the schema and give improvement feedback." }];
+    }
+    const body = {
+      model: MODEL,
+      max_tokens: 4000,
+      system: RESUME_SYSTEM,
+      messages: [{ role: 'user', content }],
+      output_config: { format: { type: 'json_schema', schema: RESUME_SCHEMA } },
+    };
+    const res = await fetch(API_URL, { method: 'POST', headers: headers(), body: JSON.stringify(body) });
+    if (!res.ok) throw await apiError(res);
+    const msg = await res.json();
+    const textBlock = (msg.content || []).find((b) => b.type === 'text');
+    if (!textBlock) throw new Error('No content returned.');
+    return JSON.parse(textBlock.text);
+  }
+
+  return { getKey, setKey, hasKey, generateInsights, chatStream, parseResume };
 })();
