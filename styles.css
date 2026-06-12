@@ -2796,3 +2796,63 @@ h1 {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.08); opacity: 0.82; }
 }
+
+/* --- Polish: micro-interactions --- */
+.product-nav-item {
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.primary-button:active,
+.secondary-button:active,
+.ghost-button:active,
+.mini-button:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* Interactive cards lift on hover */
+.track-item,
+.opportunity-app-card,
+.mentor-app-card,
+.gap-cat-card {
+  transition: transform 200ms cubic-bezier(0.32, 0.72, 0.25, 1), box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.track-item:hover,
+.opportunity-app-card:hover,
+.mentor-app-card:hover,
+.gap-cat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 44px rgba(50, 63, 56, 0.12);
+}
+
+/* Staggered card entrance when the Overview opens */
+.product-section.active .product-grid > .product-card {
+  animation: cardRise 460ms cubic-bezier(0.32, 0.72, 0.25, 1) both;
+}
+
+.product-grid > .product-card:nth-child(2) { animation-delay: 50ms; }
+.product-grid > .product-card:nth-child(3) { animation-delay: 100ms; }
+.product-grid > .product-card:nth-child(4) { animation-delay: 150ms; }
+.product-grid > .product-card:nth-child(5) { animation-delay: 200ms; }
+.product-grid > .product-card:nth-child(6) { animation-delay: 250ms; }
+
+@keyframes cardRise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-section,
+  .product-section.active .product-grid > .product-card,
+  .ob-step.entering,
+  .building-mark,
+  .timeline-win.just-added {
+    animation: none !important;
+  }
+  .track-item,
+  .opportunity-app-card,
+  .mentor-app-card,
+  .gap-cat-card {
+    transition: none;
+  }
+}
