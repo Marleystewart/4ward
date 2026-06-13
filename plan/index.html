@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Figured · 12-Month Plan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./plan.css" />
+</head>
+<body>
+  <aside class="toc">
+    <a class="toc-brand" href="../index.html">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M26.8 5.3C16.5 7 9.1 12.9 6.5 23.2c6.2-.9 11.7-4.1 15.7-9.5-2.8 1.1-5.5 2.7-8 4.9 2.5-4.7 6.6-8.2 12.6-13.3Z"/><path d="M7 24.2c2.4-3.3 5.2-5.9 8.6-7.7"/></svg>
+      </span>
+      <span>Figured</span>
+    </a>
+    <p class="toc-eyebrow">12-month plan</p>
+    <nav>
+      <a href="#summary">Executive summary</a>
+      <a href="#roadmap">Monthly roadmap</a>
+      <a href="#finance">Financial plan</a>
+      <a href="#legal">Legal & IP</a>
+      <a href="#brand">Branding</a>
+      <a href="#product">Product</a>
+      <a href="#growth">Marketing & growth</a>
+      <a href="#launch">Launch</a>
+      <a href="#ops">Operations</a>
+      <a href="#sales">Sales</a>
+      <a href="#scaling">Scaling</a>
+      <a href="#risk">Risk</a>
+      <a href="#kpi">KPIs</a>
+      <a href="#action">Founder action</a>
+    </nav>
+    <p class="toc-foot">Built for Marley &amp; Alex · scrappy budget, big vision</p>
+  </aside>
+
+  <main class="doc">
+    <header class="doc-hero">
+      <p class="eyebrow">Figured · 12-Month Execution Plan</p>
+      <h1>From two broke students to every campus.</h1>
+      <p class="lede">An honest, no-fluff operating system for the next 12 months. Built around what's actually true: a $20/month Claude subscription, a few bucks for a domain, two co-founders, and a real product already live at <a href="https://figured-almar.vercel.app/" target="_blank" rel="noopener">figured-almar.vercel.app</a>.</p>
+      <div class="hero-stats">
+        <div><strong>$20/mo</strong><span>Working budget</span></div>
+        <div><strong>2</strong><span>Co-founders</span></div>
+        <div><strong>Live</strong><span>Already shipping</span></div>
+        <div><strong>Mirror</strong><span>Not a report card</span></div>
+      </div>
+    </header>
+
+    <!-- 1. Executive Summary -->
+    <section id="summary">
+      <p class="kicker">01 · Executive Summary</p>
+      <h2>What Figured is, in one page.</h2>
+
+      <div class="card">
+        <h3>Mission</h3>
+        <p>Help every college student see where their path is actually leading, and what it'll honestly take to get where they want to go.</p>
+      </div>
+
+      <div class="card">
+        <h3>Vision</h3>
+        <p>Every student at every U.S. college has a Figured profile by senior year, the same way they have a LinkedIn. Becomes the honest layer between school and career.</p>
+      </div>
+
+      <div class="card">
+        <h3>Core value proposition</h3>
+        <p>Career tools today are either scoreboards (judgmental) or job boards (transactional). Figured is the first one that talks to a student like a real mentor: honest, specific to them, never less ambitious than they want to be, always ending on a move they can make today.</p>
+      </div>
+
+      <div class="card">
+        <h3>Competitive edge</h3>
+        <ul>
+          <li><strong>Voice as a moat.</strong> The Honest Take + Ask Figured chat is tuned to mentor language, not chatbot language. Nobody else has invested in this.</li>
+          <li><strong>Goal-aware from day one.</strong> Sports, medicine, arts, finance: works for non-traditional goals other tools fumble.</li>
+          <li><strong>Built by the customer.</strong> Two college students. We are the user. That's a credibility advantage Handshake and LinkedIn cannot buy.</li>
+          <li><strong>Cheap to run.</strong> Static site on Vercel free tier. AI cost is pay-as-you-use. No burn.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Target market summary</h3>
+        <p>U.S. four-year college students aged 18 to 23. ~16 million of them. First wedge: students with non-traditional or "ambitious but scary" goals at four to six warm-network schools (Duke, Michigan, your own networks). Why this wedge: they're underserved by every existing tool and they tell their friends when something works.</p>
+      </div>
+
+      <div class="card">
+        <h3>Monetization summary</h3>
+        <p>Free forever for students (this is the brand promise). Revenue comes from <strong>schools and career centers</strong> who license Figured for their student body, and <strong>employers/mentors</strong> who pay for verified profile access. Year one: collect waitlist + signed letters of interest from career centers. Year two: first paid school pilots.</p>
+      </div>
+
+      <div class="card">
+        <h3>Long-term scalability</h3>
+        <p>It's a static web app with a tiny backend (eventually). Every new student is essentially free to serve. Mentor side is opt-in and self-curating. Real moat is the dataset: as more students log wins and update profiles, Figured builds the only honest map of how students actually become professionals.</p>
+      </div>
+    </section>
+
+    <!-- 2. Monthly Roadmap -->
+    <section id="roadmap">
+      <p class="kicker">02 · 12-Month Roadmap</p>
+      <h2>Month by month, what we're actually doing.</h2>
+      <p class="section-lede">Each month has one objective. We do that one thing well, then move on. The biggest startup-killer for student founders is overcommitting on month 1.</p>
+
+      <div class="month">
+        <header>
+          <h3>Month 1 · Validate with 25 real students</h3>
+          <span class="month-cost">$0</span>
+        </header>
+        <p class="month-goal">Goal: confirm Figured solves a real problem before adding anything new.</p>
+        <ul>
+          <li>DM 25 college students across 5 schools. Watch them use the live app.</li>
+          <li>Ask: "If we charged your school for this, would you tell them to pay?" Track yes/no.</li>
+          <li>Log every confused moment in a Notion. No fixes yet, just listen.</li>
+          <li>Write 1 honest reflection at the end of week 4 on what we heard.</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> we get excited and skip this. <strong>Success:</strong> 25 sessions logged, 5 patterns surfaced. <strong>Tools:</strong> Notion (free), iMessage, Zoom (free).</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 2 · Fix the top 3 things, get an LLC</h3>
+          <span class="month-cost">~$150</span>
+        </header>
+        <p class="month-goal">Goal: act on the validation, formalize the business.</p>
+        <ul>
+          <li>Patch the top 3 confusion points from Month 1.</li>
+          <li>File a Delaware or home-state LLC (~$100-$200 depending on state). Pick a state in the legal section below.</li>
+          <li>Get an EIN (free, IRS website, 10 minutes).</li>
+          <li>Open a free business checking account (Mercury or Relay, no minimums).</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> spending too much on legal. <strong>Success:</strong> LLC filed, EIN in hand. <strong>Tools:</strong> Stripe Atlas ($500 if you want it done for you, optional) or LegalZoom.</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 3 · Lock the brand, ship resume-upload v2</h3>
+          <span class="month-cost">~$30</span>
+        </header>
+        <p class="month-goal">Goal: look like a real company, ship a feature that wows.</p>
+        <ul>
+          <li>Buy figured.com (or figured.app, figured.co — check section 4). ~$15-50/year.</li>
+          <li>Lock the visual identity: typography, color, logo lockups, a 1-page brand sheet in Figma (free).</li>
+          <li>Ship resume-upload improvements: support .docx, better feedback rubric, save resume server-side (intro the backend, see Month 5).</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> design rabbit-hole. <strong>Success:</strong> domain live, brand sheet exists, resume v2 in prod. <strong>Tools:</strong> Namecheap, Figma, Vercel.</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 4 · Beta launch at 2 schools</h3>
+          <span class="month-cost">~$25</span>
+        </header>
+        <p class="month-goal">Goal: get to 100 weekly active students.</p>
+        <ul>
+          <li>Pick 2 schools where you have real friends (yours + Alex's).</li>
+          <li>Run small-stakes campus campaigns: GroupMe, dorm chats, Greek life, athletic teams.</li>
+          <li>Make 3 TikToks per week from each of you. Voice: honest, useful, no corporate.</li>
+          <li>Stand up a waitlist for "Figured at YOUR school."</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> launching too wide. <strong>Success:</strong> 100 WAU, 250 waitlist signups. <strong>Tools:</strong> TikTok, Instagram, GroupMe, Plausible analytics (free tier).</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 5 · Real accounts, real backend</h3>
+          <span class="month-cost">~$20</span>
+        </header>
+        <p class="month-goal">Goal: students can save their progress across devices.</p>
+        <ul>
+          <li>Add accounts via Clerk or Supabase Auth (both have free tiers under 10k users).</li>
+          <li>Move localStorage data server-side. Mentor list, profile, wins, all in Supabase (free tier).</li>
+          <li>Stop asking students for an API key. AI costs move onto our side (still tiny at this scale).</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> Claude API costs creep up. <strong>Success:</strong> backend live, every login persists. <strong>Tools:</strong> Supabase (free), Clerk (free), Vercel (free).</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 6 · First career-center conversation</h3>
+          <span class="month-cost">~$0</span>
+        </header>
+        <p class="month-goal">Goal: one signed letter of interest from one career center.</p>
+        <ul>
+          <li>Cold email 20 career-center directors at mid-size schools. Lead with student outcomes, not features.</li>
+          <li>Book 5 zoom demos.</li>
+          <li>Ask them: "What would you need to see for your school to pay for this?"</li>
+          <li>Write down the answer. That's your sales script.</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> burning the warm contacts. <strong>Success:</strong> 1 LOI in hand. <strong>Tools:</strong> Gmail, Cal.com (free), Loom.</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 7 · Mentor system at 50 mentors</h3>
+          <span class="month-cost">~$20</span>
+        </header>
+        <p class="month-goal">Goal: turn mentor opt-in into a real two-sided network.</p>
+        <ul>
+          <li>Recruit 50 mentors via LinkedIn + alumni networks. Skew toward non-traditional paths (sports, arts, startups).</li>
+          <li>Send each mentor a clean "How Figured Works" loom + your direct ask.</li>
+          <li>Add a mentor dashboard so they can see how many students viewed their card.</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> mentors sign up but never engage. <strong>Success:</strong> 50 active mentors, 30%+ have been clicked. <strong>Tools:</strong> LinkedIn, Loom, Mailchimp (free under 500 contacts).</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 8 · First revenue. Any revenue.</h3>
+          <span class="month-cost">~$25</span>
+        </header>
+        <p class="month-goal">Goal: $500 of paid revenue in the door. Doesn't matter from where.</p>
+        <ul>
+          <li>Convert the Month 6 LOI into a paid pilot, even at $250.</li>
+          <li>Or: launch a "Figured for Athletes" or "Figured for Pre-Med" paid version at $9/mo. Don't be precious about charging.</li>
+          <li>Or: career-coach affiliate revenue: 20% rev share on referrals.</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> we feel weird charging students. We're not charging students. We're charging schools and adults. <strong>Success:</strong> $500 collected. <strong>Tools:</strong> Stripe.</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 9 · Scale systems, not effort</h3>
+          <span class="month-cost">~$40</span>
+        </header>
+        <p class="month-goal">Goal: serve 1,000 students without working more.</p>
+        <ul>
+          <li>Set up real analytics dashboards (Plausible or PostHog free tier).</li>
+          <li>Move customer support to a simple intake form + Loom replies. No live chat yet.</li>
+          <li>Write 5 SOPs: onboarding a school, recruiting a mentor, handling a bug report, writing a TikTok, weekly review.</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> we become a help desk. <strong>Success:</strong> 1,000 students, &lt;5 hours/week of operational drag. <strong>Tools:</strong> Notion SOPs, PostHog, Tally.</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 10 · First hire (probably an intern)</h3>
+          <span class="month-cost">$0-$500/mo</span>
+        </header>
+        <p class="month-goal">Goal: a 3rd person doing 1 well-defined job.</p>
+        <ul>
+          <li>Hire a campus ambassador or paid intern from your own school. Not co-founder, not equity.</li>
+          <li>Their job: run TikTok and recruit campus reps at 3 new schools.</li>
+          <li>Pay them in cash. Skip equity at this stage.</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> we hire too early and burn cash. <strong>Success:</strong> first hire is producing 5x their salary in growth. <strong>Tools:</strong> Handshake, your own school, Gusto if/when needed.</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 11 · Investor readiness (light)</h3>
+          <span class="month-cost">$0</span>
+        </header>
+        <p class="month-goal">Goal: be fundable if you want to be.</p>
+        <ul>
+          <li>Build the data room: financials, user metrics, retention, traction, screenshots, founder story.</li>
+          <li>Write a 10-slide deck. (Y Combinator's "How to write a great pitch deck" is the only source you need.)</li>
+          <li>Apply to YC, Z Fellows, Pear, Soma Capital, On Deck Fellows. All free to apply.</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> distraction from product. <strong>Success:</strong> applications submitted, deck exists. <strong>Tools:</strong> Pitch.com (free), Notion data room.</p>
+      </div>
+
+      <div class="month">
+        <header>
+          <h3>Month 12 · Expansion + 12-month review</h3>
+          <span class="month-cost">$50</span>
+        </header>
+        <p class="month-goal">Goal: write the second 12-month plan from a real base.</p>
+        <ul>
+          <li>3-5 schools live, 2,500 student accounts, $2-5k MRR or one signed school contract.</li>
+          <li>Take 1 week off. Then write the next plan.</li>
+          <li>Reflect: what did we wrongly assume in Month 1?</li>
+        </ul>
+        <p class="month-meta"><strong>Risk:</strong> burnout. <strong>Success:</strong> v2 plan signed by both founders. <strong>Tools:</strong> a long walk.</p>
+      </div>
+    </section>
+
+    <!-- 3. Financial Plan -->
+    <section id="finance">
+      <p class="kicker">03 · Financial Plan</p>
+      <h2>Honest numbers for broke college founders.</h2>
+      <p class="section-lede">Most startup plans lie about year-one finances. Here are real ones. The headline: $20/month is enough for the first 6 months. Don't raise money until you have to.</p>
+
+      <h3>Startup costs (one-time, first 90 days)</h3>
+      <table>
+        <thead><tr><th>Item</th><th>Cost</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>LLC formation</td><td>$100-$300</td><td>Delaware or home state. DIY via state website saves $200.</td></tr>
+          <tr><td>EIN</td><td>$0</td><td>IRS website, 10 minutes.</td></tr>
+          <tr><td>Business bank account</td><td>$0</td><td>Mercury or Relay, no minimum.</td></tr>
+          <tr><td>Domain (figured.app or figured.co)</td><td>$15-$50/yr</td><td>figured.com is taken. Don't fight that fight.</td></tr>
+          <tr><td>Trademark filing (USPTO TEAS Plus)</td><td>$250/class</td><td>File in Month 4 once usage is real.</td></tr>
+          <tr><td>Logo/brand polish (Fiverr if needed)</td><td>$0-$100</td><td>Optional. You can do it yourself.</td></tr>
+          <tr><td><strong>Total realistic Year 1</strong></td><td><strong>$365-$700</strong></td><td></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Monthly operating budget</h3>
+      <table>
+        <thead><tr><th>Line item</th><th>Months 1-6</th><th>Months 7-12</th></tr></thead>
+        <tbody>
+          <tr><td>Claude API (Anthropic)</td><td>$5-$15</td><td>$30-$80</td></tr>
+          <tr><td>Claude.ai subscription (your $20)</td><td>$20</td><td>$20</td></tr>
+          <tr><td>Vercel</td><td>$0 (free tier)</td><td>$0 or $20 (if scaling)</td></tr>
+          <tr><td>Supabase</td><td>$0 (free tier)</td><td>$0 or $25</td></tr>
+          <tr><td>Domain (annualized)</td><td>$2</td><td>$2</td></tr>
+          <tr><td>Marketing experiments</td><td>$0</td><td>$50</td></tr>
+          <tr><td><strong>Total/month</strong></td><td><strong>~$30-$45</strong></td><td><strong>~$100-$200</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Projected revenue scenarios (Year 1)</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th>Year-end MRR</th><th>How</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Low case</strong></td><td>$0</td><td>No paid revenue, but 1,500 students using it free + 1 LOI in hand. Still a win for fundraising story.</td></tr>
+          <tr><td><strong>Realistic</strong></td><td>$1,500/mo</td><td>1 school pilot at $1,000/mo + $500/mo from a $9 individual tier (~55 paid users).</td></tr>
+          <tr><td><strong>Aggressive</strong></td><td>$8,000/mo</td><td>3 school pilots + 200 paid users + 1 brand partnership.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Pricing strategy (when you start charging)</h3>
+      <ul>
+        <li><strong>Students:</strong> always free. This is the brand. Don't break it.</li>
+        <li><strong>Schools/career centers:</strong> $0.50-$2 per student per year, billed annually. A 10,000-student school = $5k-$20k/yr.</li>
+        <li><strong>Individual premium (optional):</strong> $9/mo for resume coaching unlock, AI-on-tap, mentor priority. Don't push this hard. It's optional revenue.</li>
+        <li><strong>Mentors/employers:</strong> $99/mo for verified-mentor access to profiles. Phase 2.</li>
+      </ul>
+
+      <h3>CAC + LTV (honest estimates)</h3>
+      <table>
+        <thead><tr><th>Channel</th><th>CAC</th><th>LTV (over 4 yrs)</th><th>Ratio</th></tr></thead>
+        <tbody>
+          <tr><td>Organic (TikTok, friends)</td><td>~$0.50</td><td>$36 (if 10% convert to $9/mo)</td><td>72:1</td></tr>
+          <tr><td>Campus ambassadors</td><td>~$2</td><td>$36</td><td>18:1</td></tr>
+          <tr><td>Career-center deal</td><td>~$50 (effort)</td><td>$500-$2,000/yr per school</td><td>10x-40x</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Break-even</h3>
+      <p>At ~$200/mo total costs, break-even is roughly <strong>1 paying school OR 23 paying individual users</strong>. Realistically reachable by Month 8 if you push.</p>
+
+      <h3>Burn rate + runway</h3>
+      <p>Real burn for Year 1: <strong>$1,000 to $2,500 total</strong>, almost all in months 7-12. That's covered by 1 paid school pilot. Don't raise money in Year 1.</p>
+    </section>
+
+    <!-- 4. Legal -->
+    <section id="legal">
+      <p class="kicker">04 · Legal &amp; IP</p>
+      <h2>The smallest amount of legal you actually need.</h2>
+
+      <h3>LLC vs C-Corp (right now: LLC)</h3>
+      <p>Form an LLC in Month 2. It's cheap, simple, and right for two co-founders. The C-Corp conversion is something you do <em>only</em> if you're raising venture money (Month 11+). Most YC startups are Delaware C-Corps but you'll convert when the time comes. Don't pre-pay for what you don't need.</p>
+
+      <h3>State recommendation</h3>
+      <ul>
+        <li><strong>Easy mode:</strong> form in your home state (~$100). Simplest taxes.</li>
+        <li><strong>Investor mode (only if you're sure you'll raise):</strong> Stripe Atlas, Delaware C-Corp, $500. Includes EIN + bank account.</li>
+      </ul>
+
+      <h3>The checklist in order</h3>
+      <ol>
+        <li><strong>Month 2:</strong> File LLC (state website or LegalZoom, ~$100-$200).</li>
+        <li><strong>Month 2:</strong> Get EIN from IRS.gov (free, 10 min).</li>
+        <li><strong>Month 2:</strong> Open Mercury or Relay bank account (free).</li>
+        <li><strong>Month 2:</strong> Sign a co-founder agreement. Even a 1-page Google Doc. Cover: equity split, vesting (recommend 4-year vest, 1-year cliff), what happens if one of you leaves.</li>
+        <li><strong>Month 3:</strong> Draft Terms of Service + Privacy Policy. Use Termly or Iubenda (~$10/mo) or copy + adapt a simple SaaS template.</li>
+        <li><strong>Month 4:</strong> File trademark for "Figured" (USPTO TEAS Plus, $250). Do a free TESS search first.</li>
+        <li><strong>Month 8:</strong> When you hit revenue, hire a real accountant for $500-$1,000 to file taxes. Don't DIY this.</li>
+      </ol>
+
+      <h3>IP guidance</h3>
+      <ul>
+        <li><strong>Trademark:</strong> "Figured" as a word mark + the leaf logo. File once you have real users (Month 4).</li>
+        <li><strong>Patents:</strong> Don't bother. Software patents are expensive and the product isn't patentable.</li>
+        <li><strong>Copyright:</strong> Code is auto-copyrighted. The repo being public doesn't waive copyright.</li>
+        <li><strong>NDAs:</strong> Skip them in 99% of conversations. Investors won't sign them and shouldn't.</li>
+      </ul>
+
+      <h3>Liability + compliance</h3>
+      <ul>
+        <li>Privacy policy must mention what data you store (currently localStorage only).</li>
+        <li>Once you add accounts (Month 5): you become a data controller. FERPA implications if you partner with schools. Read it once before signing your first school contract.</li>
+        <li>Don't store API keys server-side until you have to. Each user's key in their browser = no liability for breach.</li>
+      </ul>
+    </section>
+
+    <!-- 5. Branding -->
+    <section id="brand">
+      <p class="kicker">05 · Branding</p>
+      <h2>The voice is the brand. Don't dilute it.</h2>
+
+      <h3>Positioning statement</h3>
+      <p class="quote">For college students who are tired of being told they're "on the right track" or "behind," Figured is a mentor in your pocket that tells you the truth about where your path is actually leading and exactly what'll move you closer. Unlike Handshake (a job board) or LinkedIn (a resume), Figured is the only career tool built to feel like a real conversation with someone who gets you.</p>
+
+      <h3>Tone of voice</h3>
+      <ul>
+        <li><strong>Honest without being brutal.</strong> "Here's what it takes" not "Here's what you're missing."</li>
+        <li><strong>Specific.</strong> Every sentence should be unusable for any other student.</li>
+        <li><strong>Forward.</strong> Never ends on a verdict. Always ends on a move, a question, or one sentence of belief.</li>
+        <li><strong>No em dashes.</strong> They read as AI.</li>
+      </ul>
+
+      <h3>Visual identity</h3>
+      <ul>
+        <li><strong>Primary color:</strong> deep forest green (#2f5a4f). Calming, grounded, "honest."</li>
+        <li><strong>Canvas:</strong> warm off-white (#f6f4ee). Paper, not screen.</li>
+        <li><strong>Type:</strong> Inter, 800 weight headlines. Confident, modern, free.</li>
+        <li><strong>Logo:</strong> a leaf with a curl. Growth, not climb.</li>
+      </ul>
+
+      <h3>Tagline candidates</h3>
+      <ul>
+        <li>"See where your path is actually leading." (current homepage)</li>
+        <li>"A mentor, in your pocket."</li>
+        <li>"The honest layer between school and career."</li>
+        <li>"Figured. Because no one tells you the truth about your path."</li>
+      </ul>
+
+      <h3>Content pillars</h3>
+      <ol>
+        <li><strong>Honest takes</strong> on student career advice (what's actually true vs what counselors say).</li>
+        <li><strong>Path stories:</strong> how non-traditional careers actually happen.</li>
+        <li><strong>"Mentor minute"</strong> short videos: 30-second answers to real student questions.</li>
+        <li><strong>Behind-the-build:</strong> two college founders shipping in public.</li>
+      </ol>
+    </section>
+
+    <!-- 6. Product -->
+    <section id="product">
+      <p class="kicker">06 · Product</p>
+      <h2>What's already shipped, what's next.</h2>
+
+      <h3>What's live</h3>
+      <ul>
+        <li>Landing page, onboarding, dashboard. All static HTML/CSS/JS.</li>
+        <li>Goal-aware Honest Take, 3 tracks, Gap Analyzer (4 categories), 30/60/90 plan, Opportunities, Connections, Timeline.</li>
+        <li>Ask Figured chat (Claude, streaming, voice-tuned).</li>
+        <li>Resume upload + AI feedback.</li>
+        <li>Mentor opt-in (`mentor.html`).</li>
+        <li>Over-time loop: persistent action check-offs, "Log a win" with progress timeline.</li>
+        <li>Mobile-first. Pixel-clean at 375px.</li>
+      </ul>
+
+      <h3>Product roadmap (next 12 months)</h3>
+      <table>
+        <thead><tr><th>Quarter</th><th>What ships</th></tr></thead>
+        <tbody>
+          <tr><td>Q1</td><td>AI loading states with personality, landing page polish, validation interviews</td></tr>
+          <tr><td>Q2</td><td>Real accounts (Supabase), saved profiles, resume v2 with .docx support</td></tr>
+          <tr><td>Q3</td><td>Mentor dashboards, school-level admin view, share-your-trajectory link</td></tr>
+          <tr><td>Q4</td><td>Email/text accountability nudges, weekly "your week in Figured" recap, public alumni network</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Tech stack (now and soon)</h3>
+      <table>
+        <thead><tr><th>Layer</th><th>Today</th><th>Month 5+</th></tr></thead>
+        <tbody>
+          <tr><td>Frontend</td><td>Vanilla JS</td><td>Vanilla JS or migrate to Astro if needed</td></tr>
+          <tr><td>Hosting</td><td>Vercel (free)</td><td>Vercel (free or Pro $20)</td></tr>
+          <tr><td>Auth</td><td>None</td><td>Clerk or Supabase Auth</td></tr>
+          <tr><td>DB</td><td>localStorage</td><td>Supabase (Postgres + free tier)</td></tr>
+          <tr><td>AI</td><td>Claude (user's key)</td><td>Claude (our backend key)</td></tr>
+          <tr><td>Analytics</td><td>None</td><td>Plausible ($9/mo) or PostHog (free)</td></tr>
+          <tr><td>Email</td><td>None</td><td>Resend (free 100/day)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 7. Marketing -->
+    <section id="growth">
+      <p class="kicker">07 · Marketing &amp; Growth</p>
+      <h2>You don't have ad money. You have you.</h2>
+      <p class="section-lede">Two student founders is the marketing strategy. Authenticity beats spend every time at this stage.</p>
+
+      <h3>Organic-first (Months 1-6)</h3>
+      <table>
+        <thead><tr><th>Channel</th><th>Cadence</th><th>What works</th></tr></thead>
+        <tbody>
+          <tr><td>TikTok</td><td>3-5/wk per founder</td><td>"Honest take" series. Show real student profiles (with permission). Co-founder banter. Build in public.</td></tr>
+          <tr><td>Instagram</td><td>2-3 carousels/wk</td><td>Same content, repurposed. Reels for reach, stories for community.</td></tr>
+          <tr><td>LinkedIn</td><td>2-3 posts/wk</td><td>Your own founder stories. Tag career-center directors. This is your B2B sales channel.</td></tr>
+          <tr><td>GroupMe/iMessage</td><td>Weekly check-ins</td><td>The "tell a friend" channel. Untrackable but biggest at small scale.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Paid (only after Month 8)</h3>
+      <p>Don't run paid ads until you have real conversion data. When you do:</p>
+      <ul>
+        <li>Start with $50 TikTok promote on a high-performing organic video. Not "ads."</li>
+        <li>Test campus subreddits at $1 CPC ceilings.</li>
+        <li>Never spend more than you've earned in revenue that month.</li>
+      </ul>
+
+      <h3>The 5-school strategy</h3>
+      <p>Don't try to launch at every school. Pick 5 where you know people. Saturate. Show traction. Then expand. Suggested order:</p>
+      <ol>
+        <li>Your school + Alex's school (Month 4)</li>
+        <li>2 friends-of-friends schools (Month 6)</li>
+        <li>1 strategic "name brand" school for credibility (Month 9)</li>
+      </ol>
+
+      <h3>Referral system</h3>
+      <p>Built into the product: "Share your trajectory" link. When a student shares it with 3 friends and they sign up, they unlock free premium for a year. Costs nothing, drives loops.</p>
+
+      <h3>Partnerships to pursue</h3>
+      <ul>
+        <li><strong>Career centers:</strong> the long game. Start in Month 6.</li>
+        <li><strong>Student athlete advisors:</strong> NIL programs are flush. Pitch Figured as "honest career planning for athletes."</li>
+        <li><strong>First-gen student orgs:</strong> the audience that needs this most.</li>
+        <li><strong>Athletic conferences (Ivy, ACC, SEC):</strong> after Month 9. They have student-development budgets.</li>
+      </ul>
+
+      <h3>PR strategy</h3>
+      <p>Pitch student newspapers first. Easy wins, good for the "in 5 schools" story. Then pitch <em>Forbes</em> 30 Under 30, <em>Inc</em>, <em>TechCrunch Disrupt</em> at Month 9 once metrics are real.</p>
+    </section>
+
+    <!-- 8. Launch -->
+    <section id="launch">
+      <p class="kicker">08 · Launch Strategy</p>
+      <h2>You already launched. Now launch again, better.</h2>
+      <p class="section-lede">Figured is live but unpolished. The "real launch" is Month 5 when accounts ship. Treat that as the milestone.</p>
+
+      <h3>Pre-launch checklist (by end of Month 4)</h3>
+      <ul>
+        <li>Resume upload works smoothly for both PDF and .docx</li>
+        <li>AI loading states have personality (the "mentor thinking" feel)</li>
+        <li>Landing page sharpened, no placeholder copy</li>
+        <li>Accounts work, sync across devices</li>
+        <li>Mobile is genuinely good (not "okay")</li>
+        <li>Privacy policy + ToS published</li>
+        <li>100-person waitlist warmed up</li>
+      </ul>
+
+      <h3>Launch week (Month 5)</h3>
+      <table>
+        <thead><tr><th>Day</th><th>What happens</th></tr></thead>
+        <tbody>
+          <tr><td>Monday</td><td>Soft launch to waitlist. Watch for bugs.</td></tr>
+          <tr><td>Tuesday</td><td>TikTok + Instagram launch posts from both founders</td></tr>
+          <tr><td>Wednesday</td><td>LinkedIn founder story posts (longer-form, tag career-center contacts)</td></tr>
+          <tr><td>Thursday</td><td>Product Hunt launch (set up 1 week in advance, recruit upvoters)</td></tr>
+          <tr><td>Friday</td><td>Reflection post: "What we learned this week" (transparency is the brand)</td></tr>
+          <tr><td>Weekend</td><td>Personal outreach: text 50 friends each. Real ones. Not a blast.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>If launch struggles</h3>
+      <p>Don't panic-add features. The 3 most common launch problems and the fix:</p>
+      <ul>
+        <li><strong>Low signups:</strong> wrong message, not wrong product. Rewrite the hero. Iterate weekly.</li>
+        <li><strong>Signups but no engagement:</strong> onboarding friction. Cut a step. Measure.</li>
+        <li><strong>Engagement but no shares:</strong> share UX is bad. Add one-tap share link.</li>
+      </ul>
+    </section>
+
+    <!-- 9. Operations -->
+    <section id="ops">
+      <p class="kicker">09 · Operations</p>
+      <h2>How two students run a startup without losing their grades.</h2>
+
+      <h3>Weekly founder schedule</h3>
+      <table>
+        <thead><tr><th>Day</th><th>Marley</th><th>Alex</th></tr></thead>
+        <tbody>
+          <tr><td>Mon</td><td>Product + writing</td><td>Product + writing</td></tr>
+          <tr><td>Tue</td><td>Sales/career-center calls</td><td>Content (TikTok)</td></tr>
+          <tr><td>Wed</td><td>Founder sync (1hr) + bug fixes</td><td>Founder sync + bug fixes</td></tr>
+          <tr><td>Thu</td><td>Content (TikTok)</td><td>Sales/career-center calls</td></tr>
+          <tr><td>Fri</td><td>Mentor outreach</td><td>Mentor outreach</td></tr>
+          <tr><td>Sat/Sun</td><td>Honest review of the week, write one short doc</td><td>Same. Rest one full day.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Best stack for ops</h3>
+      <ul>
+        <li><strong>Project management:</strong> Linear (free) or Notion (free). Pick one.</li>
+        <li><strong>Comms:</strong> iMessage + a shared Telegram or Slack workspace.</li>
+        <li><strong>Files:</strong> Google Drive (free).</li>
+        <li><strong>Calendar:</strong> Google Calendar + Cal.com for booking demos.</li>
+        <li><strong>Bug tracking:</strong> a shared Notion page until volume warrants Linear.</li>
+      </ul>
+
+      <h3>Operational KPIs</h3>
+      <ul>
+        <li>Weekly: # of new signups, # of WAU, # of mentor signups, # of demos booked, # of cold emails sent</li>
+        <li>Monthly: MRR, retention, NPS</li>
+      </ul>
+    </section>
+
+    <!-- 10. Sales -->
+    <section id="sales">
+      <p class="kicker">10 · Sales</p>
+      <h2>School career centers are the primary sale.</h2>
+
+      <h3>Funnel</h3>
+      <ol>
+        <li><strong>Top:</strong> cold email or warm intro to a career-center director</li>
+        <li><strong>Middle:</strong> 20-minute demo, ask discovery questions</li>
+        <li><strong>Bottom:</strong> pilot proposal (free first semester, $X/student after)</li>
+        <li><strong>Close:</strong> signed pilot agreement (one-page LOI is enough at first)</li>
+      </ol>
+
+      <h3>Pricing psychology</h3>
+      <ul>
+        <li>Never lead with price. Lead with student outcomes.</li>
+        <li>Price per student, not per seat. They think in students.</li>
+        <li>First school is half-price or free. You need the case study.</li>
+      </ul>
+
+      <h3>Sample cold email</h3>
+      <p class="quote">Subject: Built by students, for your students<br><br>Hi [Director],<br><br>I'm Marley, a sophomore at [school]. My co-founder Alex and I built a tool called Figured because every career app we tried felt either judgmental or transactional. It's an honest mentor-style trajectory tool for students. It's already used by ~250 students across 3 schools.<br><br>Could I send a 90-second loom of what it does and what a pilot at [their school] could look like? Free for the first semester.<br><br>Thanks,<br>Marley</p>
+
+      <h3>Retention</h3>
+      <p>The product retains itself through the over-time loop. But for paying schools: monthly impact email with their school's aggregate (anonymized) metrics. "Your students logged 1,200 wins this month."</p>
+    </section>
+
+    <!-- 11. Scaling -->
+    <section id="scaling">
+      <p class="kicker">11 · Scaling</p>
+      <h2>From 1 school to 100. From 2 founders to 5.</h2>
+
+      <h3>Bootstrap vs raise</h3>
+      <p>Bootstrap through Month 12. If your real growth rate is &gt;10% month-over-month at month 9, raising a small round (~$250k pre-seed) in Month 12 makes sense to hire a designer + a backend engineer.</p>
+
+      <h3>When to raise</h3>
+      <ul>
+        <li><strong>Don't raise</strong> until you have either: 1 signed paying school, or 1,500 weekly active students.</li>
+        <li><strong>Raise small first.</strong> $250k pre-seed from angels/Z Fellows beats a $1M seed from a fund that wants 10% and a board seat.</li>
+        <li><strong>Target valuation if you raise:</strong> $5-$8M post (standard pre-seed for SaaS with traction).</li>
+      </ul>
+
+      <h3>Hiring plan</h3>
+      <table>
+        <thead><tr><th>Month</th><th>Role</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Month 10</td><td>Campus ambassador / intern</td><td>Free up founders to sell + build</td></tr>
+          <tr><td>Month 14</td><td>Backend engineer</td><td>If you raised. Otherwise stay 2-3 people.</td></tr>
+          <tr><td>Month 18</td><td>Designer</td><td>The brand is the product. Eventually you need full-time design.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 12. Risk -->
+    <section id="risk">
+      <p class="kicker">12 · Risk Analysis</p>
+      <h2>What could kill us, and how we plan against it.</h2>
+
+      <table>
+        <thead><tr><th>Risk</th><th>Probability</th><th>Impact</th><th>Prevention</th></tr></thead>
+        <tbody>
+          <tr><td>Founders burn out balancing school + startup</td><td>High</td><td>High</td><td>Hard cap: 12 hours/week each. Rest one full day. Don't skip class.</td></tr>
+          <tr><td>Claude API costs spike as we scale</td><td>Medium</td><td>Medium</td><td>Aggressive caching, cap per-user calls, kill the AI feature for non-paying schools if needed.</td></tr>
+          <tr><td>LinkedIn or Indeed change their URL structure</td><td>Low</td><td>Low</td><td>Defensive: links never break the page if they fail. Alternative job sources lined up.</td></tr>
+          <tr><td>A bigger competitor (Handshake, Common App) clones it</td><td>Medium</td><td>High</td><td>Move fast. The voice is hard to copy. Lock in school relationships early.</td></tr>
+          <tr><td>FERPA/privacy lawsuit from a school partner</td><td>Low</td><td>Very high</td><td>Hire a lawyer to review the first school contract. Never store data we don't need.</td></tr>
+          <tr><td>One co-founder leaves</td><td>Medium</td><td>High</td><td>4-year vest, 1-year cliff in the co-founder agreement. Document everything.</td></tr>
+          <tr><td>AI says something irresponsible to a student</td><td>Medium</td><td>High</td><td>Strong system prompt (already done). Add a "report this response" button. Monitor logs.</td></tr>
+          <tr><td>School year is over and engagement collapses in summer</td><td>High</td><td>Medium</td><td>Build a summer-specific feature (internship-tracking, networking-while-home).</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 13. KPIs -->
+    <section id="kpi">
+      <p class="kicker">13 · KPI Dashboard</p>
+      <h2>The 6 numbers that matter every week.</h2>
+
+      <table>
+        <thead><tr><th>Metric</th><th>Month 3</th><th>Month 6</th><th>Month 9</th><th>Month 12</th></tr></thead>
+        <tbody>
+          <tr><td>Weekly active users</td><td>25</td><td>250</td><td>1,000</td><td>2,500</td></tr>
+          <tr><td>Total signups</td><td>50</td><td>500</td><td>2,000</td><td>5,000</td></tr>
+          <tr><td>Opted-in mentors</td><td>0</td><td>10</td><td>50</td><td>200</td></tr>
+          <tr><td>4-week retention</td><td>?</td><td>20%</td><td>30%</td><td>40%</td></tr>
+          <tr><td>MRR</td><td>$0</td><td>$0</td><td>$500</td><td>$1,500</td></tr>
+          <tr><td>School pilots / LOIs</td><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+        </tbody>
+      </table>
+
+      <p class="section-lede">If you hit even 60% of these numbers, you're in great shape. Don't be precious about exact targets. Direction matters more than magnitude in Year 1.</p>
+    </section>
+
+    <!-- 14. Final action -->
+    <section id="action">
+      <p class="kicker">14 · Founder Action Plan</p>
+      <h2>If you only do these things, you'll win.</h2>
+
+      <h3>Top 10 highest-ROI actions</h3>
+      <ol>
+        <li>Talk to 25 students in Month 1. No exceptions.</li>
+        <li>Ship the AI loading states + landing polish before launching wider.</li>
+        <li>File the LLC in Month 2. Get the boring stuff done early.</li>
+        <li>Post on TikTok 3x/week each, every week. The compounding is the whole strategy.</li>
+        <li>Email 20 career-center directors in Month 6. Even bad responses are signal.</li>
+        <li>Recruit 50 mentors who can't say no because you know them.</li>
+        <li>Charge somebody, anybody, by Month 8.</li>
+        <li>Write SOPs in Month 9 so you can hire in Month 10.</li>
+        <li>Apply to Y Combinator + Z Fellows in Month 11. Free shot.</li>
+        <li>Take 1 week off in Month 12. Then plan v2.</li>
+      </ol>
+
+      <h3>The biggest mistakes to avoid</h3>
+      <ul>
+        <li>Adding features instead of finding users.</li>
+        <li>Spending money to "look real." Real is real.</li>
+        <li>Raising too early.</li>
+        <li>Pretending to be users you're not (a freshman pretending to be a senior in your demo will be obvious).</li>
+        <li>Forgetting that your competition is "the student doing nothing." Most students aren't on Handshake either.</li>
+      </ul>
+
+      <h3>Daily founder habits</h3>
+      <ul>
+        <li>15 minutes of customer talk (DMs, emails, replies).</li>
+        <li>1 ship per day (a fix, a post, a cold email, anything).</li>
+        <li>1 honest sentence at end of day: what worked, what didn't.</li>
+      </ul>
+
+      <h3>Weekly review (Sunday, 30 min)</h3>
+      <ul>
+        <li>What's our WAU this week vs last?</li>
+        <li>What did one user tell us we didn't know?</li>
+        <li>What are the 3 things we're doing next week?</li>
+      </ul>
+
+      <h3>Monthly review (last day of month, 1 hour)</h3>
+      <ul>
+        <li>Did we hit the month's one objective?</li>
+        <li>Are the KPIs trending right?</li>
+        <li>What do we cut next month?</li>
+      </ul>
+
+      <h3>What separates startups that win</h3>
+      <p class="quote">The startups that survive Year 1 share three things: they shipped weekly, they talked to users weekly, and they didn't quit when month 4 felt flat. None of those require money. All of them require showing up.<br><br>You already shipped Figured. That's the hardest part. Now the work is showing up every week for a year.</p>
+    </section>
+
+    <footer class="doc-foot">
+      <p>This plan is a living document. Update it as reality unfolds.</p>
+      <p>Built honest. Built scrappy. Built to last.</p>
+      <p class="foot-meta">Figured · 12-month plan · v1</p>
+    </footer>
+  </main>
+
+  <script>
+    // highlight current section in the TOC
+    const links = document.querySelectorAll('.toc nav a');
+    const sections = [...links].map(l => document.querySelector(l.getAttribute('href')));
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + e.target.id));
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(s => s && obs.observe(s));
+  </script>
+</body>
+</html>
