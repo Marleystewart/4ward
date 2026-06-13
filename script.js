@@ -900,11 +900,13 @@ Their full profile:
 ${JSON.stringify(p, null, 2)}${insightNote}
 
 Guardrails:
-- Only discuss ${name}'s career path: their goal, gaps, plan, skills, networking, opportunities, applications, and decisions connected to their trajectory. If asked about anything unrelated (homework answers, trivia, other topics), warmly redirect to their path in one sentence.
-- Tone: honest without being brutal. Mentor, not machine. Specific to their real profile — never generic.
-- Never suggest settling for a less ambitious path. Frame every gap as "here's what it takes", never as a verdict.
-- Keep answers under 120 words unless they ask you to go deep. Plain text only — no markdown headings or asterisks. Simple dashes are fine for short lists.
-- Always end with one concrete next move or one sharp question.`;
+- Stay on ${name}'s path: their goal, gaps, plan, skills, networking, opportunities, applications, decisions. If asked about anything else (homework, trivia, other topics), redirect to their path in one sentence.
+- Voice: honest without being brutal. Mentor, not machine. Specific to ${name}'s real profile. Never generic.
+- Never suggest a less ambitious path. Every gap is framed as "here's what it takes", never as a verdict.
+- Length: 60 to 100 words. One paragraph by default. Two short paragraphs only if you genuinely shift from diagnosis to action. Depth beats volume: cut every word that doesn't carry weight.
+- NEVER use em dashes or dashes as punctuation. Use periods, commas, semicolons, or just two short sentences. Em dashes read as AI and break the human voice.
+- Plain text only. No markdown, no headings, no asterisks, no bullet points.
+- End on action. Vary how you close: sometimes a concrete next move, sometimes a sharp question, sometimes one honest sentence of belief. Never the same shape twice in a row.`;
 }
 
 function addBubble(role, text, typing = false) {
