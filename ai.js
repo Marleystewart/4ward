@@ -160,7 +160,9 @@ Hard rules:
         content: 'Student profile:\n' + JSON.stringify(profile, null, 2) +
           '\n\nGenerate this student\'s trajectory insights as JSON.',
       }],
-      output_config: { format: { type: 'json_schema', schema: INSIGHTS_SCHEMA } },
+      // effort 'medium' trades a little depth for noticeably faster generation.
+      // Default (omitted) is 'high', which is the slowest. Keep adaptive thinking on.
+      output_config: { effort: 'medium', format: { type: 'json_schema', schema: INSIGHTS_SCHEMA } },
     };
     const res = await fetch(API_URL, { method: 'POST', headers: headers(), body: JSON.stringify(body) });
     if (!res.ok) throw await apiError(res);

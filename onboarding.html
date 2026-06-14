@@ -52,7 +52,8 @@
             </div>
             <label class="ob-label">
               School
-              <input class="ob-input" type="text" id="school" placeholder="University of Michigan" autocomplete="organization" />
+              <input class="ob-input" type="text" id="school" placeholder="Start typing — e.g. Harvard" autocomplete="off" list="schoolList" />
+              <datalist id="schoolList"></datalist>
             </label>
           </div>
         </div>
@@ -130,6 +131,7 @@
               Career goal
               <textarea class="ob-input ob-textarea" id="goal" rows="4" placeholder="I want to work in NBA basketball operations — front office, scouting, analytics. I love how teams use data to find under-valued players and want to build that kind of edge."></textarea>
               <span class="ob-hint">Be honest and specific. The more you tell us about what you actually want, the more honest the trajectory we can show you.</span>
+              <p class="form-error" id="goalError" hidden></p>
             </label>
             <label class="ob-label">
               Skills you already have
@@ -153,7 +155,8 @@
       <p id="buildingSub">Reading where you are and where you're headed.</p>
     </div>
 
-    <script src="./ai.js?v=2"></script>
-    <script src="./onboarding.js?v=4"></script>
+    <script src="./ai.js?v=6"></script>
+    <script src="./schools.js?v=1"></script>
+    <script src="./onboarding.js?v=5"></script>
   </body>
 </html>

@@ -1260,9 +1260,10 @@ h1 {
 
 .snapshot-wide {
   grid-column: span 2;
-  min-height: 320px;
+  min-height: 280px;
   display: grid;
-  align-content: end;
+  align-content: center;
+  gap: 6px;
   color: #fffdf8;
   background:
     linear-gradient(110deg, rgba(36, 75, 66, 0.98), rgba(36, 75, 66, 0.76)),

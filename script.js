@@ -93,6 +93,14 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+// Capitalize a name no matter how it was typed: "marley" / "MARLEY" -> "Marley".
+// Handles spaces, hyphens, and apostrophes (e.g. "mary-jane o'brien").
+function capitalizeName(name) {
+  const s = (name || '').trim();
+  if (!s) return s;
+  return s.toLowerCase().replace(/(^|[\s'\-])([a-z])/g, (_, sep, ch) => sep + ch.toUpperCase());
+}
+
 // Strip em/en dashes used as punctuation. Voice rule: dashes read as AI.
 // Preserve en dashes inside numeric ranges like "$110k–$130k" and ASCII
 // hyphens inside compound words like "front-office".
@@ -1378,7 +1386,7 @@ function initChat() {
 function applyProfile(p) {
   const s = computeScores(p);
   currentScores = s;
-  const name = p.firstName || 'you';
+  const name = p.firstName ? capitalizeName(p.firstName) : 'you';
 
   const hour = new Date().getHours();
   const period = hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening';

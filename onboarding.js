@@ -4,6 +4,36 @@ const backBtn = document.getElementById('obBack');
 const nextBtn = document.getElementById('obNext');
 let current = 1;
 
+// Populate the school autocomplete from the SCHOOLS list (schools.js).
+(function fillSchoolList() {
+  const list = document.getElementById('schoolList');
+  if (!list || !Array.isArray(window.SCHOOLS)) return;
+  list.innerHTML = window.SCHOOLS.map((s) => `<option value="${s.replace(/"/g, '&quot;')}"></option>`).join('');
+})();
+
+// Capitalize a name no matter how it's typed: "marley"/"MARLEY" -> "Marley".
+function capitalizeName(name) {
+  const s = (name || '').trim();
+  if (!s) return s;
+  return s.toLowerCase().replace(/(^|[\s'\-])([a-z])/g, (_, sep, ch) => sep + ch.toUpperCase());
+}
+
+// Flag obvious junk in the career goal (keyboard mashing, no real words) so a
+// student who types nonsense to "test it" gets told to write a real goal.
+function looksLikeGibberish(text) {
+  const t = (text || '').trim();
+  if (t.length < 3) return true;
+  const letters = t.replace(/[^a-zA-Z]/g, '');
+  if (letters.length < 3) return true;
+  const vowels = (letters.match(/[aeiou]/gi) || []).length;
+  if (vowels / letters.length < 0.18) return true; // real words carry vowels
+  if (/(asdf|sdfg|dfgh|fghj|ghjk|hjkl|qwer|wert|erty|rtyu|tyui|yuio|uiop|zxcv|xcvb|cvbn|vbnm)/i.test(t)) return true;
+  if (/(.)\1{3,}/.test(t)) return true; // same char 4+ times
+  // needs at least one 2+ letter word that contains a vowel
+  if (!t.split(/\s+/).some((w) => /[a-z]{2,}/i.test(w) && /[aeiou]/i.test(w))) return true;
+  return false;
+}
+
 function firstName() {
   const v = (document.getElementById('firstName').value || '').trim();
   return v ? v.split(/\s+/)[0] : '';
@@ -61,6 +91,19 @@ nextBtn.addEventListener('click', () => {
     goTo(current + 1);
     return;
   }
+  // Final step: reject obvious junk in the career goal before building anything.
+  const goalEl = document.getElementById('goal');
+  const goalError = document.getElementById('goalError');
+  const goalVal = (goalEl?.value || '').trim();
+  if (goalVal && looksLikeGibberish(goalVal)) {
+    if (goalError) {
+      goalError.textContent = "That doesn't look like a real goal yet. Tell us honestly where you want to go — even a rough direction works.";
+      goalError.hidden = false;
+    }
+    goalEl?.focus();
+    return;
+  }
+  if (goalError) goalError.hidden = true;
   const profile = {
     firstName: document.getElementById('firstName').value.trim() || 'You',
     year: document.getElementById('year').value,
@@ -86,7 +129,7 @@ nextBtn.addEventListener('click', () => {
 
   // A short, personal "building your trajectory" moment before the handoff
   const overlay = document.getElementById('buildingOverlay');
-  const name = profile.firstName === 'You' ? '' : profile.firstName;
+  const name = profile.firstName === 'You' ? '' : capitalizeName(profile.firstName);
   const head = document.getElementById('buildingHeadline');
   if (head) head.textContent = name ? `Building your trajectory, ${name}…` : 'Building your trajectory…';
   if (overlay) {
