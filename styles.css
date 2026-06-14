@@ -124,14 +124,14 @@ h3 {
 }
 
 .brand-logo {
-  height: 40px;
+  height: 64px;
   width: auto;
   display: block;
 }
 
 .brand.mini .brand-logo,
 .product-brand .brand-logo {
-  height: 34px;
+  height: 56px;
 }
 
 .desktop-nav {
