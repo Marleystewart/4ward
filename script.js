@@ -161,7 +161,34 @@ const COMP = {
   founder:    { entry: 'varies',           note: 'Early startup employees (#1–10) typically earn $70–110k + equity. Founders pay themselves last. Upside is in the equity, not the salary.' },
   medicine:   { entry: '$61k → $239k+',   note: 'Residency pays ~$61k. Attending physicians earn $200–350k+ depending on specialty. Medical school debt (~$200k average) is the tradeoff to plan for.' },
   law:        { entry: '$80k–$215k',       note: 'Bimodal market: BigLaw starts at $225k; government and public interest roles run $60–80k. Most lawyers land somewhere in between.' },
+  publishing: { entry: '$42k–$50k',        note: 'Editorial assistants at major NYC houses start $42–48k. Pay ramps slowly through assistant editor and associate editor. The first five years are about access and taste, not money.' },
+  journalism: { entry: '$35k–$55k',        note: 'Local and trade reporters start $35–45k. National outlets (NYT, WSJ, Bloomberg) pay $60–80k entry. Freelance and contract work varies widely; bylines build leverage faster than salary does.' },
+  academia:   { entry: '$30k–$45k',        note: 'PhD stipends typically $28–40k for 5–7 years. Postdocs $55–70k. Tenure-track salaries $70–110k depending on field. Long timeline; mission and autonomy compensate.' },
+  nonprofit:  { entry: '$40k–$55k',        note: 'Program associates and coordinators start $40–50k. Senior program officers $75–110k. Executive directors at established orgs $120k+. Pay trails corporate equivalents; mission and impact are the trade.' },
+  government: { entry: '$48k–$72k',        note: 'Federal GS-7 starts ~$48k; GS-9 ~$58k; GS-11 ~$72k. State and local vary widely. Benefits and pension are the long-term win; private sector pays more upfront.' },
   generic:    { entry: 'varies by path',   note: 'Compensation depends heavily on industry, role, and location. The Opportunities tab links to current listings with real salary data.' },
+};
+
+// Per-domain entry-level title used in LinkedIn searches so a senior in
+// publishing isn't getting Simon & Schuster "Assistant Editor" roles that
+// require 3 years of experience. Empty string = fall back to the cleaned goal.
+const ENTRY_TITLE = {
+  sports:     'Sports Operations',
+  product:    'Associate Product Manager',
+  finance:    'Investment Banking Analyst',
+  software:   'Software Engineer',
+  marketing:  'Marketing Coordinator',
+  consulting: 'Business Analyst',
+  design:     'Junior Designer',
+  founder:    '',
+  medicine:   '',
+  law:        'Paralegal',
+  publishing: 'Editorial Assistant',
+  journalism: 'Editorial Assistant',
+  academia:   'Research Assistant',
+  nonprofit:  'Program Associate',
+  government: 'Pathways Intern',
+  generic:    '',
 };
 
 function renderComp(p) {
@@ -196,10 +223,16 @@ const NICHE_DOMAIN_MAP = [
   [/(veterinar|\bvet\b|dentist|optometr)/, 'medicine'],
   // Pilot / aviation
   [/(pilot|aviation|airline)/, 'software'],
-  // Publishing / journalism / writing
-  [/(journalist|author|novelist|editor|publisher|copywriter|content creator)/, 'marketing'],
+  // Publishing / editorial / books
+  [/(publish|imprint|editorial|fiction editor|book editor|literary agent|acquisitions editor|novelist|author)/, 'publishing'],
+  // Journalism / writing for news
+  [/(journalist|reporter|investigative|news anchor|magazine writer|staff writer|columnist|copywriter|content creator)/, 'journalism'],
   // Research / academia
-  [/(research scientist|professor|academia|phd track|grad school)/, 'consulting'],
+  [/(research scientist|professor|academia|phd track|grad school|tenure track)/, 'academia'],
+  // Nonprofit / mission-driven
+  [/(nonprofit|non-profit|ngo|social impact|community organiz|philanthropy|program officer)/, 'nonprofit'],
+  // Government / public sector / policy
+  [/(public policy|civil service|federal|state department|city hall|legislative aide|congressional|usaid)/, 'government'],
   // Nursing / PA / pharmacy / PT → medicine
   [/(nurs|\bnp\b|\bpa\b|pharmacist|physical therap|occupational therap)/, 'medicine'],
   // Real estate
@@ -920,8 +953,11 @@ function searchTerm(goal) {
   return g.length > 48 ? g.slice(0, 48).trim() : g;
 }
 
-function linkedinJobsURL(keyword) {
-  return 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(keyword) + '&location=United%20States';
+// LinkedIn experience-level codes: 1=Internship, 2=Entry, 3=Associate, 4=Mid-Senior
+function linkedinJobsURL(keyword, expLevel) {
+  let url = 'https://www.linkedin.com/jobs/search/?keywords=' + encodeURIComponent(keyword) + '&location=United%20States';
+  if (expLevel) url += '&f_E=' + expLevel;
+  return url;
 }
 function linkedinPeopleURL(keyword) {
   return 'https://www.linkedin.com/search/results/people/?keywords=' + encodeURIComponent(keyword);
@@ -1364,22 +1400,30 @@ function applyProfile(p) {
 
   // Distil the free-text goal into a clean keyword the job boards can search.
   const term = searchTerm(p.goal);
+  const domain = detectDomain(p);
+  // Per-domain real entry-level title (e.g., "Editorial Assistant" for publishing).
+  // Falls back to the cleaned goal when no override exists.
+  const entryTitle = ENTRY_TITLE[domain] || '';
+  const internKw = entryTitle ? entryTitle : `${term} Intern`;
+  const entryKw  = entryTitle || term;
   const setHref = (id, url) => { const el = document.getElementById(id); if (el) el.href = url; };
 
   // Card titles + subtitles follow the real goal, not "Product Intern".
   setText('#oppTitle1', `${term} Internships`);
-  setText('#oppTitle2', `Entry-level ${term}`);
+  setText('#oppTitle2', entryTitle ? `Entry-level: ${entryTitle}` : `Entry-level ${term}`);
   setText('#oppTitle3', `${term} Fellowships & Programs`);
   setText('#oppTitle4', `${term} mentors & alumni`);
 
-  // Internship
-  setHref('oppLink1', linkedinJobsURL(`${term} Intern`));
+  // Internship — LinkedIn f_E=1 filter strips out full-time roles that share
+  // the keyword (e.g., senior Assistant Editor jobs polluting "Publishing Intern").
+  setHref('oppLink1', linkedinJobsURL(internKw, 1));
   setHref('oppLink1b', indeedURL(`${term} Intern`));
   setHref('oppLink1c', googleJobsURL(`${term} intern`));
-  // Entry-level
-  setHref('oppLink2', linkedinJobsURL(`Entry level ${term}`));
-  setHref('oppLink2b', indeedURL(`Entry level ${term}`));
-  setHref('oppLink2c', googleJobsURL(`entry level ${term}`));
+  // Entry-level — f_E=2 limits to entry-level postings; use the real role
+  // title when we know it so we get actual entry roles, not adjacent ones.
+  setHref('oppLink2', linkedinJobsURL(entryKw, 2));
+  setHref('oppLink2b', indeedURL(`Entry level ${entryKw}`));
+  setHref('oppLink2c', googleJobsURL(`entry level ${entryKw}`));
   // Fellowship / programs
   setHref('oppLink3', linkedinJobsURL(`${term} Fellowship`));
   setHref('oppLink3b', indeedURL(`${term} Fellowship student`));
