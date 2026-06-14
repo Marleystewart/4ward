@@ -1122,7 +1122,12 @@ Guardrails:
 - Length: 60 to 100 words. One paragraph by default. Two short paragraphs only if you genuinely shift from diagnosis to action. Depth beats volume: cut every word that doesn't carry weight.
 - NEVER use em dashes or dashes as punctuation. Use periods, commas, semicolons, or just two short sentences. Em dashes read as AI and break the human voice.
 - Plain text only. No markdown, no headings, no asterisks, no bullet points.
-- End on action. Vary how you close: sometimes a concrete next move, sometimes a sharp question, sometimes one honest sentence of belief. Never the same shape twice in a row.`;
+- End on action. Vary how you close: sometimes a concrete next move, sometimes a sharp question, sometimes one honest sentence of belief. Never the same shape twice in a row.
+
+Profile-update signal:
+If, during the conversation, ${name} reveals a clear, concrete shift to a profile field (goal, major, year, school, skills, activities, experience), include exactly one line at the very end of your reply, after your normal ending, formatted exactly as:
+[[update field=<fieldname> value="<new value>" why="<short reason>"]]
+Only emit this when the shift is a real profile-level realization (e.g., "I actually want to do scouting, not coaching"), not a passing thought or a hypothetical. If you're unsure, do not emit. The line is hidden from ${name} — they'll see a confirmation card asking whether to update. Never reference the marker in your prose.`;
 }
 
 function addBubble(role, text, typing = false) {
@@ -1137,6 +1142,61 @@ function addBubble(role, text, typing = false) {
   wrap.appendChild(el);
   wrap.scrollTop = wrap.scrollHeight;
   return el;
+}
+
+// Hidden marker the chat uses to propose a profile change. See chatSystemPrompt.
+const UPDATE_MARKER_RE = /\[\[update\s+field=([A-Za-z]+)\s+value="([^"]*)"\s+why="([^"]*)"\]\]/;
+
+function parseUpdateMarker(text) {
+  if (!text) return null;
+  const m = text.match(UPDATE_MARKER_RE);
+  if (!m) return null;
+  return { field: m[1], value: m[2], why: m[3] };
+}
+
+function stripUpdateMarker(text) {
+  if (!text) return text;
+  return text.replace(UPDATE_MARKER_RE, '').replace(/\s+$/, '');
+}
+
+const UPDATE_FIELD_LABEL = {
+  goal: 'Goal', major: 'Major', school: 'School', year: 'Year',
+  skills: 'Skills', activities: 'Activities', experience: 'Experience',
+};
+
+function renderUpdateCard({ field, value, why }) {
+  const wrap = document.getElementById('chatMessages');
+  const card = document.createElement('div');
+  card.className = 'chat-update-card';
+  const label = UPDATE_FIELD_LABEL[field] || field;
+  card.innerHTML = `
+    <div class="cuc-head">Update your trajectory?</div>
+    <div class="cuc-change"><span class="cuc-field">${esc(label)}</span> → <strong>${esc(value)}</strong></div>
+    ${why ? `<div class="cuc-why">${esc(why)}</div>` : ''}
+    <div class="cuc-actions">
+      <button class="primary-button cuc-yes" type="button">Update my trajectory</button>
+      <button class="ghost-button cuc-no" type="button">Keep thinking</button>
+    </div>
+  `;
+  wrap.appendChild(card);
+  wrap.scrollTop = wrap.scrollHeight;
+
+  card.querySelector('.cuc-yes').addEventListener('click', () => {
+    applyProfileUpdate(field, value);
+    card.classList.add('cuc-done-state');
+    card.innerHTML = `<div class="cuc-done">Got it. Your trajectory just shifted. Close this to see it.</div>`;
+  });
+  card.querySelector('.cuc-no').addEventListener('click', () => {
+    card.remove();
+  });
+}
+
+function applyProfileUpdate(field, value) {
+  const p = currentProfile || loadProfile() || {};
+  p[field] = value;
+  currentProfile = p;
+  localStorage.setItem('figuredProfile', JSON.stringify(p));
+  applyProfile(p);
 }
 
 function renderChips() {
@@ -1182,12 +1242,16 @@ async function sendChat(text) {
       chatSystemPrompt(),
       chatHistory.slice(-16),
       (t) => {
-        el.textContent = t;
+        el.textContent = stripUpdateMarker(t);
         const wrap = document.getElementById('chatMessages');
         wrap.scrollTop = wrap.scrollHeight;
       }
     );
-    chatHistory.push({ role: 'assistant', content: full });
+    const cleaned = stripUpdateMarker(full);
+    el.textContent = cleaned;
+    chatHistory.push({ role: 'assistant', content: cleaned });
+    const proposed = parseUpdateMarker(full);
+    if (proposed) renderUpdateCard(proposed);
   } catch (e) {
     chatHistory.pop();
     el.textContent = 'Hmm — ' + e.message;

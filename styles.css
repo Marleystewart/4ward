@@ -2037,6 +2037,56 @@ h1 {
   display: none !important;
 }
 
+/* Inline confirmation card that appears in the chat when 4ward detects a
+   profile-shifting realization. See chatSystemPrompt + parseUpdateMarker. */
+.chat-update-card {
+  background: rgba(47, 90, 79, 0.06);
+  border: 1px solid rgba(47, 90, 79, 0.18);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin: 8px 0 4px;
+}
+.cuc-head {
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--sage-deep);
+  margin-bottom: 8px;
+}
+.cuc-change {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.cuc-field {
+  color: var(--muted);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.cuc-why {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+.cuc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.cuc-actions .primary-button,
+.cuc-actions .ghost-button {
+  font-size: 13px;
+  padding: 8px 14px;
+  flex: 0 0 auto;
+}
+.cuc-done {
+  font-size: 13px;
+  color: var(--sage-deep);
+  font-style: italic;
+  line-height: 1.4;
+}
+
 .ai-status-btn[data-state="live"] {
   background: var(--teal-soft);
   color: var(--sage-deep);
