@@ -183,6 +183,21 @@ function trimGoal(raw, max) {
   return (cut > 20 ? cleaned.slice(0, cut) : cleaned.slice(0, max)) + '…';
 }
 
+// Turn a free-text goal into a noun phrase that's safe to drop mid-sentence.
+// Clean, short role goals pass through unchanged ("Software engineer"), so
+// fallback copy stays specific. Vague or rambling goals ("something in
+// business, not sure yet") become a neutral phrase, so the copy never reads
+// broken like "Reach out to 3 people working in Something in business, not
+// sure yet."
+function goalNoun(goal) {
+  const g = (goal || '').trim().replace(/[.…]+$/, '');
+  const vague = !g
+    || g.length > 30
+    || g.includes('?')
+    || /\b(not sure|unsure|something|anything|maybe|idk|dunno|no idea|figuring|undecided|open to|don'?t know)\b/i.test(g);
+  return vague ? 'the field you are exploring' : g;
+}
+
 // ---------------------------------------------------------------------------
 // Compensation data by domain (BLS-sourced, updated periodically)
 // ---------------------------------------------------------------------------
@@ -521,32 +536,34 @@ const FALLBACK_DOMAINS = {
       ],
     },
   }),
-  generic: (goal) => ({
+  generic: (goal) => {
+    const gn = goalNoun(goal);
+    return {
     gaps: {
       skills: [
-        { item: `The core tools of ${goal} — learn what shows up in job postings`, impact: 'High impact' },
-        { item: 'Data fluency — Excel plus one analytics tool', impact: 'High impact' },
+        { item: 'The core tools the field rewards. Learn what shows up in job postings', impact: 'High impact' },
+        { item: 'Data fluency: Excel plus one analytics tool', impact: 'High impact' },
         { item: 'Clear writing and presenting', impact: 'Medium impact' },
         { item: 'One course or certification the field respects', impact: 'Medium impact' },
       ],
       experience: [
-        { item: `An internship in or adjacent to ${goal}`, impact: 'High impact' },
+        { item: `An internship in or adjacent to ${gn}`, impact: 'High impact' },
         { item: 'One self-directed project that proves real interest', impact: 'High impact' },
         { item: 'A campus role with genuine ownership', impact: 'Medium impact' },
       ],
       exposure: [
-        { item: `3 informational interviews with people doing ${goal}`, impact: 'High impact' },
-        { item: 'Follow the industry weekly — news, people, moves', impact: 'Medium impact' },
+        { item: `3 informational interviews with people working in ${gn}`, impact: 'High impact' },
+        { item: 'Follow the industry weekly: news, people, moves', impact: 'Medium impact' },
         { item: 'Attend one industry event or conference this term', impact: 'Medium impact' },
       ],
       mindset: [
-        { item: 'Proof beats intention — build visible evidence', impact: 'Foundational' },
+        { item: 'Proof beats intention. Build visible evidence', impact: 'Foundational' },
         { item: 'Small consistent moves compound', impact: 'Foundational' },
         { item: 'Treat rejection as data, not verdict', impact: 'Foundational' },
       ],
     },
     actions: [
-      `Reach out to 3 people working in ${goal}`,
+      `Reach out to 3 people working in ${gn}`,
       'Pick one project that proves your interest',
       'Map the 3 most common entry paths into the field',
       'Join one club or community connected to your goal',
@@ -554,11 +571,11 @@ const FALLBACK_DOMAINS = {
     plan: {
       d30: [
         { title: 'Talk to 3 people doing the job', detail: 'Short, specific conversations. Ask about their path, not for favors.', impact: 'High impact' },
-        { title: 'Pick a proof project', detail: `Choose one small project that shows real interest in ${goal}.`, impact: 'High impact' },
-        { title: 'Map the entry paths', detail: 'Find how people actually break in — internships, programs, referrals.', impact: 'Medium impact' },
+        { title: 'Pick a proof project', detail: `Choose one small project that shows real interest in ${gn}.`, impact: 'High impact' },
+        { title: 'Map the entry paths', detail: 'Find how people actually break in: internships, programs, referrals.', impact: 'Medium impact' },
       ],
       d60: [
-        { title: 'Finish and publish the project', detail: 'Make it visible — a page, a deck, a repo. Send it to 5 people for feedback.', impact: 'High impact' },
+        { title: 'Finish and publish the project', detail: 'Make it visible: a page, a deck, a repo. Send it to 5 people for feedback.', impact: 'High impact' },
         { title: 'Apply to 10 targeted opportunities', detail: 'Internships, fellowships, or programs aligned with your goal.', impact: 'High impact' },
         { title: 'Join the community', detail: 'One club, one online group, one recurring event.', impact: 'Medium impact' },
       ],
@@ -568,7 +585,8 @@ const FALLBACK_DOMAINS = {
         { title: 'Refresh your trajectory', detail: 'Update 4ward with the new proof and see the picture move.', impact: 'Medium impact' },
       ],
     },
-  }),
+    };
+  },
 };
 
 function fallbackBridge(p, s, goal) {
