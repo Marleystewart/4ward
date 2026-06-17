@@ -49,9 +49,12 @@ function attemptTimeoutMs(model, attempt) {
   if (model === 'claude-opus-4-8') {
     // Best-quality path first: give Opus the longest shot, but do not let it
     // consume the whole serverless function before Sonnet can rescue the run.
-    return attempt === 0 ? 30000 : 8000;
+    return attempt === 0 ? 30000 : 6000;
   }
-  return 12000;
+  // Sonnet is the safety net after Opus stalls. Twelve seconds was too tight
+  // under load and still produced visible errors, so give the fallback enough
+  // room to finish inside the 60s Node serverless window.
+  return attempt === 0 ? 22000 : 8000;
 }
 
 export default async function handler(req, res) {
@@ -116,8 +119,9 @@ export default async function handler(req, res) {
             },
           }),
         };
-        // If Opus stalls, do not spend another long attempt on the same path.
-        // Move to Sonnet while there is still enough time to finish.
+        // If a model stalls, do not spend another long attempt on the same
+        // stuck path. Opus moves to Sonnet. Sonnet returns a clear final error
+        // only after getting its full rescue window.
         if (timedOut || !RETRYABLE_STATUS.has(lastResponse.status)) break;
         if (attempt === 0 && remaining() > 5000) await sleep(800);
         continue;
