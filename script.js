@@ -911,6 +911,28 @@ function hideRefiningCue() {
   document.querySelectorAll('.refining-cue').forEach((el) => el.remove());
 }
 
+// When the AI personalization fails, replace the silent fallback with a clear
+// "we couldn't personalize, try again" banner so the user is never stuck
+// wondering what happened. The rule-based draft is still on screen behind it.
+function showRefiningError() {
+  const snap = document.querySelector('.snapshot-wide');
+  if (!snap || snap.querySelector('.refining-error')) return;
+  const el = document.createElement('div');
+  el.className = 'refining-error';
+  el.innerHTML = `
+    <span>Couldn't personalize right now.</span>
+    <button type="button" class="refining-retry">Try again</button>
+  `;
+  snap.appendChild(el);
+  el.querySelector('.refining-retry').addEventListener('click', () => {
+    if (currentProfile) maybeRunAI(currentProfile, true);
+  });
+}
+
+function hideRefiningError() {
+  document.querySelectorAll('.refining-error').forEach((el) => el.remove());
+}
+
 function renderCurrentPath(bridge) {
   if (!bridge) return;
   setText('#currentPathCopy', bridge.bridge || bridge.now || '');
@@ -1018,7 +1040,11 @@ function initTracksRefresh() {
 const GOAL_ACRONYMS = { nba: 'NBA', nfl: 'NFL', wnba: 'WNBA', mlb: 'MLB', nhl: 'NHL', ux: 'UX', ui: 'UI', hr: 'HR', pm: 'PM', vc: 'VC', ai: 'AI', it: 'IT', qa: 'QA', ceo: 'CEO', cfo: 'CFO', cto: 'CTO' };
 
 function searchTerm(goal) {
+  // Empty or placeholder goals fall back to a generic job search instead of
+  // leaking strings like "your goal" into LinkedIn / Indeed / Handshake URLs.
   if (!goal) return 'Internships';
+  const lowered = String(goal).trim().toLowerCase();
+  if (!lowered || lowered === 'your goal' || lowered === 'goal') return 'Internships';
   let g = goal.toLowerCase().replace(/\n/g, ' ').trim();
   // strip "I want to", "become a", "work as", "a career in", etc.
   g = g
@@ -1251,6 +1277,7 @@ async function maybeRunAI(profile, force = false) {
   setAiPill('loading');
   // The instant rule-based draft is already on screen. Mark it as "personalizing"
   // so the upgrade reads as the analysis getting sharper, not a glitchy reload.
+  hideRefiningError();
   showRefiningCue();
   try {
     const data = await FigAI.generateInsights(profile);
@@ -1258,13 +1285,16 @@ async function maybeRunAI(profile, force = false) {
     localStorage.setItem('figuredAiContent', JSON.stringify({ hash: h, data }));
     applyContent(data, { refined: true });
     setAiPill('live');
+    hideRefiningCue();
   } catch (e) {
     console.error('4ward AI:', e);
-    // AI failed — restore the honest rule-based version so nothing stays blank.
+    // AI failed. Keep the rule-based draft on screen but tell the user clearly
+    // and give them a retry button so they're never stuck wondering what
+    // happened. Silent fallbacks were leaving people confused.
     if (currentProfile && currentScores) applyContent(fallbackContent(currentProfile, currentScores));
     setAiPill('error', e.message);
-  } finally {
     hideRefiningCue();
+    showRefiningError();
   }
 }
 

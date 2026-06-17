@@ -91,11 +91,22 @@ nextBtn.addEventListener('click', () => {
     goTo(current + 1);
     return;
   }
-  // Final step: reject obvious junk in the career goal before building anything.
+  // Final step: a real goal is required. 4ward can't build a trajectory toward
+  // nothing — without one, the AI gets a profile with goal: "your goal" and
+  // either errors or returns generic content nobody can act on. Two checks:
+  // (1) something is there, (2) it isn't keyboard-mashing.
   const goalEl = document.getElementById('goal');
   const goalError = document.getElementById('goalError');
   const goalVal = (goalEl?.value || '').trim();
-  if (goalVal && looksLikeGibberish(goalVal)) {
+  if (!goalVal) {
+    if (goalError) {
+      goalError.textContent = "Tell us where you want to go — even a rough direction is enough. 4ward can't build a trajectory toward nothing.";
+      goalError.hidden = false;
+    }
+    goalEl?.focus();
+    return;
+  }
+  if (looksLikeGibberish(goalVal)) {
     if (goalError) {
       goalError.textContent = "That doesn't look like a real goal yet. Tell us honestly where you want to go — even a rough direction works.";
       goalError.hidden = false;

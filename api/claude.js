@@ -26,7 +26,10 @@ const MODEL_FALLBACK = {
 };
 
 const RETRYABLE_STATUS = new Set([429, 500, 502, 503, 504, 529]);
-const RETRY_DELAYS_MS = [600, 1500, 3500]; // 3 attempts after the initial call
+// 5 retries after the initial call. Total wait budget on a fully overloaded
+// call is ~15s, well within the Vercel Edge timeout. The vast majority of
+// Anthropic capacity crunches clear inside that window.
+const RETRY_DELAYS_MS = [500, 1200, 2400, 4000, 7000];
 
 export default async function handler(req) {
   if (req.method !== 'POST') {
