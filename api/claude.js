@@ -104,6 +104,19 @@ export default async function handler(req) {
     if (!next) break;
     bodyObj.model = next;
     currentModel = next;
+    // Strip Opus-specific knobs when falling back. `effort: high` is an Opus
+    // thinking parameter that can cause Sonnet to reject the request with a
+    // non-retryable 400. We also clamp max_tokens to a Sonnet-safe ceiling.
+    // The JSON schema and system prompt stay intact, so voice and structure
+    // are preserved.
+    if (bodyObj.output_config && typeof bodyObj.output_config === 'object') {
+      const { effort, ...rest } = bodyObj.output_config;
+      bodyObj.output_config = rest;
+    }
+    if (bodyObj.thinking) delete bodyObj.thinking;
+    if (typeof bodyObj.max_tokens === 'number' && bodyObj.max_tokens > 4096) {
+      bodyObj.max_tokens = 4096;
+    }
     currentBody = JSON.stringify(bodyObj);
   }
 
