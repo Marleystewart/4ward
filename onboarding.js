@@ -4,11 +4,16 @@ const backBtn = document.getElementById('obBack');
 const nextBtn = document.getElementById('obNext');
 let current = 1;
 
-// Populate the school autocomplete from the SCHOOLS list (schools.js).
-(function fillSchoolList() {
-  const list = document.getElementById('schoolList');
-  if (!list || !Array.isArray(window.SCHOOLS)) return;
-  list.innerHTML = window.SCHOOLS.map((s) => `<option value="${s.replace(/"/g, '&quot;')}"></option>`).join('');
+// Populate the school + major autocomplete dropdowns from schools.js / majors.js.
+(function fillDatalists() {
+  const escape = (s) => s.replace(/"/g, '&quot;');
+  const fill = (id, source) => {
+    const list = document.getElementById(id);
+    if (!list || !Array.isArray(source)) return;
+    list.innerHTML = source.map((s) => `<option value="${escape(s)}"></option>`).join('');
+  };
+  fill('schoolList', window.SCHOOLS);
+  fill('majorList', window.MAJORS);
 })();
 
 // Capitalize a name no matter how it's typed: "marley"/"MARLEY" -> "Marley".
