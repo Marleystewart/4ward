@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=21" />
   </head>
   <body>
     <div class="onboarding-shell">
@@ -24,8 +24,24 @@
       </header>
 
       <main class="onboarding-main">
+        <div class="ob-stage-intro active" id="stageIntro">
+          <p class="eyebrow">Build your path</p>
+          <h1>Which version should 4ward build?</h1>
+          <p class="ob-desc">Choose where you are right now. The next screen will ask the right questions for that path.</p>
+          <div class="ob-stage-choice intro-choice" role="radiogroup" aria-label="Choose school stage">
+            <button class="ob-stage-card intro-stage-card" type="button" data-stage="college">
+              <strong>College</strong>
+              <span>For students choosing a career direction from majors, internships, skills, and goals.</span>
+            </button>
+            <button class="ob-stage-card intro-stage-card" type="button" data-stage="high-school">
+              <strong>High school</strong>
+              <span>For students exploring majors, college fit, subjects, activities, and possible careers.</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Step 1 -->
-        <div class="ob-step active" data-step="1">
+        <div class="ob-step" data-step="1">
           <p class="eyebrow" id="eyebrow1">Step 1 of 4</p>
           <h2>Let's start with you.</h2>
           <p class="ob-desc">No fluff — just enough to build your real profile.</p>
@@ -35,8 +51,8 @@
               <input class="ob-input" type="text" id="firstName" placeholder="Alex" autocomplete="given-name" />
             </label>
             <div class="ob-row">
-              <label class="ob-label">
-                Year
+              <label class="ob-label" id="yearLabel">
+                <span id="yearLabelText">Year</span>
                 <select class="ob-input" id="year">
                   <option value="">Select</option>
                   <option>Freshman</option>
@@ -45,14 +61,15 @@
                   <option>Senior</option>
                 </select>
               </label>
-              <label class="ob-label">
-                Major
+              <label class="ob-label" id="majorLabel">
+                <span id="majorLabelText">Major</span>
                 <input class="ob-input" type="text" id="major" placeholder="Start typing — e.g. Business Administration" autocomplete="off" list="majorList" />
                 <datalist id="majorList"></datalist>
+                <datalist id="subjectList"></datalist>
               </label>
             </div>
-            <label class="ob-label">
-              School
+            <label class="ob-label" id="schoolLabel">
+              <span id="schoolLabelText">School</span>
               <input class="ob-input" type="text" id="school" placeholder="Start typing — e.g. Harvard" autocomplete="off" list="schoolList" />
               <datalist id="schoolList"></datalist>
             </label>
@@ -66,11 +83,18 @@
           <p class="ob-desc">Honest inputs mean honest outputs — this stays between us.</p>
           <div class="ob-fields">
             <label class="ob-label">
-              GPA
-              <input class="ob-input ob-gpa" type="number" id="gpa" min="0" max="4.0" step="0.01" placeholder="3.45" />
+              <span id="gpaLabelText">GPA</span>
+              <select class="ob-input ob-select-half ob-gpa" id="gpa">
+                <option value="">Select range</option>
+                <option>3.7-4.0</option>
+                <option>3.3-3.69</option>
+                <option>3.0-3.29</option>
+                <option>2.5-2.99</option>
+                <option>Below 2.5</option>
+              </select>
             </label>
             <label class="ob-label">
-              Time left in school
+              <span id="timeLeftLabelText">Time left in school</span>
               <select class="ob-input ob-select-half" id="timeLeft">
                 <option value="">Select</option>
                 <option value="1 semester">1 semester</option>
@@ -80,9 +104,14 @@
               </select>
             </label>
             <label class="ob-label">
-              Activities &amp; clubs
+              <span id="activitiesLabelText">Activities &amp; clubs</span>
               <span class="ob-hint">One per line</span>
               <textarea class="ob-input ob-textarea" id="activities" placeholder="Marketing Club&#10;Case Competition Team&#10;Student Government" rows="4"></textarea>
+            </label>
+            <label class="ob-label hs-only" hidden>
+              Classes you like or feel good in
+              <span class="ob-hint">One per line</span>
+              <textarea class="ob-input ob-textarea" id="classesLiked" placeholder="Statistics&#10;English&#10;Business class&#10;Biology" rows="4"></textarea>
             </label>
           </div>
         </div>
@@ -115,9 +144,35 @@
 
           <div class="ob-fields">
             <label class="ob-label">
-              Work &amp; internship experience
+              <span id="experienceLabelText">Work &amp; internship experience</span>
               <span class="ob-hint">One per line</span>
               <textarea class="ob-input ob-textarea ob-tall" id="experience" placeholder="Marketing intern, Acme Co. (Summer 2024)&#10;Part-time barista, 2023–present" rows="6"></textarea>
+            </label>
+            <label class="ob-label hs-only" hidden>
+              College path you are considering
+              <select class="ob-input" id="collegeInterest">
+                <option value="">Select</option>
+                <option>4-year college</option>
+                <option>Community college then transfer</option>
+                <option>Trade or technical school</option>
+                <option>Military</option>
+                <option>Gap year</option>
+                <option>Not sure yet</option>
+              </select>
+            </label>
+            <label class="ob-label hs-only" hidden>
+              What matters most right now?
+              <select class="ob-input" id="priorityConcern">
+                <option value="">Select</option>
+                <option>Choosing a major</option>
+                <option>Finding colleges that fit me</option>
+                <option>Paying for college</option>
+                <option>Getting better grades</option>
+                <option>Building stronger activities</option>
+                <option>Getting recruited</option>
+                <option>Finding a career direction</option>
+                <option>Not sure yet</option>
+              </select>
             </label>
           </div>
         </div>
@@ -125,19 +180,51 @@
         <!-- Step 4 -->
         <div class="ob-step" data-step="4">
           <p class="eyebrow" id="eyebrow4">Step 4 of 4</p>
-          <h2>Where you want to go.</h2>
-          <p class="ob-desc">Be specific. "Something in business" doesn't build a trajectory.</p>
+          <h2 id="goalHeading">Where you want to go.</h2>
+          <p class="ob-desc" id="goalDesc">Be specific. "Something in business" doesn't build a trajectory.</p>
           <div class="ob-fields">
             <label class="ob-label">
-              Career goal
+              <span id="goalLabelText">Career goal</span>
               <textarea class="ob-input ob-textarea" id="goal" rows="4" placeholder="I want to work in NBA basketball operations — front office, scouting, analytics. I love how teams use data to find under-valued players and want to build that kind of edge."></textarea>
-              <span class="ob-hint">Be honest and specific. The more you tell us about what you actually want, the more honest the trajectory we can show you.</span>
+              <span class="ob-hint" id="goalHint">Be honest and specific. The more you tell us about what you actually want, the more honest the trajectory we can show you.</span>
               <p class="form-error" id="goalError" hidden></p>
             </label>
             <label class="ob-label">
-              Skills you already have
+              <span id="skillsLabelText">Skills you already have</span>
               <span class="ob-hint">One per line</span>
               <textarea class="ob-input ob-textarea" id="skills" placeholder="Excel&#10;Public speaking&#10;Project management&#10;Python" rows="4"></textarea>
+            </label>
+            <label class="ob-label hs-only" hidden>
+              College preferences
+              <span class="ob-hint">What would make a school feel right?</span>
+              <textarea class="ob-input ob-textarea" id="collegePrefs" placeholder="Close to home&#10;Strong sports culture&#10;Affordable&#10;Good career support&#10;Big campus" rows="4"></textarea>
+            </label>
+            <div class="ob-row hs-only" hidden>
+              <label class="ob-label">
+                Cost comfort
+                <select class="ob-input" id="costComfort">
+                  <option value="">Select</option>
+                  <option>Cost is a major concern</option>
+                  <option>Cost matters but is not everything</option>
+                  <option>I am mostly focused on fit</option>
+                  <option>Not sure yet</option>
+                </select>
+              </label>
+              <label class="ob-label">
+                Support level
+                <select class="ob-input" id="supportLevel">
+                  <option value="">Select</option>
+                  <option>I have a counselor helping</option>
+                  <option>Family is helping</option>
+                  <option>I am mostly figuring it out myself</option>
+                  <option>I need help knowing where to start</option>
+                </select>
+              </label>
+            </div>
+            <label class="ob-label hs-only" hidden>
+              Biggest worries
+              <span class="ob-hint">Cost, choosing a major, grades, fitting in, applications, anything.</span>
+              <textarea class="ob-input ob-textarea" id="worries" placeholder="Choosing the wrong major&#10;Paying for college&#10;Finding schools that fit me" rows="4"></textarea>
             </label>
           </div>
         </div>
@@ -164,9 +251,9 @@
       </div>
     </div>
 
-    <script src="./ai.js?v=10"></script>
+    <script src="./ai.js?v=11"></script>
     <script src="./schools.js?v=2"></script>
     <script src="./majors.js?v=1"></script>
-    <script src="./onboarding.js?v=12"></script>
+    <script src="./onboarding.js?v=15"></script>
   </body>
 </html>

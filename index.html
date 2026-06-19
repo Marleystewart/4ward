@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=22" />
   </head>
   <body>
     <div class="site-shell">
@@ -17,67 +17,55 @@
         </a>
         <nav class="desktop-nav" aria-label="Primary navigation">
           <a href="#how">How it works</a>
-          <a href="#trajectory">Trajectory</a>
-          <a href="#dashboard">Dashboard</a>
+          <a href="#account">Start</a>
+          <a href="#dashboard">Preview</a>
           <a href="#mentors">Mentors</a>
         </nav>
         <div class="header-actions">
-          <button class="ghost-button" data-scroll-target="dashboard">View Dashboard</button>
+          <a class="ghost-button" href="./app.html">Open Dashboard</a>
           <a class="primary-button" href="./onboarding.html?fresh=1">Build My Path</a>
         </div>
       </header>
 
       <main id="top">
-        <section class="hero-section">
-          <div class="hero-copy">
+        <section class="hero-section account-hero" id="account">
+          <div class="hero-copy account-copy">
             <p class="eyebrow">Personal trajectory platform for students</p>
-            <h1>See where your path is actually leading.</h1>
-            <p class="hero-subtitle">4ward takes an honest look at where you stand today, where you want to go, and exactly what will move you closer.</p>
-            <div class="hero-actions">
+            <h1>Build the path that fits where you are.</h1>
+            <p class="hero-subtitle">Start with high school or college, then 4ward asks the right questions and builds a trajectory around your real situation.</p>
+            <div class="account-hero-actions">
               <a class="primary-button large" href="./onboarding.html?fresh=1">Build My Path</a>
-              <button class="secondary-button large" data-scroll-target="trajectory">See Example Analysis</button>
+              <a class="secondary-button large" href="./app.html">Open saved dashboard</a>
             </div>
-            <div class="trust-row" aria-label="4ward principles">
-              <span>Clarity over pressure</span>
-              <span>Truth over motivation</span>
-              <span>Guidance over judgment</span>
+            <div class="trust-row" aria-label="4ward account benefits">
+              <span>Saved dashboard</span>
+              <span>High school or college</span>
+              <span>Update anytime</span>
             </div>
           </div>
 
-          <div class="hero-product" aria-label="4ward dashboard preview">
-            <div class="preview-topbar">
+          <div class="account-panel" aria-label="Create or continue account">
+            <div class="account-panel-head">
               <div>
-                <p>Good morning, Alex</p>
-                <strong>Trajectory snapshot</strong>
+                <p class="eyebrow">Path builder</p>
+                <h2>Start with where you are</h2>
               </div>
-              <button class="mini-button">Log an update</button>
+              <span class="account-status">Choose path</span>
             </div>
-            <div class="hero-card-grid">
-              <article class="honest-card">
-                <div class="landscape" aria-hidden="true">
-                  <div class="sun"></div>
-                  <div class="mountain mountain-back"></div>
-                  <div class="mountain mountain-front"></div>
-                  <div class="path-line"></div>
-                </div>
-                <div class="honest-copy">
-                  <span>The honest take</span>
-                  <h2>You're on a solid path with real potential.</h2>
-                  <p>You're building a strong foundation, but to reach product management, you will need stronger product skills and more real-world exposure.</p>
-                </div>
-              </article>
-              <article class="goal-card">
-                <span>Current goal</span>
-                <h3>Product Manager</h3>
-                <p>You love solving problems, leading projects, and working with people.</p>
-              </article>
+            <div class="start-choice" id="startChoice">
+              <p class="choice-label">Choose your version.</p>
+              <div class="choice-grid">
+                <a class="choice-card" href="./onboarding.html?fresh=1&stage=highSchool">
+                  <strong>High school</strong>
+                  <span>Explore majors, college fit, classes, activities, and possible careers.</span>
+                </a>
+                <a class="choice-card" href="./onboarding.html?fresh=1&stage=college">
+                  <strong>College</strong>
+                  <span>Build a career trajectory from your major, experience, skills, and goals.</span>
+                </a>
+              </div>
             </div>
-            <div class="metric-strip">
-              <div><strong>Strength</strong><span>Academics</span></div>
-              <div><strong>Building</strong><span>Experience</span></div>
-              <div><strong>Focus first</strong><span>Skills</span></div>
-              <div><strong>Focus first</strong><span>Network</span></div>
-            </div>
+            <p class="account-note">Start with the version that matches where you are. You can update your profile later as your direction changes.</p>
           </div>
         </section>
 

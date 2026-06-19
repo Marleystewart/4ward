@@ -412,6 +412,7 @@ function buildAdjacentTracks(goal, major, skills) {
 }
 
 function generateTracks(p, s) {
+  if (p.schoolStage === 'highSchool') return generateHighSchoolTracks(p);
   const goal = trimGoal(p.goal, 48);
   const gpa = parseFloat(p.gpa) || 0;
   const expCount = p.experience ? p.experience.split('\n').filter(l => l.trim()).length : 0;
@@ -433,6 +434,36 @@ function generateTracks(p, s) {
     { label: 'Your goal', role: goal, reason: primaryReason, primary: true },
     ...buildAdjacentTracks(goal, major, skills),
   ];
+}
+
+function generateHighSchoolTracks(p) {
+  const interests = (p.goal || p.major || 'your interests').trim();
+  const all = `${p.goal || ''} ${p.major || ''} ${p.classesLiked || ''} ${p.activities || ''}`.toLowerCase();
+  const tracks = [];
+  const push = (label, role, reason) => tracks.push({ label, role, reason, primary: tracks.length === 0 });
+
+  if (/(sport|nba|nfl|athlet|team|basketball|football)/.test(all)) {
+    push('Best-fit direction', 'Sports Management', 'Turns your interest in teams into business, operations, events, and athlete-facing work.');
+    push('Major to compare', 'Business Administration', 'Keeps the door wide while still building useful management and finance skills.');
+    push('Also worth exploring', 'Data Analytics', 'If you like numbers, this can connect sports interest to scouting, strategy, and performance decisions.');
+  } else if (/(doctor|nurs|health|bio|medicine|medical|science)/.test(all)) {
+    push('Best-fit direction', 'Health Sciences or Biology', 'Gives you a strong base for medicine, nursing, research, or public health.');
+    push('Major to compare', 'Psychology', 'Useful if you like people, behavior, health, and helping work.');
+    push('Also worth exploring', 'Public Health', 'A strong path if you care about helping people at a community level.');
+  } else if (/(computer|code|tech|engineer|math|robot|game)/.test(all)) {
+    push('Best-fit direction', 'Computer Science', 'Fits students who like building, solving problems, and learning technical tools.');
+    push('Major to compare', 'Data Analytics', 'A practical option if you like patterns, numbers, and business decisions.');
+    push('Also worth exploring', 'Information Systems', 'Blends technology with business and is often less theory-heavy than CS.');
+  } else if (/(art|design|music|film|write|media|content|creative)/.test(all)) {
+    push('Best-fit direction', 'Communications or Media', 'Connects creativity with storytelling, brands, sports, entertainment, or organizations.');
+    push('Major to compare', 'Marketing', 'A business-friendly creative path with clear internship options.');
+    push('Also worth exploring', 'Design', 'Good if you like making things visual, useful, and polished.');
+  } else {
+    push('Best-fit direction', trimGoal(interests, 40), 'This is your starting direction. The next step is testing it through classes, clubs, and conversations.');
+    push('Major to compare', 'Business Administration', 'Flexible, practical, and useful if you are still deciding.');
+    push('Also worth exploring', 'Psychology', 'A broad people-focused path that pairs well with many careers.');
+  }
+  return tracks;
 }
 
 // ---------------------------------------------------------------------------
@@ -670,6 +701,7 @@ function fallbackTimeline(p) {
 }
 
 function fallbackContent(p, s) {
+  if (p.schoolStage === 'highSchool') return highSchoolFallbackContent(p, s);
   const domain = detectDomain(p);
   const goal = trimGoal(p.goal, 48);
   const snap = generateSnapshot(p, s);
@@ -684,6 +716,101 @@ function fallbackContent(p, s) {
     bridge: fallbackBridge(p, s, goal),
     focus: computeFocus(s),
     timeline: fallbackTimeline(p),
+  };
+}
+
+function highSchoolFallbackContent(p, s) {
+  const interests = trimGoal(p.goal || p.major || 'your next direction', 48);
+  const tracks = generateHighSchoolTracks(p);
+  const topTrack = tracks[0]?.role || interests;
+  const priority = p.priorityConcern || 'Finding a career direction';
+  const cost = p.costComfort || '';
+  const support = p.supportLevel || '';
+  const collegePath = p.collegeInterest || 'a college path that fits';
+  const priorityAction = /paying|cost/i.test(priority)
+    ? 'Compare 5 affordable colleges and write down total cost, aid, and scholarship options'
+    : /grade/i.test(priority)
+      ? 'Ask a teacher or counselor which class needs the clearest grade plan this month'
+      : /college/i.test(priority)
+        ? 'Build a first college list with reach, target, likely, and affordable options'
+        : /major/i.test(priority)
+          ? `Compare ${topTrack} with two nearby majors and write what each one leads to`
+          : /activities|recruited/i.test(priority)
+            ? 'Choose one activity, sport, job, or project where you can show real progress this semester'
+            : `Research 3 colleges with strong ${topTrack} options`;
+  const supportAction = /alone|start/i.test(support)
+    ? 'Ask one counselor, teacher, coach, or trusted adult to help you plan the next step'
+    : 'Talk to one counselor, teacher, coach, or trusted adult about this direction';
+  const affordabilityNote = /major concern/i.test(cost)
+    ? 'Affordability has to be part of fit, not something you check at the end.'
+    : 'Fit should include cost, support, location, and whether the major is strong.';
+  return {
+    headline: `You have room to explore, and ${topTrack} is worth testing.`,
+    body: `You do not need a final answer yet. Your current priority is ${priority.toLowerCase()}. Your job right now is to use classes, activities, college research, and small real-world tests to learn what actually fits you.`,
+    tracks,
+    gaps: {
+      skills: [
+        { item: 'Talk to people in majors that sound interesting', impact: 'High impact' },
+        { item: 'Learn what classes each major actually requires', impact: 'High impact' },
+        { item: 'Build one small project tied to your interests', impact: 'Medium impact' },
+      ],
+      experience: [
+        { item: 'Join or lead one activity connected to your direction', impact: 'High impact' },
+        { item: 'Try a job, volunteer role, shadow day, or summer program', impact: 'High impact' },
+        { item: 'Visit or research colleges with the majors you are considering', impact: 'Medium impact' },
+      ],
+      exposure: [
+        { item: 'Compare 5 colleges by fit, cost, support, and major strength', impact: 'High impact' },
+        { item: 'Ask a counselor which courses match your interests', impact: 'High impact' },
+        { item: 'Watch student videos or day-in-the-life major examples', impact: 'Medium impact' },
+      ],
+      mindset: [
+        { item: 'Exploration is progress, not being behind', impact: 'Foundational' },
+        { item: 'College fit matters more than name alone', impact: 'Foundational' },
+        { item: 'Pick the next test, not your whole life', impact: 'Foundational' },
+      ],
+    },
+    actions: [
+      priorityAction,
+      supportAction,
+      `Research how ${topTrack} shows up in real college majors and careers`,
+      'Write down 3 things you want college to help you figure out',
+    ],
+    plan: {
+      d30: [
+        { title: 'Handle the top concern first', detail: priorityAction, impact: 'High impact' },
+        { title: 'Get one adult in the loop', detail: supportAction, impact: 'High impact' },
+        { title: 'Research colleges by fit', detail: `${affordabilityNote} Compare schools by ${collegePath.toLowerCase()}, support, distance, size, and major strength.`, impact: 'Medium impact' },
+      ],
+      d60: [
+        { title: 'Test one direction', detail: 'Do one project, job shadow, club role, or volunteer shift tied to the path.', impact: 'High impact' },
+        { title: 'Build a school list', detail: 'Sort colleges into reach, target, likely, and affordable options.', impact: 'High impact' },
+        { title: 'Ask real students', detail: 'Message or talk to 2 students about their major and campus life.', impact: 'Medium impact' },
+      ],
+      d90: [
+        { title: 'Pick your next classes intentionally', detail: 'Choose courses that test your interests and strengthen applications.', impact: 'High impact' },
+        { title: 'Draft your direction story', detail: 'Write a short explanation of what you are exploring and why.', impact: 'High impact' },
+        { title: 'Refresh your direction', detail: 'Update 4ward with what you learned and compare the new fit.', impact: 'Medium impact' },
+      ],
+    },
+    bridge: {
+      now: `${p.year || 'High school'} student${p.school ? ' at ' + p.school : ''}, exploring ${interests}.`,
+      destination: `${collegePath} with a major direction that fits how you learn, what you care about, and what your family can actually sustain.`,
+      bridge: `The connector is testing your interests before you commit: classes, conversations, college research, support, cost reality, and one real project.`,
+    },
+    focus: [
+      { area: 'Major Exploration', status: /major|career|not sure/i.test(priority) ? 'focus' : 'building', note: 'Choose what to test next.' },
+      { area: 'College Fit', status: /college|cost|paying/i.test(priority) ? 'focus' : 'building', note: affordabilityNote },
+      { area: 'Real-World Exposure', status: 'building', note: 'Use activities to test interests.' },
+      { area: 'Support System', status: /alone|start/i.test(support) ? 'focus' : 'building', note: support || 'Know who is helping you make decisions.' },
+      { area: 'Academic Progress', status: /grade/i.test(priority) ? 'focus' : s.academics >= 55 ? 'strength' : 'building', note: s.academics >= 55 ? 'Already helping your options.' : 'Keep grades moving steadily.' },
+    ],
+    timeline: [
+      { when: 'Right now', text: `Exploring ${interests} while still keeping options open.` },
+      { when: 'This semester', text: 'Use classes, activities, and conversations to test which direction feels real.' },
+      { when: 'College search', text: 'Compare schools by fit, affordability, support, and strength in your possible majors.' },
+      { when: 'Next step', text: `Build one piece of proof connected to ${topTrack}.` },
+    ],
   };
 }
 
@@ -1723,8 +1850,13 @@ function applyProfile(p) {
   setText('.product-topbar h1', `Good ${period}, ${name}.`);
   setText('.profile-pocket strong', name);
   setText('.student-avatar', profileInitials(name));
-  setText('.profile-meta', [p.major, p.year].filter(Boolean).join(' · '));
-  setText('.profile-pocket span', `Goal: ${p.goal || '—'}`);
+  if (p.schoolStage === 'highSchool') {
+    setText('.profile-meta', [p.year, p.major ? `Exploring: ${p.major}` : 'Exploring majors'].filter(Boolean).join(' · '));
+    setText('.profile-pocket span', `Direction: ${p.goal || '—'}`);
+  } else {
+    setText('.profile-meta', [p.major, p.year].filter(Boolean).join(' · '));
+    setText('.profile-pocket span', `Goal: ${p.goal || '—'}`);
+  }
 
   const schoolEl = document.querySelector('.profile-school');
   if (schoolEl) {

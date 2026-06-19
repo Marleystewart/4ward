@@ -28,13 +28,14 @@ const FigAI = (() => {
     if (k && k.trim()) localStorage.setItem(KEY_STORE, k.trim());
     else localStorage.removeItem(KEY_STORE);
   };
-  // With the proxy in place, AI is always available to students. hasKey()
-  // is kept for compatibility with existing UI gates.
-  const hasKey = () => true;
-
   // Pasted-key mode (admin/local dev). Anyone using the deployed site
   // automatically uses the proxy.
   const usingBYOK = () => Boolean(getKey());
+  const isLocalPreview = () => ['localhost', '127.0.0.1', '::1'].includes(location.hostname);
+  // With the proxy in place, AI is always available to deployed students.
+  // Local static preview cannot run /api/claude, so skip AI there unless a
+  // developer pasted a key for direct Anthropic testing.
+  const hasKey = () => usingBYOK() || !isLocalPreview();
   const endpoint = () => (usingBYOK() ? ANTHROPIC_URL : PROXY_URL);
   const headers = () => {
     if (usingBYOK()) {
@@ -177,6 +178,9 @@ Hard rules:
 16. NEVER use em dashes ("—") or any dash as punctuation in any text field. They read as AI-written and break the human voice. Use periods, commas, colons, semicolons, or two short sentences. The ONLY acceptable dash is the en dash inside numeric ranges like "$110k–$130k". Apply this to every text field: headline, body, gaps, actions, plan, bridge, focus notes, timeline. Re-read every sentence and replace any em dash before responding.`;
 
   async function generateInsights(profile) {
+    const highSchoolContext = profile && profile.schoolStage === 'highSchool'
+      ? '\n\nHigh school mode: This student is not in college yet. Do not assume a declared college major, internships, or a fixed career. Focus on future direction, majors that fit, college types that fit, high school actions, classes, activities, affordability, support, and exploration. Pay special attention to priorityConcern, collegeInterest, collegePrefs, costComfort, supportLevel, classesLiked, and worries when deciding next actions. If costComfort says cost is a major concern, include affordability and financial aid fit. If supportLevel says they are figuring it out alone or need help, include counselor or adult support steps. "tracks" should be majors or directions that fit. "actions" should be high-school-appropriate next steps. Keep the same honest mentor voice.'
+      : '';
     const body = {
       model: MODEL,
       max_tokens: 8000,
@@ -185,6 +189,7 @@ Hard rules:
       messages: [{
         role: 'user',
         content: 'Student profile:\n' + JSON.stringify(profile, null, 2) +
+          highSchoolContext +
           '\n\nGenerate this student\'s trajectory insights as JSON.',
       }],
       // Keep this at high for the strongest possible trajectory quality.

@@ -2,7 +2,191 @@ const steps = document.querySelectorAll('.ob-step');
 const dots = document.querySelectorAll('.ob-dot');
 const backBtn = document.getElementById('obBack');
 const nextBtn = document.getElementById('obNext');
+const stageIntro = document.getElementById('stageIntro');
+const progress = document.querySelector('.ob-progress');
+const actions = document.querySelector('.ob-actions');
 let current = 1;
+let schoolStage = 'college';
+let didPrefillStage = false;
+let stageChosen = false;
+
+const HIGH_SCHOOL_SUBJECTS = [
+  'Art and design',
+  'Biology',
+  'Business',
+  'Chemistry',
+  'Coding or computer science',
+  'Communications',
+  'Creative writing',
+  'Data and statistics',
+  'Engineering',
+  'English',
+  'Entrepreneurship',
+  'Environmental science',
+  'Finance',
+  'Foreign languages',
+  'Health and medicine',
+  'History',
+  'Law and government',
+  'Marketing',
+  'Math',
+  'Music',
+  'Psychology',
+  'Science',
+  'Social media or content',
+  'Sports',
+  'Technology',
+  'Theater or performing arts',
+];
+
+const GPA_OPTIONS = {
+  college: ['3.7-4.0', '3.3-3.69', '3.0-3.29', '2.5-2.99', 'Below 2.5'],
+  highSchool: ['Mostly A grades', 'A/B grades', 'Mostly B grades', 'B/C grades', 'Mostly C grades', 'Not sure'],
+};
+
+const copyByStage = {
+  college: {
+    eyebrow1: 'Step 1 of 4',
+    step1Title: "Let's start with you.",
+    step1Desc: 'No fluff — just enough to build your real profile.',
+    firstNamePlaceholder: 'Alex',
+    yearLabel: 'Year',
+    yearOptions: ['Freshman', 'Sophomore', 'Junior', 'Senior'],
+    majorLabel: 'Major',
+    majorPlaceholder: 'Start typing — e.g. Business Administration',
+    schoolLabel: 'School',
+    schoolPlaceholder: 'Start typing — e.g. Harvard',
+    heading2: 'Now, your record.',
+    step2Desc: 'Honest inputs mean honest outputs — this stays between us.',
+    gpaLabel: 'GPA',
+    gpaPlaceholder: '3.45 or a range like 3.3-3.69',
+    timeLeftLabel: 'Time left in school',
+    timeLeftOptions: ['1 semester', '2 semesters', '3 semesters', '4+ semesters'],
+    activitiesLabel: 'Activities & clubs',
+    activitiesPlaceholder: 'Marketing Club\nCase Competition Team\nStudent Government',
+    experienceLabel: 'Work & internship experience',
+    experiencePlaceholder: 'Marketing intern, Acme Co. (Summer 2024)\nPart-time barista, 2023-present',
+    goalHeading: 'Where you want to go.',
+    goalDesc: 'Be specific. "Something in business" doesn\'t build a trajectory.',
+    goalLabel: 'Career goal',
+    goalPlaceholder: 'I want to work in NBA basketball operations, front office, scouting, analytics. I love how teams use data to find under-valued players and want to build that kind of edge.',
+    goalHint: 'Be honest and specific. The more you tell us about what you actually want, the more honest the trajectory we can show you.',
+    skillsLabel: 'Skills you already have',
+    skillsPlaceholder: 'Excel\nPublic speaking\nProject management\nPython',
+    buildText: 'Build my trajectory',
+  },
+  highSchool: {
+    eyebrow1: 'Step 1 of 4',
+    step1Title: 'First, where are you starting from?',
+    step1Desc: 'This version helps you explore majors, college fit, and possible careers.',
+    firstNamePlaceholder: 'Marley',
+    yearLabel: 'Grade',
+    yearOptions: ['9th grade', '10th grade', '11th grade', '12th grade'],
+    majorLabel: 'Subjects or fields you like',
+    majorPlaceholder: 'Sports, business, psychology, biology, design, computer science',
+    schoolLabel: 'High school',
+    schoolPlaceholder: 'Your high school',
+    heading2: 'What seems to fit you?',
+    step2Desc: 'Tell us what you like, what you do, and where you might want to explore.',
+    gpaLabel: 'Grades right now',
+    gpaPlaceholder: 'Choose a range, like A/B grades',
+    timeLeftLabel: 'Time until graduation',
+    timeLeftOptions: ['Less than 1 year', '1 year', '2 years', '3+ years'],
+    activitiesLabel: 'Activities, sports, work, or responsibilities',
+    activitiesPlaceholder: 'Basketball team\nPart-time job\nStudent council\nHelping at home\nVolunteering',
+    experienceLabel: 'Jobs, projects, volunteering, or responsibilities',
+    experiencePlaceholder: 'Babysitting\nVarsity basketball captain\nHelped run a school event\nBuilt a small online store',
+    goalHeading: 'What future sounds interesting?',
+    goalDesc: 'You do not need a final career. A rough direction is enough.',
+    goalLabel: 'Possible major, career, or direction',
+    goalPlaceholder: 'I like sports and business. I might want sports management, marketing, analytics, or something around teams.',
+    goalHint: 'Say what sounds interesting, what kind of life you want, or what you want college to help you figure out.',
+    skillsLabel: 'Strengths or things people say you are good at',
+    skillsPlaceholder: 'Talking to people\nMath\nLeadership\nWriting\nDesign\nHelping teammates',
+    buildText: 'Build my direction',
+  },
+};
+
+function setTextById(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+
+function setPlaceholder(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.placeholder = text;
+}
+
+function setOptions(selectId, options, selected = '', label = 'Select') {
+  const el = document.getElementById(selectId);
+  if (!el) return;
+  el.innerHTML = `<option value="">${label}</option>` + options.map((option) => `<option>${option}</option>`).join('');
+  if (selected) el.value = selected;
+}
+
+function fillList(id, source) {
+  const list = document.getElementById(id);
+  if (!list || !Array.isArray(source)) return;
+  list.innerHTML = source.map((s) => `<option value="${String(s).replace(/"/g, '&quot;')}"></option>`).join('');
+}
+
+function isHighSchool() {
+  return schoolStage === 'highSchool';
+}
+
+function applyStage(stage) {
+  schoolStage = stage === 'highSchool' || stage === 'high-school' ? 'highSchool' : 'college';
+  const c = copyByStage[schoolStage];
+  document.querySelectorAll('.ob-stage-card').forEach((btn) => {
+    const active = btn.dataset.stage === (isHighSchool() ? 'high-school' : 'college');
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
+
+  setTextById('eyebrow1', c.eyebrow1);
+  setPlaceholder('firstName', c.firstNamePlaceholder);
+  const step1 = document.querySelector('[data-step="1"]');
+  if (step1) {
+    const h2 = step1.querySelector('h2');
+    const desc = step1.querySelector('.ob-desc');
+    if (h2) h2.textContent = c.step1Title;
+    if (desc) desc.textContent = c.step1Desc;
+  }
+  setTextById('yearLabelText', c.yearLabel);
+  setTextById('majorLabelText', c.majorLabel);
+  setPlaceholder('major', c.majorPlaceholder);
+  setTextById('schoolLabelText', c.schoolLabel);
+  setPlaceholder('school', c.schoolPlaceholder);
+  setTextById('gpaLabelText', c.gpaLabel);
+  setOptions('gpa', GPA_OPTIONS[schoolStage], document.getElementById('gpa')?.value || '', isHighSchool() ? 'Choose a range' : 'Select range');
+  setTextById('heading2', c.heading2);
+  const step2Desc = document.querySelector('[data-step="2"] .ob-desc');
+  if (step2Desc) step2Desc.textContent = c.step2Desc;
+  setTextById('timeLeftLabelText', c.timeLeftLabel);
+  setTextById('activitiesLabelText', c.activitiesLabel);
+  setPlaceholder('activities', c.activitiesPlaceholder);
+  setTextById('experienceLabelText', c.experienceLabel);
+  setPlaceholder('experience', c.experiencePlaceholder);
+  setTextById('goalHeading', c.goalHeading);
+  setTextById('goalDesc', c.goalDesc);
+  setTextById('goalLabelText', c.goalLabel);
+  setPlaceholder('goal', c.goalPlaceholder);
+  setTextById('goalHint', c.goalHint);
+  setTextById('skillsLabelText', c.skillsLabel);
+  setPlaceholder('skills', c.skillsPlaceholder);
+  setOptions('year', c.yearOptions, document.getElementById('year')?.value || '');
+  setOptions('timeLeft', c.timeLeftOptions, document.getElementById('timeLeft')?.value || '');
+  const major = document.getElementById('major');
+  const school = document.getElementById('school');
+  if (major) major.setAttribute('list', isHighSchool() ? 'subjectList' : 'majorList');
+  if (school) {
+    if (isHighSchool()) school.removeAttribute('list');
+    else school.setAttribute('list', 'schoolList');
+  }
+  document.querySelectorAll('.hs-only').forEach((el) => { el.hidden = !isHighSchool(); });
+  if (current === steps.length) nextBtn.textContent = c.buildText;
+  personalize();
+}
 
 // Populate the school + major autocomplete dropdowns from schools.js / majors.js.
 (function fillDatalists() {
@@ -14,6 +198,7 @@ let current = 1;
   };
   fill('schoolList', window.SCHOOLS);
   fill('majorList', window.MAJORS);
+  fill('subjectList', HIGH_SCHOOL_SUBJECTS);
 })();
 
 // Capitalize a name no matter how it's typed: "marley"/"MARLEY" -> "Marley".
@@ -48,13 +233,20 @@ function firstName() {
 function personalize() {
   const name = firstName();
   const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
-  set('eyebrow2', name ? `Nice to meet you, ${name}` : 'Step 2 of 4');
-  set('eyebrow3', name ? `You're doing great, ${name}` : 'Step 3 of 4');
-  set('eyebrow4', name ? `Last one, ${name}` : 'Step 4 of 4');
+  if (isHighSchool()) {
+    set('eyebrow2', name ? `Let's find your fit, ${name}` : 'Step 2 of 4');
+    set('eyebrow3', name ? `Now your real-world signals, ${name}` : 'Step 3 of 4');
+    set('eyebrow4', name ? `Last one, ${name}` : 'Step 4 of 4');
+  } else {
+    set('eyebrow2', name ? `Nice to meet you, ${name}` : 'Step 2 of 4');
+    set('eyebrow3', name ? `You're doing great, ${name}` : 'Step 3 of 4');
+    set('eyebrow4', name ? `Last one, ${name}` : 'Step 4 of 4');
+  }
 }
 
 function goTo(n) {
   personalize();
+  if (!stageChosen) return;
   steps.forEach(s => { s.classList.remove('active'); s.classList.remove('entering'); });
   dots.forEach(d => d.classList.remove('active'));
   const step = steps[n - 1];
@@ -64,18 +256,45 @@ function goTo(n) {
   step.classList.add('entering');
   dots[n - 1].classList.add('active');
   backBtn.style.visibility = n > 1 ? 'visible' : 'hidden';
-  nextBtn.textContent = n === steps.length ? 'Build my trajectory' : 'Continue';
+  nextBtn.textContent = n === steps.length ? copyByStage[schoolStage].buildText : 'Continue';
   current = n;
 }
 
+function showStageIntro() {
+  stageChosen = false;
+  stageIntro?.classList.add('active');
+  document.querySelectorAll('.intro-stage-card').forEach((btn) => {
+    btn.classList.remove('active');
+    btn.setAttribute('aria-pressed', 'false');
+  });
+  steps.forEach(s => { s.classList.remove('active'); s.classList.remove('entering'); });
+  dots.forEach(d => d.classList.remove('active'));
+  if (progress) progress.hidden = true;
+  if (actions) actions.hidden = true;
+}
+
+function startForm(stage) {
+  applyStage(stage);
+  stageChosen = true;
+  stageIntro?.classList.remove('active');
+  if (progress) progress.hidden = false;
+  if (actions) actions.hidden = false;
+  goTo(1);
+}
+
 // "Edit profile" prefills the form; "Build My Path" (?fresh=1) starts blank.
-const ONBOARD_MODE = new URLSearchParams(location.search).get('edit') === '1' ? 'edit' : 'fresh';
+const searchParams = new URLSearchParams(location.search);
+const ONBOARD_MODE = searchParams.get('edit') === '1' ? 'edit' : 'fresh';
+const requestedStage = searchParams.get('stage');
 
 (function prefill() {
   if (ONBOARD_MODE !== 'edit') return; // fresh start — leave the form blank
   const read = (k) => { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } };
   const existing = read('figuredProfile') || read('pathlineProfile');
   if (!existing) return;
+  applyStage(existing.schoolStage === 'highSchool' ? 'highSchool' : 'college');
+  didPrefillStage = true;
+  stageChosen = true;
   const fill = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
   fill('firstName', existing.firstName === 'You' ? '' : existing.firstName);
   fill('year', existing.year);
@@ -87,9 +306,29 @@ const ONBOARD_MODE = new URLSearchParams(location.search).get('edit') === '1' ? 
   fill('experience', existing.experience);
   fill('goal', existing.goal === 'your goal' ? '' : existing.goal);
   fill('skills', existing.skills);
+  fill('classesLiked', existing.classesLiked);
+  fill('collegeInterest', existing.collegeInterest);
+  fill('priorityConcern', existing.priorityConcern);
+  fill('collegePrefs', existing.collegePrefs);
+  fill('costComfort', existing.costComfort);
+  fill('supportLevel', existing.supportLevel);
+  fill('worries', existing.worries);
 })();
 
-backBtn.addEventListener('click', () => { if (current > 1) goTo(current - 1); });
+document.querySelectorAll('.ob-stage-card').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('intro-stage-card')) startForm(btn.dataset.stage);
+    else applyStage(btn.dataset.stage);
+  });
+});
+
+backBtn.addEventListener('click', () => {
+  if (current > 1) {
+    goTo(current - 1);
+    return;
+  }
+  if (ONBOARD_MODE !== 'edit' && !requestedStage) showStageIntro();
+});
 
 nextBtn.addEventListener('click', () => {
   if (current < steps.length) {
@@ -120,8 +359,10 @@ nextBtn.addEventListener('click', () => {
     return;
   }
   if (goalError) goalError.hidden = true;
+  const firstNameValue = document.getElementById('firstName').value.trim();
   const profile = {
-    firstName: document.getElementById('firstName').value.trim() || 'You',
+    schoolStage,
+    firstName: firstNameValue || (isHighSchool() ? copyByStage.highSchool.firstNamePlaceholder : 'You'),
     year: document.getElementById('year').value,
     major: document.getElementById('major').value.trim(),
     school: document.getElementById('school').value.trim(),
@@ -131,6 +372,13 @@ nextBtn.addEventListener('click', () => {
     experience: document.getElementById('experience').value.trim(),
     goal: document.getElementById('goal').value.trim() || 'your goal',
     skills: document.getElementById('skills').value.trim(),
+    classesLiked: document.getElementById('classesLiked')?.value.trim() || '',
+    collegeInterest: document.getElementById('collegeInterest')?.value || '',
+    priorityConcern: document.getElementById('priorityConcern')?.value || '',
+    collegePrefs: document.getElementById('collegePrefs')?.value.trim() || '',
+    costComfort: document.getElementById('costComfort')?.value || '',
+    supportLevel: document.getElementById('supportLevel')?.value || '',
+    worries: document.getElementById('worries')?.value.trim() || '',
   };
   localStorage.setItem('figuredProfile', JSON.stringify(profile));
   // A changed profile means stale insights — clear so the app regenerates.
@@ -181,7 +429,17 @@ function hashProfile(p) {
   return String(h);
 }
 
-goTo(1);
+if (!didPrefillStage && requestedStage) {
+  startForm(requestedStage);
+} else if (!didPrefillStage) {
+  applyStage('college');
+  showStageIntro();
+} else {
+  stageIntro?.classList.remove('active');
+  if (progress) progress.hidden = false;
+  if (actions) actions.hidden = false;
+  goTo(1);
+}
 
 function startBuildGame() {
   const canvas = document.getElementById('buildGame');
