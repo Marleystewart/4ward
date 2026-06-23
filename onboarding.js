@@ -4,6 +4,29 @@ const backBtn = document.getElementById('obBack');
 const nextBtn = document.getElementById('obNext');
 let current = 1;
 
+// --- Career path bubble selection ---
+(function initBubbles() {
+  const goalInput = document.getElementById('goal');
+  if (!goalInput) return;
+  document.querySelectorAll('.goal-bubble').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Deselect all, select this one
+      document.querySelectorAll('.goal-bubble').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      goalInput.value = btn.dataset.goal;
+      // Scroll goal input into view so they see the selection took effect
+      goalInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+  // If they type manually, deselect any active bubble
+  goalInput.addEventListener('input', () => {
+    const typed = goalInput.value.trim();
+    document.querySelectorAll('.goal-bubble').forEach(b => {
+      b.classList.toggle('selected', b.dataset.goal === typed);
+    });
+  });
+})();
+
 function firstName() {
   const v = (document.getElementById('firstName').value || '').trim();
   return v ? v.split(/\s+/)[0] : '';
