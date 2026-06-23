@@ -2037,6 +2037,11 @@ if (document.querySelector('.product-main')) {
   if (!document.getElementById('how')) return;
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // On phones the sections collapse into accordions, so scroll-fade would fight
+  // the expand animation (and could leave collapsed content stuck invisible).
+  // Reveal everything up front there; keep the fade-up as a desktop delight.
+  const isMobile = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+  const instant = reduceMotion || isMobile || !('IntersectionObserver' in window);
 
   // Groups that should stagger their direct children, plus standalone blocks.
   const groupSelectors = ['.steps-grid', '.gap-grid', '.mentor-grid', '.opportunity-grid', '.trajectory-cards', '.dashboard-grid'];
@@ -2052,8 +2057,10 @@ if (document.querySelector('.product-main')) {
     });
   }));
 
-  if (reduceMotion || !('IntersectionObserver' in window)) {
+  if (instant) {
     targets.forEach((el) => el.classList.add('in'));
+    const rm = document.querySelector('.roadmap');
+    if (rm) rm.classList.add('lit');
     return;
   }
 
@@ -2084,4 +2091,68 @@ if (document.querySelector('.product-main')) {
       rio.observe(roadmap);
     }
   }
+})();
+
+// --- Mobile section accordions ---------------------------------------------
+// The marketing page is a long scroll on a phone. Below the hero, each section
+// collapses behind a tappable heading (first one open, the rest closed) so the
+// page reads as a tidy list you can expand. Desktop is untouched: the collapse
+// styling is mobile-only, so even after we restructure the DOM it renders as a
+// normal full-length page on wider screens.
+(function initMobileSections() {
+  if (!document.getElementById('how')) return; // landing page only
+  const mq = window.matchMedia('(max-width: 760px)');
+  const ids = ['how', 'trajectory', 'gaps', 'actions', 'opportunities', 'mentors', 'dashboard'];
+  let built = false;
+
+  function build() {
+    if (built) return;
+    built = true;
+
+    ids.forEach((id, idx) => {
+      const section = document.getElementById(id);
+      if (!section) return;
+      section.classList.add('collapsible');
+
+      let header = section.querySelector(':scope > .section-heading');
+      if (!header) {
+        // The dashboard preview has no heading of its own; give it one to tap.
+        header = document.createElement('div');
+        header.className = 'section-heading synthetic';
+        header.innerHTML = '<p class="eyebrow">Preview</p><h2>See the dashboard</h2>';
+        section.insertBefore(header, section.firstChild);
+      }
+
+      // Wrap everything except the header so we can animate its height.
+      const body = document.createElement('div');
+      body.className = 'section-body';
+      const inner = document.createElement('div');
+      inner.className = 'section-body-inner';
+      [...section.children].forEach((child) => { if (child !== header) inner.appendChild(child); });
+      body.appendChild(inner);
+      section.appendChild(body);
+
+      const open = idx === 0;
+      section.classList.toggle('open', open);
+      header.setAttribute('role', 'button');
+      header.setAttribute('tabindex', '0');
+      header.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+      const toggle = () => {
+        const nowOpen = !section.classList.contains('open');
+        section.classList.toggle('open', nowOpen);
+        header.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+      };
+      header.addEventListener('click', toggle);
+      header.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
+  }
+
+  if (mq.matches) build();
+  // Build lazily if the viewport later crosses into mobile (e.g. rotation).
+  // We never tear down: the collapse CSS only applies on mobile, so the wrapped
+  // structure is harmless at desktop widths.
+  if (mq.addEventListener) mq.addEventListener('change', (e) => { if (e.matches) build(); });
 })();

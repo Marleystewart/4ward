@@ -144,7 +144,7 @@ h3 {
    than its visual mark. Constrain it so the header reads as a tidy nav bar,
    not a billboard, especially on phones. */
 .site-header .brand-logo {
-  height: 56px;
+  height: 88px;
 }
 
 .brand.mini .brand-logo,
@@ -1478,7 +1478,7 @@ h1 {
   }
 
   .site-header .brand-logo {
-    height: 44px;
+    height: 60px;
   }
 
   .desktop-nav {
@@ -3811,4 +3811,70 @@ h1 {
   .snapshot-wide.just-refined h2,
   .snapshot-wide.just-refined p,
   .tracks-list.just-refined .track-item { animation: none; }
+}
+
+/* --- Mobile section accordions ------------------------------------------- */
+/* The synthetic dashboard heading only exists to be a tap target on phones. */
+.section-heading.synthetic { display: none; }
+
+@media (max-width: 760px) {
+  section.collapsible > .section-heading {
+    position: relative;
+    cursor: pointer;
+    padding: 6px 34px 6px 0;
+    margin-bottom: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .section-heading.synthetic { display: block; }
+
+  /* Chevron on the right of each collapsible heading; rotates when open. */
+  section.collapsible > .section-heading::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    top: 12px;
+    width: 11px;
+    height: 11px;
+    border-right: 2px solid var(--sage-deep);
+    border-bottom: 2px solid var(--sage-deep);
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
+  }
+
+  section.collapsible.open > .section-heading::after {
+    transform: rotate(225deg);
+    top: 16px;
+  }
+
+  /* Smooth height animation via the grid 0fr/1fr trick. */
+  .section-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.34s ease;
+  }
+
+  .section-body-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  section.collapsible.open > .section-body {
+    grid-template-rows: 1fr;
+  }
+
+  section.collapsible.open > .section-body > .section-body-inner {
+    padding-top: 18px;
+  }
+
+  /* Collapsible sections manage their own top/bottom rhythm. */
+  section.collapsible {
+    padding: 26px 0 !important;
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-body { transition: none; }
+    section.collapsible > .section-heading::after { transition: none; }
+  }
 }
