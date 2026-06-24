@@ -1532,6 +1532,145 @@ function renderMentors(term) {
 }
 
 // ---------------------------------------------------------------------------
+// Networking — "Who to meet" archetypes.
+// We never invent a named person. Instead we describe the KIND of person worth
+// meeting on this path, why they matter, what to ask, and a message to send —
+// then link out to a real LinkedIn search so the student finds the actual human.
+// ---------------------------------------------------------------------------
+// Turn a school name into LinkedIn's school-page slug. LinkedIn slugs are
+// predictable: lowercase, "&" -> "and", punctuation dropped, spaces -> hyphens.
+// "Trinity College" -> "trinity-college", "Williams College" -> "williams-college".
+function slugifySchool(school) {
+  return String(school || '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Deep-link to a school's LinkedIn alumni page, pre-filtered to a field. This is
+// the real alumni tool — the student lands on actual alumni from their own school
+// who work in their target area. Needs only their own LinkedIn login.
+function schoolAlumniURL(school, keywords) {
+  const slug = slugifySchool(school);
+  if (!slug) return googleLinkedinURL(keywords);
+  const q = encodeURIComponent(keywords || '');
+  return `https://www.linkedin.com/school/${slug}/people/?keywords=${q}`;
+}
+
+function networkArchetypes(term, p) {
+  const goal = term || 'your field';
+  const hasSchool = Boolean(p && p.school);
+  const school = hasSchool ? p.school : 'your school';
+  const first = (p && p.firstName) ? p.firstName : 'a student';
+  // Alumni + upperclassmen come from the student's own school, so we send them
+  // to the LinkedIn alumni page. Off-campus archetypes use a normal search.
+  const alumniHref = hasSchool ? schoolAlumniURL(school, goal) : googleLinkedinURL(`${goal} ${school}`);
+  const peerHref = hasSchool ? schoolAlumniURL(school, `${goal} intern`) : googleLinkedinURL(`${goal} intern ${school}`);
+  return [
+    {
+      tag: 'Alumni',
+      role: `${goal} professional from ${school}`,
+      sub: `2–4 years into the exact role you want`,
+      why: `They walked the same path from the same place, so their advice maps directly onto your situation. Shared-school connections reply far more often.`,
+      questions: [
+        'How did you land your first internship in this field?',
+        'What skills mattered most early on?',
+        'What would you do differently if you were starting now?',
+      ],
+      message: `Hi, I'm ${first}, currently at ${school} working toward ${goal}. I saw you came through ${school} and are now in the field. Would you be open to a 15-minute call? I'd love to hear how you got started.`,
+      href: alumniHref,
+      cta: 'See alumni on LinkedIn →',
+    },
+    {
+      tag: 'Upperclassman',
+      role: `A senior who landed a ${goal} internship`,
+      sub: `One or two years ahead of you on campus`,
+      why: `They just went through the exact recruiting cycle you're about to face. The timelines, the deadlines, the people who interviewed them. All still fresh.`,
+      questions: [
+        'When did you start applying, and where?',
+        'What did the interview process actually look like?',
+        'Which campus resources actually helped?',
+      ],
+      message: `Hey, I'm ${first}, also at ${school} and exploring ${goal}. I saw you interned in the space. Could I grab 15 minutes to hear how you approached recruiting? Would really appreciate it.`,
+      href: peerHref,
+      cta: 'Find on LinkedIn →',
+    },
+    {
+      tag: 'Professional',
+      role: `Someone hiring or working in ${goal} now`,
+      sub: `Mid-level person at a company you'd target`,
+      why: `They know what teams are actually looking for this year and can tell you whether your plan matches reality. Great for an informational chat, not a job ask.`,
+      questions: [
+        'What separates strong early candidates from the rest?',
+        'What does a typical first year in this role look like?',
+        'Where do you wish more students focused their time?',
+      ],
+      message: `Hi, I'm ${first}, a student working toward ${goal}. I'm trying to understand the field from people actually in it. Would you be open to a short informational chat? No ask beyond your perspective.`,
+      href: googleLinkedinURL(goal),
+      cta: 'Find on LinkedIn →',
+    },
+    {
+      tag: 'On campus',
+      role: `A professor or club leader in this area`,
+      sub: `Already at ${school}, easy to reach`,
+      why: `The lowest-friction connection on this list. Office hours and club meetings are built-in invitations, and they often know the alumni you can't find yourself.`,
+      questions: [
+        'Which alumni in this field could I reach out to?',
+        'What experience would strengthen my path right now?',
+        'Are there projects or research I could join?',
+      ],
+      message: `Hi Professor, I'm ${first}, exploring a path toward ${goal}. I'd love to stop by office hours to ask for advice on building the right experience. When works best?`,
+      href: hasSchool ? schoolAlumniURL(school, `${goal} professor`) : googleLinkedinURL(`${goal} professor ${school}`),
+      cta: 'Find on LinkedIn →',
+    },
+  ];
+}
+
+function renderNetwork(term, p) {
+  const grid = document.getElementById('networkGrid');
+  if (!grid) return;
+  const cards = networkArchetypes(term, p);
+  grid.innerHTML = cards.map((c, i) => {
+    const initials = c.tag.slice(0, 2).toUpperCase();
+    return `
+      <article class="product-card network-card">
+        <div class="network-top">
+          <div class="network-avatar">${esc(initials)}</div>
+          <span class="network-tag">${esc(c.tag)}</span>
+        </div>
+        <h3>${esc(c.role)}</h3>
+        <p class="network-sub">${esc(c.sub)}</p>
+        <div class="network-why"><strong>Why meet</strong><p>${esc(c.why)}</p></div>
+        <div class="network-block">
+          <strong>Questions to ask</strong>
+          <ul>${c.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ul>
+        </div>
+        <div class="network-block network-msg">
+          <strong>Message to send</strong>
+          <p data-msg="${esc(c.message)}">${esc(c.message)}</p>
+          <div class="network-actions">
+            <button class="mini-button" type="button" data-copy-msg="${i}">Copy message</button>
+            <a class="opp-link" href="${c.href}" target="_blank" rel="noopener">${esc(c.cta || 'Find on LinkedIn →')}</a>
+          </div>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+// Copy-message buttons (delegated so re-renders keep working)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-copy-msg]');
+  if (!btn) return;
+  const msg = btn.closest('.network-msg')?.querySelector('[data-msg]')?.dataset.msg || '';
+  navigator.clipboard?.writeText(msg).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => { btn.textContent = original; }, 1600);
+  });
+});
+
+// ---------------------------------------------------------------------------
 // AI orchestration
 // ---------------------------------------------------------------------------
 
@@ -1976,6 +2115,7 @@ function applyProfile(p) {
   setHref('peerLinkedinLink', googleLinkedinURL(`${term} student`));
   setHref('peerHandshakeLink', handshakeURL(term, p));
   renderMentors(term);
+  renderNetwork(term, p);
 
   maybeRunAI(p);
 }
@@ -2045,6 +2185,7 @@ if (document.querySelector('.product-main')) {
     applyProfile(profile);
   } else {
     currentScores = computeScores(DEMO_PROFILE);
+    renderNetwork(DEMO_PROFILE.goal, DEMO_PROFILE);
     const nudge = document.getElementById('onboardingNudge');
     if (nudge) nudge.style.display = 'flex';
     setAiPill(aiAvailable() && FigAI.hasKey() ? 'idle' : 'off');

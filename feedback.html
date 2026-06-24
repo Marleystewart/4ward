@@ -73,16 +73,11 @@
       }
       .submit:hover { background: var(--green-deep); transform: translateY(-1px); }
       .submit:disabled { opacity: 0.6; cursor: default; transform: none; }
+      .submit-status { display: none; margin: 12px 0 0; text-align: center; font-size: 14px; color: var(--green-deep); }
+      .submit-status.show { display: block; }
+      .submit-status.error { color: #a63d31; }
       .foot { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
       .foot a { color: var(--green); text-decoration: none; }
-      /* Thank-you state */
-      .thanks { display: none; text-align: center; background: var(--card); border: 1px solid var(--line);
-        border-radius: 24px; box-shadow: var(--shadow); padding: clamp(36px, 6vw, 60px); }
-      .thanks.show { display: block; }
-      .thanks .check { width: 56px; height: 56px; border-radius: 50%; background: var(--sage);
-        color: var(--green-deep); display: grid; place-items: center; font-size: 26px; margin: 0 auto 18px; }
-      .thanks h2 { font-size: 24px; letter-spacing: -0.01em; }
-      .thanks p { margin-top: 10px; color: var(--muted); }
     </style>
   </head>
   <body>
@@ -147,13 +142,8 @@
         </div>
 
         <button type="submit" class="submit" id="submitBtn">Send feedback</button>
+        <p class="submit-status" id="submitStatus" role="status" aria-live="polite"></p>
       </form>
-
-      <div class="thanks" id="thanks">
-        <div class="check">✓</div>
-        <h2>Thank you.</h2>
-        <p>Your feedback goes straight to the 4ward team. It genuinely shapes what we build next.</p>
-      </div>
 
       <p class="foot">Part of <a href="https://almar-site.vercel.app/" target="_blank" rel="noopener">Almar Group</a></p>
     </div>
@@ -161,10 +151,10 @@
     <script>
       // Feedback submissions are collected through Formspree.
       const FORM_ENDPOINT = "https://formspree.io/f/mreweypa";
-      const MAILTO = "marleystewart@gmail.com";
 
       const form = document.getElementById('feedbackForm');
       const btn = document.getElementById('submitBtn');
+      const status = document.getElementById('submitStatus');
 
       function collect() {
         const data = new FormData(form);
@@ -173,11 +163,11 @@
         return obj;
       }
 
-      function showThanks() {
-        document.getElementById('head').style.display = 'none';
-        form.style.display = 'none';
-        document.getElementById('thanks').classList.add('show');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      function showSubmitted() {
+        btn.textContent = 'Submitted ✓';
+        form.querySelectorAll('input, textarea').forEach((field) => { field.disabled = true; });
+        status.textContent = 'Thank you — your feedback was submitted.';
+        status.className = 'submit-status show';
       }
 
       form.addEventListener('submit', async (e) => {
@@ -186,39 +176,19 @@
         btn.textContent = 'Sending…';
         const obj = collect();
 
-        if (FORM_ENDPOINT) {
-          try {
-            const res = await fetch(FORM_ENDPOINT, {
-              method: 'POST',
-              headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-              body: JSON.stringify(obj),
-            });
-            if (res.ok) { showThanks(); return; }
-          } catch (err) { /* fall through to mailto */ }
-        }
+        try {
+          const res = await fetch(FORM_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(obj),
+          });
+          if (res.ok) { showSubmitted(); return; }
+        } catch (err) { /* Show a clear retry message below. */ }
 
-        // Fallback: open a pre-filled email with all answers.
-        const lines = [
-          'Name: ' + (obj.name || ''),
-          'Role/School: ' + (obj.role || ''),
-          'Email: ' + (obj.email || ''),
-          'Usefulness: ' + (obj.usefulness || ''),
-          'Would consider a pilot: ' + (obj.pilot || ''),
-          '',
-          'What stood out:',
-          (obj.liked || ''),
-          '',
-          'What is missing / would change:',
-          (obj.missing || ''),
-          '',
-          'Anything else:',
-          (obj.other || ''),
-        ].join('\n');
-        const subject = '4ward feedback' + (obj.role ? ' — ' + obj.role : '');
-        window.location.href = 'mailto:' + MAILTO +
-          '?subject=' + encodeURIComponent(subject) +
-          '&body=' + encodeURIComponent(lines);
-        showThanks();
+        btn.disabled = false;
+        btn.textContent = 'Try again';
+        status.textContent = 'Something did not go through. Please try again in a moment.';
+        status.className = 'submit-status show error';
       });
     </script>
   </body>

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=40" />
+    <link rel="stylesheet" href="./styles.css?v=41" />
   </head>
   <body class="product-body">
     <div class="product-shell">
@@ -56,6 +56,11 @@
 
         <div class="onboarding-nudge" id="onboardingNudge" style="display:none">
           This is demo data. <a href="./onboarding.html?fresh=1">Build your real trajectory →</a>
+        </div>
+
+        <div class="advisor-banner" id="advisorBanner">
+          <span class="advisor-banner-dot" aria-hidden="true"></span>
+          <p><strong>4ward gets you ready for your career advisor.</strong> Use it to arrive with direction, sharper questions, and a clearer view of your options. Your advisor takes it from there.</p>
         </div>
 
         <!-- Overview -->
@@ -293,13 +298,31 @@
         <section class="product-section" id="product-connections">
           <div class="connections-header">
             <div class="conn-tabs">
-              <button class="conn-tab active" data-conn="mentors">Mentors</button>
+              <button class="conn-tab active" data-conn="meet">Who to meet</button>
+              <button class="conn-tab" data-conn="mentors">Mentors</button>
               <button class="conn-tab" data-conn="peers">Peers</button>
             </div>
             <a class="secondary-button" id="connLinkedinLink" href="https://www.linkedin.com/search/results/people/?keywords=Product+Manager" target="_blank" rel="noopener">Find more on LinkedIn →</a>
           </div>
 
-          <div class="conn-panel active" id="conn-mentors">
+          <div class="conn-panel active" id="conn-meet">
+            <p class="conn-note">Networking is the fastest way to move your path forward. Here are the people worth reaching out to: why they matter, what to ask, and a message you can send today.</p>
+            <div class="network-grid" id="networkGrid"></div>
+
+            <article class="product-card advisor-prep-card">
+              <span>Bring this to your advisor</span>
+              <h3>Questions worth asking at your next appointment</h3>
+              <ul class="advisor-prep-list">
+                <li>Which of these paths looks most realistic given my background?</li>
+                <li>Do you know alumni in product roles I could be introduced to?</li>
+                <li>What experience should I prioritize before recruiting season?</li>
+                <li>Does my outreach message land the right way?</li>
+              </ul>
+              <p class="advisor-prep-foot">Showing up with specific questions makes a 30-minute appointment go much further.</p>
+            </article>
+          </div>
+
+          <div class="conn-panel" id="conn-mentors">
             <p class="conn-note">Mentors who join 4ward link straight to their profile. Everyone else, tap to find them on LinkedIn. <a class="conn-join" href="./mentor.html">Are you a mentor? Join →</a></p>
             <div class="opportunity-app-grid" id="mentorGrid"></div>
           </div>
