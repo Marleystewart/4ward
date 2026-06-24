@@ -1495,30 +1495,6 @@ function loadOptedInMentors() {
   return Array.isArray(stored) ? stored.filter(m => m && m.name && m.linkedin) : [];
 }
 
-// Field-aware archetypes shown when no real mentor has opted in yet.
-function mentorArchetypes(term) {
-  return [
-    {
-      name: `Someone working in ${term}`,
-      sub: 'A few years ahead of you',
-      why: `The fastest way to learn what the ${term} path actually looks like day to day.`,
-      search: term,
-    },
-    {
-      name: `A senior leader in ${term}`,
-      sub: 'On the hiring side',
-      why: `People who hire and lead in ${term} can tell you what actually moves the needle.`,
-      search: `senior ${term}`,
-    },
-    {
-      name: `A recent grad now in ${term}`,
-      sub: '1–3 years out of school',
-      why: 'Closest to where you are now — they remember exactly how they broke in.',
-      search: `${term} recent graduate`,
-    },
-  ];
-}
-
 function initialsFor(m) {
   if (m.initials) return m.initials;
   const words = (m.name || '?').replace(/[^a-zA-Z ]/g, '').trim().split(/\s+/);
@@ -1528,7 +1504,17 @@ function initialsFor(m) {
 function renderMentors(term) {
   const grid = document.getElementById('mentorGrid');
   if (!grid) return;
-  const mentors = loadOptedInMentors().concat(mentorArchetypes(term));
+  // Only ever show real, opted-in mentors. Never invent a "someone" — a real
+  // user with no connections yet should see an honest empty state, not fake people.
+  const mentors = loadOptedInMentors();
+  if (mentors.length === 0) {
+    grid.innerHTML = `
+      <div class="conn-empty">
+        <h3>No connections yet</h3>
+        <p>This fills in as mentors join 4ward. Until then, use "Find more on LinkedIn" above to start reaching out to people on your path.</p>
+      </div>`;
+    return;
+  }
   grid.innerHTML = mentors.map((m) => {
     const opted = Boolean(m.linkedin);
     const href = opted ? m.linkedin : googleLinkedinURL(m.search || m.name);

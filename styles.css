@@ -3176,6 +3176,26 @@ h1 {
   line-height: 1.5;
 }
 
+.conn-empty {
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  padding: 32px 28px;
+  text-align: center;
+}
+
+.conn-empty h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.conn-empty p {
+  margin: 0 auto;
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
 .mentor-app-card {
   position: relative;
 }
