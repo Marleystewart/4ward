@@ -2689,6 +2689,68 @@ h1 {
 }
 .network-msg p { margin: 0 0 10px; font-size: 13px; font-style: italic; color: var(--ink); line-height: 1.5; }
 .network-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.mini-ghost { background: transparent; border: 1px solid var(--line); color: var(--sage-deep); }
+
+/* Outreach tracker */
+.outreach-add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 14px;
+}
+.outreach-input {
+  flex: 1 1 200px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.outreach-add .primary-button { flex: 0 0 auto; }
+.outreach-summary { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.outreach-list { display: grid; gap: 10px; }
+.outreach-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+}
+.outreach-who { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.outreach-who p { margin: 0; font-weight: 740; font-size: 14px; }
+.outreach-who small { color: var(--muted); font-size: 12.5px; }
+.outreach-dot { flex: none; width: 10px; height: 10px; border-radius: 999px; background: var(--line); }
+.outreach-dot.st-to-reach-out { background: #c9b27a; }
+.outreach-dot.st-reached-out { background: var(--teal); }
+.outreach-dot.st-replied { background: var(--sage); }
+.outreach-dot.st-met { background: var(--sage-deep); }
+.outreach-controls { display: flex; align-items: center; gap: 8px; flex: none; }
+.outreach-status {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--paper-soft);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+.outreach-remove {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 8px;
+}
+.outreach-remove:hover { background: var(--paper-soft); color: var(--ink); }
 
 /* Bring this to your advisor card */
 .advisor-prep-card { margin-top: 22px; border-left: 3px solid var(--sage-deep); }

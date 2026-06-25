@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=50" />
+    <link rel="stylesheet" href="./styles.css?v=51" />
   </head>
   <body class="product-body">
     <div class="product-shell">
@@ -378,6 +378,7 @@
           <div class="connections-header">
             <div class="conn-tabs">
               <button class="conn-tab active" data-conn="meet">Who to meet</button>
+              <button class="conn-tab" data-conn="outreach">My outreach</button>
               <button class="conn-tab" data-conn="mentors">Mentors</button>
               <button class="conn-tab" data-conn="peers">Peers</button>
             </div>
@@ -399,6 +400,19 @@
               </ul>
               <p class="advisor-prep-foot">Showing up with specific questions makes a 30-minute appointment go much further.</p>
             </article>
+          </div>
+
+          <div class="conn-panel" id="conn-outreach">
+            <p class="conn-note">Track who you're reaching out to so nothing slips. Add anyone you want to connect with, then move them along as you go. <strong>This is exactly what career centers spend their time on.</strong></p>
+
+            <div class="outreach-add">
+              <input class="outreach-input" id="outreachName" type="text" placeholder="Name (e.g. Jordan Lee)" />
+              <input class="outreach-input" id="outreachRole" type="text" placeholder="Who they are (e.g. Trinity alum in product)" />
+              <button class="primary-button" id="outreachAddBtn" type="button">Add</button>
+            </div>
+
+            <p class="outreach-summary" id="outreachSummary"></p>
+            <div class="outreach-list" id="outreachList"></div>
           </div>
 
           <div class="conn-panel" id="conn-mentors">
@@ -481,6 +495,6 @@
     </div>
 
     <script src="./ai.js?v=30"></script>
-    <script src="./script.js?v=44"></script>
+    <script src="./script.js?v=45"></script>
   </body>
 </html>

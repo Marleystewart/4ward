@@ -1687,6 +1687,7 @@ function renderNetwork(term, p) {
           <p data-msg="${esc(c.message)}">${esc(c.message)}</p>
           <div class="network-actions">
             <button class="mini-button" type="button" data-copy-msg="${i}">Copy message</button>
+            <button class="mini-button mini-ghost" type="button" data-track-name="${esc(c.role)}" data-track-role="${esc(c.tag)} · ${esc(c.sub)}">+ Track</button>
           </div>
         </div>
       </article>`;
@@ -1704,6 +1705,120 @@ document.addEventListener('click', (e) => {
     setTimeout(() => { btn.textContent = original; }, 1600);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Outreach tracker. The #1 thing career centers do: help students track who
+// they're reaching out to. Students add contacts and move them along a simple
+// status: To reach out -> Reached out -> Replied -> Met. Saved in localStorage.
+// ---------------------------------------------------------------------------
+const OUTREACH_STATUSES = ['To reach out', 'Reached out', 'Replied', 'Met'];
+
+function loadOutreach() {
+  try { const v = JSON.parse(localStorage.getItem('figuredOutreach')); return Array.isArray(v) ? v : []; }
+  catch { return []; }
+}
+function saveOutreach(list) {
+  try { localStorage.setItem('figuredOutreach', JSON.stringify(list)); } catch (e) { /* ignore */ }
+}
+
+function renderOutreach() {
+  const listEl = document.getElementById('outreachList');
+  const summaryEl = document.getElementById('outreachSummary');
+  if (!listEl) return;
+  const list = loadOutreach();
+
+  if (summaryEl) {
+    if (!list.length) {
+      summaryEl.textContent = '';
+    } else {
+      const counts = OUTREACH_STATUSES.map((s) => list.filter((c) => c.status === s).length);
+      summaryEl.textContent = `${list.length} contact${list.length === 1 ? '' : 's'} · ${counts[0]} to reach out · ${counts[2]} replied · ${counts[3]} met`;
+    }
+  }
+
+  if (!list.length) {
+    listEl.innerHTML = `
+      <div class="conn-empty">
+        <h3>No one tracked yet</h3>
+        <p>Add the people you want to connect with above, or add someone straight from "Who to meet". Then move them along as you reach out and hear back.</p>
+      </div>`;
+    return;
+  }
+
+  listEl.innerHTML = list.map((c) => {
+    const cls = 'st-' + String(c.status || '').toLowerCase().replace(/[^a-z]+/g, '-');
+    const opts = OUTREACH_STATUSES.map((s) => `<option value="${esc(s)}"${s === c.status ? ' selected' : ''}>${esc(s)}</option>`).join('');
+    return `
+      <div class="outreach-row" data-id="${esc(c.id)}">
+        <div class="outreach-who">
+          <span class="outreach-dot ${cls}"></span>
+          <div>
+            <p>${esc(c.name)}</p>
+            ${c.role ? `<small>${esc(c.role)}</small>` : ''}
+          </div>
+        </div>
+        <div class="outreach-controls">
+          <select class="outreach-status" data-id="${esc(c.id)}" aria-label="Status">${opts}</select>
+          <button class="outreach-remove" type="button" data-remove="${esc(c.id)}" aria-label="Remove">&times;</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function addOutreach(name, role) {
+  const n = (name || '').trim();
+  if (!n) return false;
+  const list = loadOutreach();
+  // Skip exact duplicates so "Track" from an archetype can't pile up.
+  if (list.some((c) => c.name === n && (c.role || '') === (role || '').trim())) { renderOutreach(); return true; }
+  list.unshift({ id: 'o' + Date.now() + Math.random().toString(36).slice(2, 6), name: n, role: (role || '').trim(), status: OUTREACH_STATUSES[0] });
+  saveOutreach(list);
+  renderOutreach();
+  return true;
+}
+
+(function initOutreach() {
+  const addBtn = document.getElementById('outreachAddBtn');
+  const nameEl = document.getElementById('outreachName');
+  const roleEl = document.getElementById('outreachRole');
+  if (!addBtn || !nameEl) return;
+
+  const submit = () => {
+    if (addOutreach(nameEl.value, roleEl ? roleEl.value : '')) {
+      nameEl.value = ''; if (roleEl) roleEl.value = '';
+      nameEl.focus();
+    }
+  };
+  addBtn.addEventListener('click', submit);
+  [nameEl, roleEl].forEach((el) => el && el.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); }));
+
+  // Status change + remove (delegated).
+  document.addEventListener('change', (e) => {
+    const sel = e.target.closest('.outreach-status');
+    if (!sel) return;
+    const list = loadOutreach();
+    const c = list.find((x) => x.id === sel.dataset.id);
+    if (c) { c.status = sel.value; saveOutreach(list); renderOutreach(); }
+  });
+  document.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-remove]');
+    if (!rm) return;
+    saveOutreach(loadOutreach().filter((x) => x.id !== rm.dataset.remove));
+    renderOutreach();
+  });
+
+  // "Track" buttons on the Who-to-meet archetype cards.
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-track-name]');
+    if (!t) return;
+    addOutreach(t.dataset.trackName, t.dataset.trackRole || '');
+    const original = t.textContent;
+    t.textContent = 'Added to outreach ✓';
+    setTimeout(() => { t.textContent = original; }, 1600);
+  });
+
+  renderOutreach();
+})();
 
 // ---------------------------------------------------------------------------
 // Résumé review (dashboard). Upload a résumé, get the full honest breakdown:
@@ -2301,8 +2416,8 @@ const connPanels = document.querySelectorAll('.conn-panel');
 // "Find more on LinkedIn" header button there and show it for Mentors/Peers.
 function syncConnHeaderLink(activeTab) {
   const link = document.getElementById('connLinkedinLink');
-  // Hidden on the reference tabs (Who to meet, Peers); only Mentors uses it.
-  if (link) link.style.display = (activeTab === 'meet' || activeTab === 'peers') ? 'none' : '';
+  // Only the Mentors tab uses the LinkedIn search; hide it on the others.
+  if (link) link.style.display = (activeTab === 'mentors') ? '' : 'none';
 }
 connTabs.forEach(tab => {
   tab.addEventListener('click', () => {
