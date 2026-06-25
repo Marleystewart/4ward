@@ -1706,7 +1706,6 @@ function renderResumeAnalysis(a) {
     statusEl.className = 'resume-app-status' + (kind ? ' ' + kind : '');
   };
 
-  const formatSel = document.getElementById('resumeFormat');
   const guidelinesEl = document.getElementById('resumeGuidelines');
   const templateBtn = document.getElementById('resumeTemplateBtn');
   const templateInput = document.getElementById('resumeTemplateFile');
@@ -1720,16 +1719,11 @@ function renderResumeAnalysis(a) {
   const aiReady = () => (typeof FigAI !== 'undefined') && FigAI.hasKey();
   if (emptyAi) emptyAi.style.display = aiReady() ? 'none' : '';
 
-  // Remember the student's format choice + pasted guidelines between visits.
+  // Remember the student's pasted guidelines between visits.
   try {
-    const savedFmt = localStorage.getItem('figuredResumeFormat');
-    if (savedFmt && formatSel) formatSel.value = savedFmt;
     const savedGuide = localStorage.getItem('figuredResumeGuidelines');
     if (savedGuide && guidelinesEl) guidelinesEl.value = savedGuide;
   } catch (e) { /* ignore */ }
-  if (formatSel) formatSel.addEventListener('change', () => {
-    try { localStorage.setItem('figuredResumeFormat', formatSel.value); } catch (e) { /* ignore */ }
-  });
   if (guidelinesEl) guidelinesEl.addEventListener('input', () => {
     try { localStorage.setItem('figuredResumeGuidelines', guidelinesEl.value); } catch (e) { /* ignore */ }
   });
@@ -1770,7 +1764,6 @@ function renderResumeAnalysis(a) {
         const goal = (currentProfile || DEMO_PROFILE).goal || '';
         const a = await FigAI.parseResume(data, mediaType, {
           goal,
-          format: formatSel ? formatSel.value : '',
           guidelines: guidelinesEl ? guidelinesEl.value.trim() : '',
           template: resumeTemplate,
         });

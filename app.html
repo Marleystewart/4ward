@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=46" />
+    <link rel="stylesheet" href="./styles.css?v=47" />
   </head>
   <body class="product-body">
     <div class="product-shell">
@@ -312,23 +312,15 @@
           </div>
 
           <div class="resume-format">
-            <div class="resume-format-row">
-              <label for="resumeFormat">Résumé format to check against</label>
-              <select id="resumeFormat" class="resume-select">
-                <option value="Standard reverse-chronological (most common: contact, education, experience, skills; reverse date order)">Standard reverse-chronological</option>
-                <option value="One-page career-center classic (strictly one page, clear section headers, consistent dates, no graphics or columns that break ATS)">Career-center one-page classic</option>
-                <option value="Skills-forward / functional (skills and projects grouped up top, useful when experience is light)">Skills-forward / functional</option>
-              </select>
+            <label class="resume-format-label">Check against your school's format <span>(optional)</span></label>
+            <p class="resume-guidelines-help">Upload your school's résumé template or a sample they recommend, and 4ward checks your résumé against that exact format. Skip this and it uses a standard résumé format.</p>
+            <div class="resume-template-upload">
+              <input type="file" id="resumeTemplateFile" accept="application/pdf,.pdf,.txt,text/plain" hidden />
+              <button type="button" class="secondary-button" id="resumeTemplateBtn">Upload your school's format</button>
+              <small id="resumeTemplateName" class="resume-template-name"></small>
             </div>
             <details class="resume-guidelines">
-              <summary>My school uses a specific format → use it instead</summary>
-              <p class="resume-guidelines-help">Upload your school's résumé template or a sample they recommend, and 4ward checks your résumé against that exact format. This is the most accurate option. You can also paste the written rules instead.</p>
-              <div class="resume-template-upload">
-                <input type="file" id="resumeTemplateFile" accept="application/pdf,.pdf,.txt,text/plain" hidden />
-                <button type="button" class="secondary-button" id="resumeTemplateBtn">Upload your school's format</button>
-                <small id="resumeTemplateName" class="resume-template-name"></small>
-              </div>
-              <p class="resume-or">or paste the rules</p>
+              <summary>or paste the written rules instead</summary>
               <textarea id="resumeGuidelines" class="resume-textarea" rows="4" placeholder="e.g. Trinity College résumé format: Name and contact centered at top. Education first with GPA. Experience in reverse-chronological order with 2-4 bullets each. One page only. No photos or columns."></textarea>
             </details>
           </div>
@@ -499,6 +491,6 @@
     </div>
 
     <script src="./ai.js?v=28"></script>
-    <script src="./script.js?v=39"></script>
+    <script src="./script.js?v=40"></script>
   </body>
 </html>

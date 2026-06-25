@@ -2713,6 +2713,8 @@ h1 {
 }
 .resume-format-row { display: flex; flex-direction: column; gap: 6px; }
 .resume-format-row label { font-size: 12px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; color: var(--sage-deep); }
+.resume-format-label { display: block; font-size: 12px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; color: var(--sage-deep); }
+.resume-format-label span { color: var(--muted); font-weight: 600; text-transform: none; letter-spacing: 0; }
 .resume-select, .resume-textarea {
   width: 100%;
   font: inherit;
