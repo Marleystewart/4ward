@@ -254,13 +254,14 @@ function renderComp(p) {
   const entryEl = document.getElementById('compEntry');
   const noteEl  = document.getElementById('compNote');
   const srcEl   = document.getElementById('compSource');
+  const gdEl    = document.getElementById('compSourceGlassdoor');
   if (entryEl) entryEl.textContent = c.entry;
   if (noteEl)  noteEl.textContent  = c.note;
-  // Link straight to live, BLS-sourced wage data for their goal so they can verify.
-  if (srcEl) {
-    const kw = (p && p.goal) ? p.goal : (p && p.major) ? p.major : '';
-    srcEl.href = 'https://www.mynextmove.org/find/search?keyword=' + encodeURIComponent(kw);
-  }
+  // Link straight to live wage data for their goal so they can verify both sources.
+  const kw = (p && p.goal) ? p.goal : (p && p.major) ? p.major : '';
+  if (srcEl) srcEl.href = 'https://www.mynextmove.org/find/search?keyword=' + encodeURIComponent(kw);
+  // Glassdoor's salary deep-link format is brittle, so route through a search that always resolves.
+  if (gdEl) gdEl.href = 'https://www.google.com/search?q=' + encodeURIComponent('glassdoor ' + kw + ' salary');
 }
 
 // Niche/custom role keywords → domain. Checked BEFORE the broad domain patterns
