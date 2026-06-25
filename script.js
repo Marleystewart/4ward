@@ -215,6 +215,7 @@ const COMP = {
   marketing:  { entry: '$55k–$75k',        note: 'Marketing coordinators start $50–60k. Brand and growth roles at tech companies run higher. Agency pay is lower to start but builds fast.' },
   consulting: { entry: '$90k–$112k',       note: 'MBB (McKinsey, BCG, Bain) starts ~$112k base for undergrad. Big 4 management consulting runs $75–95k.' },
   design:     { entry: '$70k–$95k',        note: 'Junior UX/product designers at tech companies. Agency and startup roles vary. Senior and staff designers reach $130–180k+.' },
+  creative:   { entry: '$45k–$65k',        note: 'Entry animation, illustration, and motion roles run roughly $45–65k. Games and big studios pay more. Your reel and portfolio matter more than pedigree.' },
   founder:    { entry: 'varies',           note: 'Early startup employees (#1–10) typically earn $70–110k + equity. Founders pay themselves last. Upside is in the equity, not the salary.' },
   medicine:   { entry: '$61k → $239k+',   note: 'Residency pays ~$61k. Attending physicians earn $200–350k+ depending on specialty. Medical school debt (~$200k average) is the tradeoff to plan for.' },
   law:        { entry: '$80k–$215k',       note: 'Bimodal market: BigLaw starts at $225k; government and public interest roles run $60–80k. Most lawyers land somewhere in between.' },
@@ -329,6 +330,7 @@ function detectDomain(p) {
   if (/(software|engineer|develop|coding|programmer|computer science)/.test(g)) return 'software';
   if (/(market|brand|advertis)/.test(g)) return 'marketing';
   if (/consult/.test(g)) return 'consulting';
+  if (/(animation|animator|vfx|illustrat|storyboard|concept art|motion graphics|game art|3d art)/.test(g)) return 'creative';
   if (/(design|\bux\b|\bui\b)/.test(g)) return 'design';
   if (/(founder|entrepreneur|startup|ceo)/.test(g)) return 'founder';
   if (/(medic|doctor|nurs|health|pre-med|premed|dental)/.test(g)) return 'medicine';
@@ -1560,6 +1562,40 @@ function renderMentors(term) {
   }).join('');
 }
 
+// Peers mirror mentors: real students who opted in via peer.html, stored in
+// localStorage. Honest empty state until students join. No fake profiles.
+function loadOptedInPeers() {
+  let stored = [];
+  try { stored = JSON.parse(localStorage.getItem('figuredPeers')) || []; } catch { stored = []; }
+  return Array.isArray(stored) ? stored.filter(p => p && p.name) : [];
+}
+
+function renderPeers() {
+  const grid = document.getElementById('peerGrid');
+  if (!grid) return;
+  const peers = loadOptedInPeers();
+  if (peers.length === 0) {
+    grid.innerHTML = `
+      <div class="conn-empty">
+        <h3>No students yet</h3>
+        <p>This fills in as students join 4ward. Be the first on your path: add yourself so others a step behind can reach out to you.</p>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = peers.map((m) => {
+    const linked = Boolean(m.linkedin);
+    return `
+      <article class="product-card mentor-app-card">
+        <div class="mentor-avatar">${esc(initialsFor(m))}</div>
+        <h3>${esc(m.name)}</h3>
+        <p>${esc(m.sub || '')}</p>
+        <span class="opted-badge">✓ On 4ward</span>
+        <small>${esc(m.why || '')}</small>
+        ${linked ? `<a class="opp-link opted" href="${esc(m.linkedin)}" target="_blank" rel="noopener">View profile →</a>` : ''}
+      </article>`;
+  }).join('');
+}
+
 // ---------------------------------------------------------------------------
 // Networking — "Who to meet" archetypes.
 // We never invent a named person. Instead we describe the KIND of person worth
@@ -1777,20 +1813,31 @@ function renderResumeAnalysis(a) {
     reader.onload = async () => {
       const data = isPdf ? (String(reader.result).split(',')[1] || '') : String(reader.result);
       const mediaType = isPdf ? 'application/pdf' : 'text/plain';
-      setStatus('Reading your résumé…', 'loading');
-      try {
-        const goal = (currentProfile || DEMO_PROFILE).goal || '';
-        const a = await FigAI.parseResume(data, mediaType, {
-          goal,
-          guidelines: guidelinesEl ? guidelinesEl.value.trim() : '',
-          template: resumeTemplate,
-        });
+      const goal = (currentProfile || DEMO_PROFILE).goal || '';
+      const opts = {
+        goal,
+        guidelines: guidelinesEl ? guidelinesEl.value.trim() : '',
+        template: resumeTemplate,
+      };
+      setStatus('Reading your résumé. This takes about 15 seconds…', 'loading');
+      // Try once, and on a transient hiccup retry automatically before giving up.
+      let a = null;
+      for (let attempt = 0; attempt < 2 && !a; attempt++) {
+        try {
+          a = await FigAI.parseResume(data, mediaType, opts);
+        } catch (e) {
+          if (attempt === 0) {
+            setStatus('That took a moment. Trying once more…', 'loading');
+          } else {
+            setStatus('That did not go through. Tap "Upload résumé" to try again.', 'error');
+          }
+        }
+      }
+      if (a) {
         try { localStorage.setItem('figuredResumeAnalysis', JSON.stringify(a)); } catch (e) { /* ignore */ }
         try { localStorage.setItem('figuredResumeFeedback', JSON.stringify(a.feedback || [])); } catch (e) { /* ignore */ }
         renderResumeAnalysis(a);
         setStatus('Done. Your breakdown is below.', 'ok');
-      } catch (e) {
-        setStatus('Could not read that résumé: ' + (e.message || e), 'error');
       }
       fileInput.value = '';
     };
@@ -2240,9 +2287,8 @@ function applyProfile(p) {
 
   // Connections tab
   setHref('connLinkedinLink', googleLinkedinURL(term));
-  setHref('peerLinkedinLink', googleLinkedinURL(`${term} student`));
-  setHref('peerHandshakeLink', handshakeURL(term, p));
   renderMentors(term);
+  renderPeers();
   renderNetwork(term, p);
 
   maybeRunAI(p);
@@ -2255,7 +2301,8 @@ const connPanels = document.querySelectorAll('.conn-panel');
 // "Find more on LinkedIn" header button there and show it for Mentors/Peers.
 function syncConnHeaderLink(activeTab) {
   const link = document.getElementById('connLinkedinLink');
-  if (link) link.style.display = activeTab === 'meet' ? 'none' : '';
+  // Hidden on the reference tabs (Who to meet, Peers); only Mentors uses it.
+  if (link) link.style.display = (activeTab === 'meet' || activeTab === 'peers') ? 'none' : '';
 }
 connTabs.forEach(tab => {
   tab.addEventListener('click', () => {
@@ -2324,6 +2371,7 @@ if (document.querySelector('.product-main')) {
     currentScores = computeScores(DEMO_PROFILE);
     renderNetwork(DEMO_PROFILE.goal, DEMO_PROFILE);
     renderComp(DEMO_PROFILE);
+    renderPeers();
     const nudge = document.getElementById('onboardingNudge');
     if (nudge) nudge.style.display = 'flex';
     setAiPill(aiAvailable() && FigAI.hasKey() ? 'idle' : 'off');

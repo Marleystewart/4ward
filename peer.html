@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4ward | Add yourself for other students</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=51" />
+  </head>
+  <body>
+    <div class="onboarding-shell">
+      <header class="onboarding-header">
+        <a class="brand" href="./index.html">
+          <img class="brand-logo" src="./assets/logo.png" alt="4ward" />
+        </a>
+        <a class="ghost-button" href="./app.html">Back to app</a>
+      </header>
+
+      <main class="onboarding-main">
+        <!-- Form -->
+        <div class="ob-step active" id="peerForm">
+          <p class="eyebrow">For students</p>
+          <h2>Help a student a step behind you.</h2>
+          <p class="ob-desc">Students exploring your path see your card in Connections and can reach out. Takes a minute. You decide what you share.</p>
+          <div class="ob-fields">
+            <label class="ob-label">
+              Full name
+              <input class="ob-input" type="text" id="pName" placeholder="Jordan Lee" autocomplete="name" />
+            </label>
+            <div class="ob-row">
+              <label class="ob-label">
+                School &amp; year
+                <input class="ob-input" type="text" id="pSchoolYear" placeholder="Trinity College · Senior" />
+              </label>
+              <label class="ob-label">
+                Path or field
+                <input class="ob-input" type="text" id="pField" placeholder="Product management" />
+              </label>
+            </div>
+            <label class="ob-label">
+              What you've done that others can learn from
+              <span class="ob-hint">One or two honest sentences. Internships, projects, how you got there.</span>
+              <textarea class="ob-input ob-textarea" id="pWhy" rows="3" placeholder="Interned at a startup as a PM last summer. Happy to share how I found it and what the recruiting timeline looked like."></textarea>
+            </label>
+            <label class="ob-label">
+              LinkedIn profile URL <span class="ob-hint">Optional. If you add it, students can tap straight to your profile.</span>
+              <input class="ob-input" type="url" id="pLinkedin" placeholder="https://www.linkedin.com/in/your-handle" autocomplete="url" />
+            </label>
+            <label class="ob-consent">
+              <input type="checkbox" id="pConsent" />
+              <span>I agree that students on 4ward can see my card and reach out to me.</span>
+            </label>
+          </div>
+          <p class="form-error" id="pError" hidden></p>
+          <div class="ob-actions">
+            <a class="ghost-button" href="./app.html">Cancel</a>
+            <button class="primary-button" id="pSubmit" type="button">Add myself</button>
+          </div>
+        </div>
+
+        <!-- Success -->
+        <div class="ob-step" id="peerSuccess">
+          <p class="eyebrow">You're in</p>
+          <h2 id="peerSuccessHeadline">You're on 4ward.</h2>
+          <p class="ob-desc">Your card is live in students' Connections. Here's how it looks to them:</p>
+          <div class="mentor-preview" id="peerPreview"></div>
+          <div class="ob-actions">
+            <a class="primary-button" href="./app.html">See it in the app →</a>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script src="./peer.js?v=1"></script>
+  </body>
+</html>

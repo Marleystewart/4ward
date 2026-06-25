@@ -376,7 +376,7 @@ Voice rules: honest and encouraging, never harsh, no numeric scores or letter gr
       // faster than Sonnet on this task, far more capacity headroom, and
       // dramatically cheaper. Voice rules still apply via the system prompt.
       model: HAIKU,
-      max_tokens: 6000,
+      max_tokens: 3500,
       system: [{ type: 'text', text: RESUME_SYSTEM, cache_control: { type: 'ephemeral' } }],
       messages: [{ role: 'user', content }],
       output_config: { format: { type: 'json_schema', schema: RESUME_SCHEMA } },
