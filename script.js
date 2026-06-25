@@ -937,12 +937,18 @@ function renderTodayMove(actions) {
 
 function renderAppPlan(plan) {
   if (!plan) return;
-  const map = { d30: 'plan30', d60: 'plan60', d90: 'plan90' };
-  Object.entries(map).forEach(([key, id]) => {
+  // Each month is shown as its weeks: d30 = weeks 1-4, d60 = 5-8, d90 = 9-12.
+  const phases = [
+    { key: 'd30', id: 'plan30', start: 1 },
+    { key: 'd60', id: 'plan60', start: 5 },
+    { key: 'd90', id: 'plan90', start: 9 },
+  ];
+  phases.forEach(({ key, id, start }) => {
     const el = document.getElementById(id);
     if (!el || !plan[key]) return;
-    el.innerHTML = plan[key].map((item) => `
+    el.innerHTML = plan[key].map((item, j) => `
       <div class="plan-mini">
+        <span class="plan-week">Week ${start + j}</span>
         <p>${esc(item.title)}</p>
         <small>${esc(item.detail)}</small>
       </div>
