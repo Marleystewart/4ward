@@ -1910,6 +1910,64 @@ function addOutreach(name, role) {
 })();
 
 // ---------------------------------------------------------------------------
+// Advisor loop. After a student meets their advisor, they capture the advice
+// here; 4ward keeps it as actionable follow-ups. Closes the loop the advisors
+// asked for: prepare before, track and act after. Saved in localStorage.
+// ---------------------------------------------------------------------------
+function loadAdvisorNotes() {
+  try { const v = JSON.parse(localStorage.getItem('figuredAdvisorNotes')); return Array.isArray(v) ? v : []; }
+  catch { return []; }
+}
+function saveAdvisorNotes(list) {
+  try { localStorage.setItem('figuredAdvisorNotes', JSON.stringify(list)); } catch (e) { /* ignore */ }
+}
+function renderAdvisorNotes() {
+  const el = document.getElementById('advisorNoteList');
+  if (!el) return;
+  const list = loadAdvisorNotes();
+  if (!list.length) {
+    el.innerHTML = '<p class="advisor-after-empty">Nothing captured yet. After your next appointment, add what they suggested.</p>';
+    return;
+  }
+  el.innerHTML = list.map((n) => `
+    <label class="advisor-note${n.done ? ' done' : ''}" data-id="${esc(n.id)}">
+      <input type="checkbox" data-advisor-done="${esc(n.id)}"${n.done ? ' checked' : ''} />
+      <span>${esc(n.text)}</span>
+      <button class="advisor-note-remove" type="button" data-advisor-remove="${esc(n.id)}" aria-label="Remove">&times;</button>
+    </label>`).join('');
+}
+(function initAdvisorNotes() {
+  const input = document.getElementById('advisorNoteInput');
+  const addBtn = document.getElementById('advisorNoteAdd');
+  if (!input || !addBtn) return;
+  const submit = () => {
+    const t = input.value.trim();
+    if (!t) return;
+    const list = loadAdvisorNotes();
+    list.unshift({ id: 'a' + Date.now() + Math.random().toString(36).slice(2, 5), text: t, done: false });
+    saveAdvisorNotes(list);
+    input.value = '';
+    renderAdvisorNotes();
+  };
+  addBtn.addEventListener('click', submit);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit(); });
+  document.addEventListener('change', (e) => {
+    const cb = e.target.closest('[data-advisor-done]');
+    if (!cb) return;
+    const list = loadAdvisorNotes();
+    const n = list.find((x) => x.id === cb.dataset.advisorDone);
+    if (n) { n.done = cb.checked; saveAdvisorNotes(list); renderAdvisorNotes(); }
+  });
+  document.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-advisor-remove]');
+    if (!rm) return;
+    saveAdvisorNotes(loadAdvisorNotes().filter((x) => x.id !== rm.dataset.advisorRemove));
+    renderAdvisorNotes();
+  });
+  renderAdvisorNotes();
+})();
+
+// ---------------------------------------------------------------------------
 // Explore tree. A discovery map: how a broad field fans out into specific
 // niches (the "leaves") a student may never have heard of. Not a promotion
 // ladder. Keyed off detectDomain with a generic fallback.

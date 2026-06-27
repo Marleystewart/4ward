@@ -315,6 +315,7 @@ const requestedStage = searchParams.get('stage');
   fill('enjoys', existing.enjoys);
   fill('strengths', existing.strengths);
   fill('drains', existing.drains);
+  fill('priorities', existing.priorities);
   fill('classesLiked', existing.classesLiked);
   fill('collegeInterest', existing.collegeInterest);
   fill('priorityConcern', existing.priorityConcern);
@@ -387,6 +388,7 @@ nextBtn.addEventListener('click', () => {
     enjoys: document.getElementById('enjoys')?.value.trim() || '',
     strengths: document.getElementById('strengths')?.value.trim() || '',
     drains: document.getElementById('drains')?.value.trim() || '',
+    priorities: document.getElementById('priorities')?.value.trim() || '',
     classesLiked: document.getElementById('classesLiked')?.value.trim() || '',
     collegeInterest: document.getElementById('collegeInterest')?.value || '',
     priorityConcern: document.getElementById('priorityConcern')?.value || '',
@@ -683,7 +685,7 @@ function startBuildGame() {
   async function runParse() {
     if (!pending) return;
     keyAsk.hidden = true;
-    setStatus('Reading your résumé…', 'loading');
+    setStatus('Reading your résumé in depth. This takes a moment, the full review will be waiting in your dashboard.', 'loading');
     feedbackEl.hidden = true;
     try {
       const goal = document.getElementById('goal')?.value.trim() || '';

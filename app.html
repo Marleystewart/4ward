@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=57" />
+    <link rel="stylesheet" href="./styles.css?v=58" />
   </head>
   <body class="product-body">
     <div class="product-shell">
@@ -350,6 +350,7 @@
               <span class="resume-eyebrow">Résumé review</span>
               <h2>An honest read on your résumé.</h2>
               <p class="resume-intro">Upload your résumé and 4ward reads it the way a recruiter and an ATS would, then shows exactly what to strengthen. Bring the fixes to your advisor to refine together.</p>
+              <p class="privacy-note"><strong>Your data stays yours.</strong> Your résumé and profile are stored only in your browser, never sold, and never shared without your permission.</p>
             </div>
             <div class="resume-upload-box">
               <input type="file" id="appResumeFile" accept="application/pdf,.pdf,.txt,text/plain" hidden />
@@ -435,6 +436,17 @@
                 <li>Does my outreach message land the right way?</li>
               </ul>
               <p class="advisor-prep-foot">Showing up with specific questions makes a 30-minute appointment go much further.</p>
+
+              <div class="advisor-after">
+                <strong>After your appointment</strong>
+                <p class="advisor-after-help">Jot down what your advisor suggested. 4ward keeps it here so you can act on it and follow up.</p>
+                <div class="advisor-after-add">
+                  <input class="advisor-after-input" id="advisorNoteInput" type="text" placeholder="e.g. Apply to the Hartford finance fellowship by Nov 1" />
+                  <button class="mini-button" id="advisorNoteAdd" type="button">Add</button>
+                </div>
+                <div class="advisor-after-list" id="advisorNoteList"></div>
+                <p class="advisor-coming-soon">🔒 Inviting your advisor to see your progress directly — <span>coming soon</span></p>
+              </div>
             </article>
           </div>
 
@@ -530,7 +542,7 @@
       </div>
     </div>
 
-    <script src="./ai.js?v=34"></script>
-    <script src="./script.js?v=52"></script>
+    <script src="./ai.js?v=35"></script>
+    <script src="./script.js?v=53"></script>
   </body>
 </html>
