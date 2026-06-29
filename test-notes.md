@@ -42,3 +42,17 @@ Triage of findings from the June 28 case-study run (12 profiles). Status legend:
   by default, deep rebuild on demand. (selectedTrackRole / activeDirection in script.js.)
 - 🅿️ **Salary / tree "does this look right?"** (Aaliyah, Hana, Wei) — review judgments,
   not bugs.
+
+## Case study notes pt 2 (June 29 batch)
+- ✅ **Reginald couldn't load** ("claude-sonnet-4-6 did not finish within 43s") — Vercel
+  Hobby 60s timeout under Anthropic overload; both Opus + Sonnet net ran long. Fixed with
+  a silent client auto-retry on transient errors (maybeRunAI / isTransientAiError); kept
+  Opus effort high (advisor quality). Pro upgrade later removes the timeout entirely.
+- ✅ **Opportunities still broad** (Theo "Government", recurring) — searchTerm chopped AI
+  roles at "/"; new cleanRoleTitle keeps the specific role ("Public Sector Auditor").
+- 🅿️ **Bianca: no "back to a previously explored direction"** — rebuild re-roots the plan;
+  "Back to my goal" only returns to the original. Multi-slot cache makes re-selecting free,
+  but there's no breadcrumb UI. Nice-to-have nav enhancement.
+- 🅿️ **Camille "add a marketing vs business course"** — minor AI wording nuance.
+- 🅿️ **Andre tone / "what about the tech part"** — pick-direction/rebuild covers the second
+  path; tone is a review judgment.
