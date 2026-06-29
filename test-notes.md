@@ -11,10 +11,12 @@ Triage of findings from the June 28 case-study run (12 profiles). Status legend:
 - ✅ **"~30 sec" loading label dishonest** (Wei 37s, Ethan 43s, Marcus 50s, Aaliyah 37s,
   Hana 37s, Olivia 33s) — copy now "up to a min" / "30 to 60 seconds"; progress bar
   creep stretched 26s → 55s to match real load times.
-- ❓ **Stale trajectory on reload** (Darius) — "reloaded, still talked about sales."
-  Ambiguous: cache returning same content for same profile (by design) vs. checklist/
-  checked-state persisting across regen vs. Opus deterministically re-suggesting sales.
-  NEEDS Darius before/after trajectory screenshots to pin down.
+- ✅ **"Stale trajectory on reload"** (Darius) — DIAGNOSED: not a cache bug. Screenshots
+  showed the trajectory genuinely regenerates (sales → real estate → financial advisor);
+  all are sales-adjacent so it *reads* as "still sales." Root cause = the vague goal
+  ("something that pays well") gives the AI nothing to anchor, so it reshuffles. Real fix
+  is the parked pick-your-direction feature (also solves Priya + Sofia). Interim shipped:
+  one-time bypassable vague-goal nudge in onboarding (`looksVagueGoal` + `vagueGoalWarned`).
 - ✅ **Extra bubble under Trajectories** (Wei) — same root cause as Jordan's JUNK card:
   the AI emitted a 4th malformed/empty track that rendered as a blank bubble.
   `sanitizeTracks()` drops empty/junk rows, so this is covered by the same fix.

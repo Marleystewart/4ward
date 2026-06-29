@@ -339,6 +339,17 @@ function looksLikeGibberish(text) {
   return false;
 }
 
+// A real goal, but too vague to anchor a trajectory ("something that pays well",
+// "not sure", "good job"). The AI has nothing to aim at, so it reshuffles a
+// different path on every regen. We warn ONCE so the student can sharpen it, but
+// it's fully bypassable — submitting again goes through unchanged.
+let vagueGoalWarned = false;
+function looksVagueGoal(text) {
+  const t = (text || '').trim().toLowerCase();
+  if (!t) return false; // empty is handled separately
+  return /(pays?\s+well|well[-\s]?pay|good\s+(money|pay|job|career|salary)|high[-\s]?pay|make\s+(money|bank|a\s+lot)|lots?\s+of\s+money|a\s+lot\s+of\s+money|be\s+rich|get\s+rich|wealthy|financially\s+(free|stable|secure)|be\s+successful|good\s+life|^\s*anything\s*$|whatever|not\s+sure|idk|don'?t\s+know|dont\s+know|no\s+idea|figure\s+(it|things)\s+out|undecided)/.test(t);
+}
+
 function firstName() {
   const v = (document.getElementById('firstName').value || '').trim();
   return v ? v.split(/\s+/)[0] : '';
@@ -475,6 +486,18 @@ nextBtn.addEventListener('click', () => {
   if (looksLikeGibberish(goalVal)) {
     if (goalError) {
       goalError.textContent = "That doesn't look like a real goal yet. Tell us honestly where you want to go — even a rough direction works.";
+      goalError.hidden = false;
+    }
+    goalEl?.focus();
+    return;
+  }
+  // One-time, bypassable nudge: a vague goal gives a vague (reshuffling)
+  // trajectory. Warn once so they can sharpen it; if they submit again as-is,
+  // we let them through.
+  if (!vagueGoalWarned && looksVagueGoal(goalVal)) {
+    vagueGoalWarned = true;
+    if (goalError) {
+      goalError.textContent = "That's a bit broad, so your trajectory will be too. Add a field or role if you have one (even \"sales\" or \"marketing\") for a sharper path. Prefer to keep it open? Just hit build again.";
       goalError.hidden = false;
     }
     goalEl?.focus();
