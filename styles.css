@@ -3151,11 +3151,85 @@ h1 {
   border: 1px solid var(--line);
   border-radius: 14px;
   background: #f8f6f0;
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.track-item:hover {
+  border-color: rgba(47, 90, 79, 0.35);
+  transform: translateY(-1px);
+}
+
+.track-item:focus-visible {
+  outline: none;
+  border-color: var(--sage-deep);
+  box-shadow: 0 0 0 3px rgba(47, 90, 79, 0.16);
+}
+
+/* The focused path: a clear sage ring + check so the student sees what's driving
+   their Opportunities and pay. */
+.track-item.selected {
+  border-color: var(--sage-deep);
+  box-shadow: 0 0 0 2px rgba(47, 90, 79, 0.5);
+}
+
+.track-item.selected .track-label::after {
+  content: " · focused";
+  color: var(--sage-deep);
 }
 
 .track-item.primary {
   background: var(--teal-soft);
   border-color: rgba(47, 90, 79, 0.2);
+}
+
+.track-rebuild {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--sage-deep);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: filter 140ms ease;
+}
+
+.track-rebuild:hover { filter: brightness(1.08); }
+
+.tracks-hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 2px 0 12px;
+}
+
+.tracks-exploring {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--teal-soft);
+  border: 1px solid rgba(47, 90, 79, 0.22);
+  font-size: 12.5px;
+  color: var(--sage-deep);
+}
+
+.tracks-reset {
+  border: 0;
+  background: transparent;
+  color: var(--sage-deep);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 750;
+  text-decoration: underline;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
 .track-label {

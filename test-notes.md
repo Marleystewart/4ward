@@ -34,8 +34,11 @@ Triage of findings from the June 28 case-study run (12 profiles). Status legend:
   Related to the parked Sofia "pick active track" feature.
 
 ## Bigger / parked
-- 🅿️ **Which trajectory drives checklist/opportunities?** (Sofia) — when multiple paths
-  and student prefers one (family vs. acute-care nurse), actions/opps follow only one.
-  Real fix = let student pick an active track; everything keys off it. Post-launch feature.
+- ✅ **Pick your direction** (Sofia + Priya + Darius) — path cards are now selectable.
+  Tapping one re-points Opportunities + pay + networking to it instantly (light switch,
+  no AI). A selected non-primary card shows "Rebuild my plan around this →" which
+  regenerates the whole trajectory toward it (one AI call, cached per direction); an
+  "Exploring: <role> · Back to my goal" banner lets them revert. Hybrid = cheap switch
+  by default, deep rebuild on demand. (selectedTrackRole / activeDirection in script.js.)
 - 🅿️ **Salary / tree "does this look right?"** (Aaliyah, Hana, Wei) — review judgments,
   not bugs.

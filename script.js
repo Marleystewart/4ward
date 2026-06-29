@@ -251,17 +251,18 @@ const ENTRY_TITLE = {
   generic:    '',
 };
 
-function renderComp(p, aiPay) {
-  // Prefer the AI-generated, goal-accurate pay; fall back to the static table.
-  const c = (aiPay && aiPay.entry) ? aiPay : (COMP[detectDomain(p)] || COMP.generic);
+function renderComp(p, aiPay, dir) {
+  // `dir` = a focused non-primary path. When present, the AI pay (which is for
+  // the primary goal) doesn't apply, so use the static table for that direction.
+  const c = (!dir && aiPay && aiPay.entry) ? aiPay : (COMP[detectDomain(p, dir || '')] || COMP.generic);
   const entryEl = document.getElementById('compEntry');
   const noteEl  = document.getElementById('compNote');
   const srcEl   = document.getElementById('compSource');
   const gdEl    = document.getElementById('compSourceGlassdoor');
   if (entryEl) entryEl.textContent = c.entry;
   if (noteEl)  noteEl.textContent  = c.note;
-  // Link straight to live wage data for their goal so they can verify both sources.
-  const kw = (p && p.goal) ? p.goal : (p && p.major) ? p.major : '';
+  // Link straight to live wage data for the focused path so they can verify.
+  const kw = dir || ((p && p.goal) ? p.goal : (p && p.major) ? p.major : '');
   if (srcEl) srcEl.href = 'https://www.mynextmove.org/find/search?keyword=' + encodeURIComponent(kw);
   // Glassdoor's salary deep-link format is brittle, so route through a search that always resolves.
   if (gdEl) gdEl.href = 'https://www.google.com/search?q=' + encodeURIComponent('glassdoor ' + kw + ' salary');
@@ -862,14 +863,140 @@ function renderTracks(tracks) {
   const list = document.getElementById('tracksList');
   if (!list || !tracks) return;
   tracks = sanitizeTracks(tracks);
-  list.innerHTML = tracks.map((t, i) => `
-    <div class="track-item${t.primary || i === 0 ? ' primary' : ''}">
+  if (!tracks.length) return;
+
+  // Which card is the active focus? Honor a remembered/clicked pick; otherwise
+  // default to the primary but DON'T treat that as an explicit selection (so a
+  // vague goal still stays neutral pre-AI). selectedTrackRole stays null unless
+  // the student actually chose something.
+  let sel = 0;
+  if (selectedTrackRole) {
+    const idx = tracks.findIndex((t) => t.role === selectedTrackRole);
+    if (idx >= 0) { sel = idx; selectedTrackRole = tracks[idx].role; }
+    else { selectedTrackRole = null; } // remembered pick no longer exists
+  }
+
+  list._tracks = tracks;
+  list.innerHTML = tracks.map((t, i) => {
+    const selected = i === sel;
+    const rebuild = (selected && i !== 0)
+      ? '<button type="button" class="track-rebuild" data-rebuild>Rebuild my plan around this →</button>'
+      : '';
+    return `
+    <div class="track-item${i === 0 ? ' primary' : ''}${selected ? ' selected' : ''}" role="button" tabindex="0" aria-pressed="${selected}" data-track-index="${i}">
       <div class="track-label">${esc(t.label)}</div>
       <h4>${esc(t.role)}</h4>
       <p>${esc(t.reason)}</p>
-    </div>
-  `).join('');
+      ${rebuild}
+    </div>`;
+  }).join('');
+
+  updateExploringBanner();
 }
+
+// Small banner shown when the plan has been rebuilt around a non-goal direction,
+// so the student knows they're exploring and can get back to their stated goal.
+function updateExploringBanner() {
+  const head = document.querySelector('.tracks-head');
+  if (!head) return;
+  let banner = document.getElementById('tracksExploring');
+  if (!activeDirection) { if (banner) banner.remove(); return; }
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'tracksExploring';
+    banner.className = 'tracks-exploring';
+    head.insertAdjacentElement('afterend', banner);
+  }
+  banner.innerHTML = `<span>Exploring: <strong>${esc(activeDirection)}</strong></span>` +
+    '<button type="button" class="tracks-reset" data-reset>Back to my goal</button>';
+}
+
+// Light switch: focus a path. Re-points Opportunities / pay / networking to it
+// instantly; no AI call. The rebuild button (non-primary only) does the deep one.
+function selectTrack(i, tracks) {
+  const t = tracks && tracks[i];
+  if (!t) return;
+  selectedTrackRole = t.role;
+  try { localStorage.setItem('figuredSelectedTrack', t.role); } catch (e) { /* ignore */ }
+  const list = document.getElementById('tracksList');
+  if (list) {
+    list.querySelectorAll('[data-track-index]').forEach((el) => {
+      const on = Number(el.dataset.trackIndex) === i;
+      el.classList.toggle('selected', on);
+      el.setAttribute('aria-pressed', on ? 'true' : 'false');
+      let btn = el.querySelector('[data-rebuild]');
+      if (on && i !== 0 && !btn) {
+        btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'track-rebuild';
+        btn.setAttribute('data-rebuild', '');
+        btn.textContent = 'Rebuild my plan around this →';
+        el.appendChild(btn);
+      } else if ((!on || i === 0) && btn) {
+        btn.remove();
+      }
+    });
+  }
+  repointDirectionTargets(currentProfile);
+}
+
+// Deep switch: regenerate the entire trajectory around the focused path.
+function rebuildAroundSelected() {
+  if (!selectedTrackRole || !currentProfile) return;
+  activeDirection = selectedTrackRole;
+  try {
+    localStorage.setItem('figuredActiveDirection', activeDirection);
+    localStorage.removeItem('figuredSelectedTrack');
+  } catch (e) { /* ignore */ }
+  selectedTrackRole = null; // the rebuilt plan's primary becomes the new focus
+  maybeRunAI(currentProfile, true);
+}
+
+// Drop the explored direction and rebuild around the student's stated goal.
+function resetDirection() {
+  if (!activeDirection) return;
+  activeDirection = '';
+  try {
+    localStorage.removeItem('figuredActiveDirection');
+    localStorage.removeItem('figuredSelectedTrack');
+  } catch (e) { /* ignore */ }
+  selectedTrackRole = null;
+  maybeRunAI(currentProfile, true);
+}
+
+// Re-point everything that should follow the focused path (cheap, no AI).
+function repointDirectionTargets(p) {
+  p = p || currentProfile;
+  if (!p) return;
+  renderOpportunities(p);
+  const primaryRole = aiContent && aiContent.tracks && aiContent.tracks[0] && aiContent.tracks[0].role;
+  const isPrimary = !selectedTrackRole || (primaryRole && selectedTrackRole === primaryRole);
+  renderComp(p, isPrimary ? (aiContent && aiContent.pay) : null, isPrimary ? '' : selectedTrackRole);
+}
+
+// Wire path-card clicks/keyboard once (the cards themselves are re-rendered).
+(function initTrackSelection() {
+  const list = document.getElementById('tracksList');
+  if (!list) return;
+  const activate = (target) => {
+    const card = target.closest('[data-track-index]');
+    if (!card) return;
+    selectTrack(Number(card.dataset.trackIndex), list._tracks || []);
+  };
+  list.addEventListener('click', (e) => {
+    if (e.target.closest('[data-rebuild]')) { e.stopPropagation(); rebuildAroundSelected(); return; }
+    activate(e.target);
+  });
+  list.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (e.target.closest('[data-rebuild]')) { e.preventDefault(); rebuildAroundSelected(); return; }
+    if (e.target.closest('[data-track-index]')) { e.preventDefault(); activate(e.target); }
+  });
+  // The "Back to my goal" reset lives just outside the list (after the head).
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('[data-reset]')) resetDirection();
+  });
+})();
 
 function renderGapCards(gaps) {
   if (!gaps) return;
@@ -1101,10 +1228,10 @@ function applyContent(c, opts = {}) {
   renderTimeline(c.timeline);
   renderExploreTree(currentProfile || DEMO_PROFILE, c.explore);
   renderComp(currentProfile || DEMO_PROFILE, c.pay);
-  // The AI trajectory just landed — re-point Opportunities + networking at where
-  // it actually leans (its primary track), so they get specific and stay useful
+  // The AI trajectory just landed — re-point Opportunities + pay + networking at
+  // the focused path (or the new primary), so they get specific and stay useful
   // even when the typed goal was vague.
-  if (opts.refined && currentProfile) renderOpportunities(currentProfile);
+  if (opts.refined && currentProfile) repointDirectionTargets(currentProfile);
   // When the detailed Claude version replaces the instant draft, fade the hero
   // cards in so the upgrade lands smoothly instead of snapping.
   if (opts.refined) {
@@ -2283,6 +2410,12 @@ function renderResumeAnalysis(a) {
 let currentProfile = null;
 let currentScores = null;
 let aiContent = null;
+// "Pick your direction": which path card the student is focused on. Drives
+// Opportunities / pay / networking instantly (light switch). null = the primary
+// the plan was generated for. activeDirection is the deeper state: a goal the
+// student asked us to *rebuild the whole plan* around (persists across reloads).
+let selectedTrackRole = (function () { try { return localStorage.getItem('figuredSelectedTrack') || null; } catch (e) { return null; } })();
+let activeDirection = (function () { try { return localStorage.getItem('figuredActiveDirection') || ''; } catch (e) { return ''; } })();
 
 const DEMO_PROFILE = {
   firstName: 'Alex', year: 'Junior', major: 'Business Administration',
@@ -2313,7 +2446,10 @@ function setAiPill(state, detail) {
 
 async function maybeRunAI(profile, force = false) {
   if (!aiAvailable() || !FigAI.hasKey()) { setAiPill('off'); return; }
-  const h = hashProfile(profile);
+  // When the student has rebuilt around a path, generate for that direction
+  // (overriding the goal) and cache it under its own hash, so reloads are stable.
+  const genProfile = activeDirection ? Object.assign({}, profile, { goal: activeDirection }) : profile;
+  const h = hashProfile(genProfile);
   const cached = readJSON('figuredAiContent');
   if (!force && cached && cached.hash === h && cached.data) {
     aiContent = cached.data;
@@ -2328,7 +2464,7 @@ async function maybeRunAI(profile, force = false) {
   hideRefiningError();
   showRefiningCue();
   try {
-    const data = await FigAI.generateInsights(profile);
+    const data = await FigAI.generateInsights(genProfile);
     aiContent = data;
     localStorage.setItem('figuredAiContent', JSON.stringify({ hash: h, data }));
     applyContent(data, { refined: true });
@@ -2679,8 +2815,7 @@ function applyProfile(p) {
   }
 
   applyContent(fallbackContent(p, s));
-  renderComp(p);
-  renderOpportunities(p);
+  repointDirectionTargets(p);
   renderPeers();
   renderExploreTree(p);
 
@@ -2702,6 +2837,8 @@ const FIELD_LABEL = {
 // goal is vague ("something that pays well") — so Opportunities are never junk.
 // Falls back to the raw goal when no AI trajectory exists yet.
 function trajectoryDirection(p) {
+  // An explicit pick wins — that's the whole point of "focus this path".
+  if (selectedTrackRole && String(selectedTrackRole).trim().length >= 3) return selectedTrackRole;
   try {
     const tracks = (typeof aiContent !== 'undefined' && aiContent && aiContent.tracks) || [];
     const primary = tracks.find((t) => t && (t.primary || /your goal/i.test(t.label || ''))) || tracks[0];
