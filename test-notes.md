@@ -43,6 +43,14 @@ Triage of findings from the June 28 case-study run (12 profiles). Status legend:
 - 🅿️ **Salary / tree "does this look right?"** (Aaliyah, Hana, Wei) — review judgments,
   not bugs.
 
+## Live glitch (mid-call)
+- ✅ **Résumé uploaded in onboarding missing from dashboard Résumé tab** (had to re-upload).
+  Two causes: (1) the fresh-build cleanup wiped figuredResumeAnalysis even when the student
+  uploaded one in the SAME session — now guarded by resumeUploadedThisSession; (2) the
+  résumé parse is a ~10s+ Opus call but the build overlay redirected after ~3.4s, losing an
+  in-flight parse to navigation — "Build My Path" now waits on resumeParsePromise (capped
+  22s) before redirecting. (onboarding.js)
+
 ## Case study notes pt 2 (June 29 batch)
 - ✅ **Reginald couldn't load** ("claude-sonnet-4-6 did not finish within 43s") — Vercel
   Hobby 60s timeout under Anthropic overload; both Opus + Sonnet net ran long. Fixed with

@@ -9,6 +9,14 @@ let current = 1;
 let schoolStage = 'college';
 let didPrefillStage = false;
 let stageChosen = false;
+// True once the student uploads + parses a résumé during THIS onboarding session.
+// Build-time cleanup clears the previous student's résumé analysis, but must not
+// wipe one the current student just uploaded in the same flow.
+let resumeUploadedThisSession = false;
+// The in-flight résumé parse promise (an Opus call, ~10s+). "Build My Path" waits
+// on this before redirecting, so a résumé uploaded right before building is saved
+// and ready in the dashboard Résumé tab instead of lost to the page navigation.
+let resumeParsePromise = null;
 
 const HIGH_SCHOOL_SUBJECTS = [
   'Art and design',
@@ -550,9 +558,14 @@ nextBtn.addEventListener('click', () => {
   if (ONBOARD_MODE !== 'edit') {
     localStorage.removeItem('figuredWins');
     localStorage.removeItem('figuredChecked');
-    localStorage.removeItem('figuredResumeFeedback');
-    localStorage.removeItem('figuredResumeAnalysis');
     localStorage.removeItem('figuredResumeGuidelines');
+    // Only drop résumé analysis/feedback if the student did NOT upload a résumé
+    // in this session. Otherwise we'd wipe the one they just uploaded here and
+    // they'd reach the dashboard Résumé tab empty (real bug a user hit mid-call).
+    if (!resumeUploadedThisSession) {
+      localStorage.removeItem('figuredResumeFeedback');
+      localStorage.removeItem('figuredResumeAnalysis');
+    }
   }
 
   // A short, personal "building your trajectory" moment before the handoff
@@ -599,8 +612,23 @@ nextBtn.addEventListener('click', () => {
   // screen is just a short, snappy branded beat with Path Dash, not a place we
   // wait on a ~30s API call. Generating only on the dashboard means a single
   // call, no abandoned request, and no duplicate generation.
+  // Redirect after the short branded beat — but if a résumé is still being read,
+  // hold the build screen until that parse finishes (capped) so its analysis is
+  // saved before we leave the page. Otherwise a résumé uploaded seconds before
+  // building is lost to the navigation and the dashboard Résumé tab opens empty.
   const BUILD_SHOW = overlay ? 3400 : 0;
-  setTimeout(goApp, BUILD_SHOW);
+  const minShow = new Promise((r) => setTimeout(r, BUILD_SHOW));
+  const waits = [minShow];
+  if (resumeParsePromise) {
+    const sub = document.getElementById('buildingSub');
+    if (sub) sub.textContent = 'Finishing your résumé review…';
+    // Hard cap so a slow/stuck parse can never hang the build screen forever.
+    waits.push(Promise.race([
+      resumeParsePromise.catch(() => {}),
+      new Promise((r) => setTimeout(r, 22000)),
+    ]));
+  }
+  Promise.all(waits).then(goApp);
 });
 
 // djb2 hash, identical to script.js hashProfile — must match so the dashboard
@@ -860,6 +888,8 @@ function startBuildGame() {
       // Save the full analysis so it flows straight into the dashboard Résumé tab.
       try { localStorage.setItem('figuredResumeAnalysis', JSON.stringify(data)); } catch (e) { /* ignore */ }
       try { localStorage.setItem('figuredResumeFeedback', JSON.stringify(data.feedback || [])); } catch (e) { /* ignore */ }
+      // Mark it so the build-time cleanup doesn't wipe the résumé just uploaded here.
+      resumeUploadedThisSession = true;
       const filled = [data.experience, data.activities, data.skills].reduce((n, a) => n + (a ? a.length : 0), 0);
       setStatus(`Done — read your résumé and filled in ${filled} item${filled === 1 ? '' : 's'}. Edit anything below.`, 'ok');
       renderFeedback();
@@ -887,7 +917,7 @@ function startBuildGame() {
         document.getElementById('resumeKey').focus();
         return;
       }
-      runParse();
+      resumeParsePromise = runParse();
     };
     if (isPdf) reader.readAsDataURL(file); else reader.readAsText(file);
   });
@@ -896,6 +926,6 @@ function startBuildGame() {
     const v = document.getElementById('resumeKey').value.trim();
     if (!v) { document.getElementById('resumeKey').focus(); return; }
     FigAI.setKey(v);
-    runParse();
+    resumeParsePromise = runParse();
   });
 })();
