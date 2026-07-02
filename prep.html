@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4ward | Advisor meeting prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --canvas: #f6f4ee; --paper: #fffdf8; --paper-soft: #f1eee6; --cream: #fdf6e8;
+      --ink: #17211f; --muted: #65716b; --sage: #6f8f7a; --sage-soft: #e4eee8;
+      --sage-mid: #cfe6d6; --sage-deep: #2f5a4f; --gold-soft: #e9d7aa; --terra: #8a4a2f;
+      --line: rgba(47, 90, 79, 0.14); --shadow: 0 24px 80px rgba(50, 63, 56, 0.11);
+      --radius: 20px; --radius-sm: 12px;
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--canvas); color: var(--ink); -webkit-font-smoothing: antialiased; line-height: 1.55; }
+
+    .toolbar { max-width: 820px; margin: 0 auto; padding: 22px 24px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .toolbar a { color: var(--sage-deep); font-weight: 600; font-size: 15px; text-decoration: none; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--sage-deep); color: #fff; border: none; font-family: inherit; font-weight: 600; font-size: 15px; padding: 12px 20px; border-radius: 9999px; cursor: pointer; }
+    .btn:hover { background: #294f49; }
+
+    .sheet { max-width: 820px; margin: 18px auto 60px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 44px 46px; }
+
+    .head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .head h1 { margin: 0; font-size: 30px; letter-spacing: -0.03em; }
+    .head .who { color: var(--muted); font-size: 15px; margin: 6px 0 0; }
+    .head .goal { display: inline-block; margin-top: 12px; background: var(--sage-soft); color: var(--sage-deep); font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 9999px; }
+    .tag { flex: none; background: var(--gold-soft); color: #7a5a12; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 5px 11px; border-radius: 9999px; }
+    .meta { color: var(--muted); font-size: 13px; margin-top: 14px; }
+
+    hr { border: none; border-top: 1px solid var(--line); margin: 26px 0; }
+
+    section { margin-bottom: 26px; }
+    .label { font-size: 12px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
+    p.body { margin: 0 0 10px; font-size: 15.5px; }
+    .status { display: inline-flex; align-items: center; gap: 8px; background: var(--sage-soft); color: var(--sage-deep); font-weight: 700; font-size: 13px; padding: 6px 12px; border-radius: 9999px; }
+    .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); }
+
+    .path { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .path:last-child { border-bottom: none; }
+    .path .name { font-weight: 700; min-width: 168px; }
+    .path .why { color: var(--muted); font-size: 14.5px; }
+    .path .star { color: var(--sage-deep); font-weight: 700; font-size: 12px; }
+
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; padding: 7px 13px; border-radius: 9999px; }
+    .pill.focus { background: #f6e3d8; color: var(--terra); }
+    .pill.building { background: var(--cream); color: #8a6a1a; }
+    .pill.strong { background: var(--sage-soft); color: var(--sage-deep); }
+
+    .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+    .mini-label { font-size: 13px; font-weight: 700; color: var(--ink); margin: 0 0 8px; }
+    .list { margin: 0; padding: 0; list-style: none; }
+    .list li { font-size: 14.5px; color: var(--ink); padding: 5px 0; display: flex; gap: 8px; }
+    .list li::before { content: "•"; color: var(--sage); font-weight: 800; }
+    .list.muted li { color: var(--muted); }
+
+    ol.q { margin: 0; padding: 0; list-style: none; counter-reset: q; }
+    ol.q li { counter-increment: q; display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; }
+    ol.q li:last-child { border-bottom: none; }
+    ol.q li::before { content: counter(q); flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--sage-soft); color: var(--sage-deep); font-size: 13px; font-weight: 800; display: grid; place-items: center; }
+
+    .todo { margin: 0; padding: 0; list-style: none; }
+    .todo li { display: flex; gap: 10px; align-items: center; padding: 7px 0; font-size: 15px; }
+    .todo .box { flex: none; width: 17px; height: 17px; border: 1.5px solid var(--sage); border-radius: 5px; }
+
+    .foot { margin-top: 30px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 640px) {
+      .sheet { padding: 30px 22px; margin: 14px 14px 40px; }
+      .cols { grid-template-columns: 1fr; gap: 20px; }
+      .path { flex-direction: column; gap: 3px; }
+      .path .name { min-width: 0; }
+    }
+    @media print {
+      body { background: #fff; }
+      .toolbar { display: none; }
+      .sheet { box-shadow: none; border: none; border-radius: 0; margin: 0; max-width: none; padding: 0; }
+      .tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <a href="./app.html">← Back to dashboard</a>
+    <button class="btn" onclick="window.print()">⬇ Save as PDF</button>
+  </div>
+
+  <div class="sheet">
+    <div class="head">
+      <div>
+        <h1>Advisor meeting prep</h1>
+        <p class="who">Alex Rivera · Duke University · Economics</p>
+        <span class="goal">Working toward: Product Manager</span>
+      </div>
+      <span class="tag">Example</span>
+    </div>
+    <p class="meta">Prepared with 4ward · bring this to your next advisor meeting</p>
+
+    <hr />
+
+    <section>
+      <div class="label">Where I am now</div>
+      <p class="body">You're on a solid path with real potential. Strong academics and a clear goal, but light on industry experience and a professional network. The next year is about turning direction into proof.</p>
+      <span class="status"><span class="dot"></span> On a promising path</span>
+    </section>
+
+    <section>
+      <div class="label">Paths I'm considering</div>
+      <div class="path"><span class="name">Product management <span class="star">· leaning here</span></span><span class="why">Build the PM skill set and aim for APM programs.</span></div>
+      <div class="path"><span class="name">Data / analytics</span><span class="why">Leans on your economics and stats strength.</span></div>
+      <div class="path"><span class="name">Strategy / operations</span><span class="why">A broad first role with more entry points.</span></div>
+    </section>
+
+    <section>
+      <div class="label">My biggest gaps</div>
+      <div class="pills">
+        <span class="pill focus">Industry experience · focus first</span>
+        <span class="pill focus">Professional network · focus first</span>
+        <span class="pill building">Technical PM skills · building</span>
+        <span class="pill strong">Academics · strength</span>
+      </div>
+    </section>
+
+    <section class="cols">
+      <div>
+        <div class="label">Target companies</div>
+        <ul class="list">
+          <li>Spotify · associate PM</li>
+          <li>HubSpot · product analyst</li>
+          <li>Duolingo · APM program</li>
+          <li>A fintech startup · ops / product</li>
+        </ul>
+      </div>
+      <div>
+        <div class="label">People to meet</div>
+        <ul class="list muted">
+          <li>Duke alumni working in product</li>
+          <li>A current APM (1 to 2 years in)</li>
+          <li>A recruiter at a target company</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">Résumé gaps</div>
+      <div class="cols">
+        <div>
+          <p class="mini-label">Working</p>
+          <ul class="list"><li>Economics coursework and GPA</li><li>Club leadership</li></ul>
+        </div>
+        <div>
+          <p class="mini-label">Needs work</p>
+          <ul class="list muted"><li>No product or tech experience shown</li><li>Weak action verbs, few results</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">Questions for my advisor</div>
+      <ol class="q">
+        <li>Which of these paths fits my background best, and what would you push me toward?</li>
+        <li>What experience matters most for an APM role, and how do I get it by next summer?</li>
+        <li>Who in our alumni network works in product, and would you introduce me?</li>
+        <li>Is my spring course plan setting me up, or should I swap anything?</li>
+        <li>What is the first thing you would fix on my résumé?</li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="label">My next 30 days</div>
+      <ul class="todo">
+        <li><span class="box"></span> Reach out to 3 alumni in product roles</li>
+        <li><span class="box"></span> Add one product side project to my résumé</li>
+        <li><span class="box"></span> Apply to 2 summer APM or analyst internships</li>
+      </ul>
+    </section>
+
+    <div class="foot">A starting point for your conversation, not a verdict. Your path can change, and your advisor stays in control.</div>
+  </div>
+
+</body>
+</html>
