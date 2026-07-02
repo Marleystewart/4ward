@@ -59,6 +59,7 @@
     .list li { font-size: 14.5px; color: var(--ink); padding: 5px 0; display: flex; gap: 8px; }
     .list li::before { content: "•"; color: var(--sage); font-weight: 800; }
     .list.muted li { color: var(--muted); }
+    .empty { color: var(--muted); font-size: 14px; font-style: italic; }
 
     ol.q { margin: 0; padding: 0; list-style: none; counter-reset: q; }
     ol.q li { counter-increment: q; display: flex; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 15.5px; }
@@ -96,94 +97,161 @@
     <div class="head">
       <div>
         <h1>Advisor meeting prep</h1>
-        <p class="who">Alex Rivera · Duke University · Economics</p>
-        <span class="goal">Working toward: Product Manager</span>
+        <p class="who" id="ppWho"></p>
+        <span class="goal" id="ppGoal"></span>
       </div>
-      <span class="tag">Example</span>
+      <span class="tag" id="ppTag" hidden>Example</span>
     </div>
-    <p class="meta">Prepared with 4ward · bring this to your next advisor meeting</p>
+    <p class="meta" id="ppMeta"></p>
 
     <hr />
 
     <section>
       <div class="label">Where I am now</div>
-      <p class="body">You're on a solid path with real potential. Strong academics and a clear goal, but light on industry experience and a professional network. The next year is about turning direction into proof.</p>
+      <p class="body" id="ppSnapshot"></p>
       <span class="status"><span class="dot"></span> On a promising path</span>
     </section>
 
     <section>
       <div class="label">Paths I'm considering</div>
-      <div class="path"><span class="name">Product management <span class="star">· leaning here</span></span><span class="why">Build the PM skill set and aim for APM programs.</span></div>
-      <div class="path"><span class="name">Data / analytics</span><span class="why">Leans on your economics and stats strength.</span></div>
-      <div class="path"><span class="name">Strategy / operations</span><span class="why">A broad first role with more entry points.</span></div>
+      <div id="ppPaths"></div>
     </section>
 
     <section>
       <div class="label">My biggest gaps</div>
-      <div class="pills">
-        <span class="pill focus">Industry experience · focus first</span>
-        <span class="pill focus">Professional network · focus first</span>
-        <span class="pill building">Technical PM skills · building</span>
-        <span class="pill strong">Academics · strength</span>
-      </div>
+      <div class="pills" id="ppGaps"></div>
     </section>
 
     <section class="cols">
       <div>
-        <div class="label">Target companies</div>
-        <ul class="list">
-          <li>Spotify · associate PM</li>
-          <li>HubSpot · product analyst</li>
-          <li>Duolingo · APM program</li>
-          <li>A fintech startup · ops / product</li>
-        </ul>
+        <div class="label">People to meet</div>
+        <ul class="list" id="ppPeople"></ul>
       </div>
       <div>
-        <div class="label">People to meet</div>
-        <ul class="list muted">
-          <li>Duke alumni working in product</li>
-          <li>A current APM (1 to 2 years in)</li>
-          <li>A recruiter at a target company</li>
-        </ul>
+        <div class="label">Contacts I'm tracking</div>
+        <ul class="list muted" id="ppContacts"></ul>
       </div>
     </section>
 
     <section>
       <div class="label">Résumé gaps</div>
-      <div class="cols">
-        <div>
-          <p class="mini-label">Working</p>
-          <ul class="list"><li>Economics coursework and GPA</li><li>Club leadership</li></ul>
-        </div>
-        <div>
-          <p class="mini-label">Needs work</p>
-          <ul class="list muted"><li>No product or tech experience shown</li><li>Weak action verbs, few results</li></ul>
-        </div>
-      </div>
+      <p class="body" id="ppResumeSummary" style="margin-bottom:10px;"></p>
+      <ul class="list muted" id="ppResume"></ul>
     </section>
 
     <section>
       <div class="label">Questions for my advisor</div>
-      <ol class="q">
-        <li>Which of these paths fits my background best, and what would you push me toward?</li>
-        <li>What experience matters most for an APM role, and how do I get it by next summer?</li>
-        <li>Who in our alumni network works in product, and would you introduce me?</li>
-        <li>Is my spring course plan setting me up, or should I swap anything?</li>
-        <li>What is the first thing you would fix on my résumé?</li>
-      </ol>
+      <ol class="q" id="ppQuestions"></ol>
     </section>
 
     <section>
       <div class="label">My next 30 days</div>
-      <ul class="todo">
-        <li><span class="box"></span> Reach out to 3 alumni in product roles</li>
-        <li><span class="box"></span> Add one product side project to my résumé</li>
-        <li><span class="box"></span> Apply to 2 summer APM or analyst internships</li>
-      </ul>
+      <ul class="todo" id="ppNext"></ul>
     </section>
 
     <div class="foot">A starting point for your conversation, not a verdict. Your path can change, and your advisor stays in control.</div>
   </div>
+
+  <script>
+    (function () {
+      function get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
+      function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+      function arr(x) { return Array.isArray(x) ? x : []; }
+
+      var demo = {
+        isExample: true,
+        name: "Alex Rivera", school: "Duke University", major: "Economics", goal: "Product Manager",
+        snapshot: "You're on a solid path with real potential. Strong academics and a clear goal, but light on industry experience and a professional network. The next year is about turning direction into proof.",
+        paths: [
+          { label: "Your goal", role: "Product management", reason: "Build the PM skill set and aim for APM programs." },
+          { label: "Adjacent path", role: "Data / analytics", reason: "Leans on your economics and stats strength." },
+          { label: "Also worth exploring", role: "Strategy / operations", reason: "A broad first role with more entry points." }
+        ],
+        focus: [
+          { area: "Industry experience", status: "focus" },
+          { area: "Professional network", status: "focus" },
+          { area: "Technical PM skills", status: "building" },
+          { area: "Academics", status: "strength" }
+        ],
+        people: ["Duke alumni working in product", "A current APM (1 to 2 years in)", "A recruiter at a target company"],
+        contacts: [],
+        resumeSummary: "Your economics coursework and leadership are real strengths. The highest-leverage fix is showing product or tech experience.",
+        resumePoints: ["No product or tech experience shown", "Weak action verbs, few results"],
+        questions: [
+          "I'm weighing product management and data / analytics. Which fits my background best, and what would you push me toward?",
+          "My biggest focus area right now is industry experience. What is the fastest way to make progress on it?",
+          "Who in our alumni network works in product, and would you introduce me?",
+          "What experience matters most to reach my goal, and how do I get it by next summer?",
+          "What is the first thing you would fix on my résumé?"
+        ],
+        next30: ["Reach out to 3 alumni in product roles", "Add one product side project to my résumé", "Apply to 2 summer APM or analyst internships"]
+      };
+
+      function buildQuestions(p, ai) {
+        var t = arr(ai.tracks);
+        var field = (ai.explore && ai.explore.field) || p.major || "this field";
+        var top = arr(ai.focus).filter(function (f) { return f.status === "focus"; })[0];
+        var qs = [];
+        if (t[0] && t[1]) qs.push("I'm weighing " + t[0].role + " and " + t[1].role + ". Which fits my background best, and what would you push me toward?");
+        if (top) qs.push("My biggest focus area right now is " + String(top.area).toLowerCase() + ". What is the fastest way to make progress on it?");
+        qs.push("Who in our alumni network works in " + field + ", and would you introduce me?");
+        qs.push("What experience matters most to reach my goal, and how do I get it by next summer?");
+        qs.push("What is the first thing you would fix on my résumé?");
+        return qs.slice(0, 5);
+      }
+
+      function fromReal(p, ai, resume, outreach) {
+        var t = arr(ai.tracks);
+        return {
+          isExample: false,
+          name: p.firstName, school: p.school, major: p.major,
+          goal: (t[0] && t[0].role) || p.goal || "",
+          snapshot: ai.body || ai.headline || "",
+          paths: t,
+          focus: arr(ai.focus),
+          people: arr(ai.gaps && ai.gaps.exposure).map(function (g) { return g.item || g; }),
+          contacts: arr(outreach).map(function (c) { return c.name ? (c.name + (c.role ? " · " + c.role : "")) : String(c); }),
+          resumeSummary: resume ? (resume.summary || "") : "",
+          resumePoints: resume ? arr(resume.feedback).map(function (f) { return f.title || f; }) : [],
+          questions: buildQuestions(p, ai),
+          next30: arr(ai.plan && ai.plan.d30).map(function (x) { return x.title || x; })
+        };
+      }
+
+      var profile = get("figuredProfile"), ai = get("figuredAiContent");
+      var d = (profile && ai) ? fromReal(profile, ai, get("figuredResumeAnalysis"), get("figuredOutreach")) : demo;
+
+      var byId = function (id) { return document.getElementById(id); };
+      var whoParts = [d.school, d.major].filter(Boolean);
+      byId("ppWho").textContent = whoParts.join(" · ") + (d.name ? (whoParts.length ? "" : "") : "");
+      byId("ppWho").textContent = [d.name, d.school, d.major].filter(Boolean).join(" · ");
+      byId("ppGoal").textContent = "Working toward: " + (d.goal || "your goal");
+      byId("ppMeta").textContent = "Prepared with 4ward · bring this to your next advisor meeting";
+      byId("ppTag").hidden = !d.isExample;
+      byId("ppSnapshot").textContent = d.snapshot || "Build your trajectory in 4ward to fill this in.";
+
+      byId("ppPaths").innerHTML = arr(d.paths).map(function (t, i) {
+        var star = i === 0 ? ' <span class="star">· leaning here</span>' : "";
+        return '<div class="path"><span class="name">' + esc(t.role || t.label) + star + '</span><span class="why">' + esc(t.reason || "") + "</span></div>";
+      }).join("") || '<p class="empty">No paths yet.</p>';
+
+      var pillMap = { focus: ["focus", "focus first"], building: ["building", "building"], strength: ["strong", "strength"] };
+      byId("ppGaps").innerHTML = arr(d.focus).map(function (f) {
+        var m = pillMap[f.status] || ["building", f.status];
+        return '<span class="pill ' + m[0] + '">' + esc(f.area) + " · " + m[1] + "</span>";
+      }).join("") || '<p class="empty">No focus areas yet.</p>';
+
+      byId("ppPeople").innerHTML = arr(d.people).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") || '<li class="empty">Generate your trajectory to see who to meet.</li>';
+      byId("ppContacts").innerHTML = arr(d.contacts).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") || '<li class="empty">Add people in Connections to track them here.</li>';
+
+      byId("ppResumeSummary").textContent = d.resumeSummary || "";
+      byId("ppResumeSummary").style.display = d.resumeSummary ? "" : "none";
+      byId("ppResume").innerHTML = arr(d.resumePoints).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") || '<li class="empty">Upload your résumé in the app to see gaps here.</li>';
+
+      byId("ppQuestions").innerHTML = arr(d.questions).map(function (q) { return "<li>" + esc(q) + "</li>"; }).join("");
+      byId("ppNext").innerHTML = arr(d.next30).map(function (x) { return '<li><span class="box"></span> ' + esc(x) + "</li>"; }).join("") || '<li class="empty">Set your action plan to fill this in.</li>';
+    })();
+  </script>
 
 </body>
 </html>
