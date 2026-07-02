@@ -1,679 +1,576 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>4ward | See where you're headed.</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <style>
-      :root {
-        --bg: #f8f8f4;
-        --card: #ffffff;
-        --green: #2f6b5a;
-        --green-deep: #275a4c;
-        --sage: #dce7df;
-        --sage-soft: #eaf1ec;
-        --text: #0f1a17;
-        --muted: #66706b;
-        --accent: #d8c18b;
-        --accent-soft: #f4ecd8;
-        --line: #ecece6;
-        --radius-card: 24px;
-        --radius-sm: 16px;
-        --shadow-soft: 0 1px 2px rgba(15, 26, 23, 0.04), 0 12px 32px rgba(15, 26, 23, 0.05);
-        --shadow-card: 0 1px 2px rgba(15, 26, 23, 0.05), 0 24px 60px rgba(15, 26, 23, 0.08);
-        --max: 1280px;
-        --pad: clamp(20px, 4vw, 40px);
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4ward | Clarity today. Confidence tomorrow.</title>
+  <meta name="description" content="4ward helps college students get an honest look at their path, see what changes the outcome, and walk into their advisor, mentor, and alumni conversations prepared." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f6f4ee;
+      --paper: #fffdf8;
+      --paper-soft: #f1eee6;
+      --cream: #fdf6e8;
+      --ink: #17211f;
+      --muted: #65716b;
+      --sage: #6f8f7a;
+      --sage-soft: #e4eee8;
+      --sage-mid: #cfe6d6;
+      --sage-deep: #2f5a4f;
+      --sage-deeper: #294f49;
+      --teal-soft: #dce8e3;
+      --terra: #8a4a2f;
+      --gold-soft: #e9d7aa;
+      --line: rgba(47, 90, 79, 0.14);
+      --shadow: 0 24px 80px rgba(50, 63, 56, 0.11);
+      --shadow-sm: 0 12px 34px rgba(50, 63, 56, 0.09);
+      --radius: 24px;
+      --radius-lg: 32px;
+      --radius-sm: 14px;
+      --maxw: 1200px;
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-      * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; }
 
-      html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; }
 
-      body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        font-size: 20px;
-        line-height: 1.6;
-        -webkit-font-smoothing: antialiased;
-        text-rendering: optimizeLegibility;
-      }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(220, 232, 227, 0.72), transparent 520px),
+        var(--canvas);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
 
-      .wrap {
-        width: 100%;
-        max-width: var(--max);
-        margin: 0 auto;
-        padding-left: var(--pad);
-        padding-right: var(--pad);
-      }
+    a { color: inherit; text-decoration: none; }
 
-      a { color: inherit; text-decoration: none; }
+    .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
 
-      /* ---------- Buttons ---------- */
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        border-radius: 9999px;
-        padding: 15px 26px;
-        font-size: 16px;
-        font-weight: 600;
-        border: 1px solid transparent;
-        cursor: pointer;
-        transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-        white-space: nowrap;
-      }
-      .btn-primary { background: var(--green); color: #fff; box-shadow: 0 10px 24px rgba(47, 107, 90, 0.22); }
-      .btn-primary:hover { background: var(--green-deep); transform: translateY(-1px); }
-      .btn-ghost { background: var(--card); color: var(--text); border-color: var(--line); box-shadow: var(--shadow-soft); }
-      .btn-ghost:hover { transform: translateY(-1px); border-color: #dcdcd4; }
-      .btn-on-green { background: #fff; color: var(--green-deep); }
-      .btn-on-green:hover { transform: translateY(-1px); }
-      .btn-outline-green { background: transparent; color: #fff; border-color: rgba(255,255,255,0.35); }
-      .btn-outline-green:hover { background: rgba(255,255,255,0.08); }
+    section { scroll-margin-top: 120px; }
 
-      /* ---------- Eyebrow / badges ---------- */
-      .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 12.5px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--green);
-      }
-      .eyebrow.center { justify-content: center; }
-      .badge-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 9999px;
-        background: var(--sage-soft);
-        color: var(--green-deep);
-        font-size: 12.5px;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-      }
-      .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    h1, h2, h3 { letter-spacing: -0.03em; margin: 0; line-height: 1.05; }
 
-      /* ---------- Header ---------- */
-      header {
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        background: rgba(248, 248, 244, 0.8);
-        backdrop-filter: saturate(180%) blur(14px);
-        border-bottom: 1px solid transparent;
-        transition: border-color 0.2s ease;
-      }
-      header.scrolled { border-bottom-color: var(--line); }
-      .nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 76px;
-      }
-      .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 22px; letter-spacing: -0.02em; }
-      .brand-logo { height: 56px; width: auto; display: block; }
-      .nav-links { display: flex; align-items: center; gap: 32px; }
-      .nav-links a { font-size: 15px; font-weight: 500; color: var(--muted); transition: color 0.15s ease; }
-      .nav-links a:hover { color: var(--text); }
-      .nav-actions { display: flex; align-items: center; gap: 12px; }
-      .nav-actions .btn { padding: 11px 20px; font-size: 15px; }
-      .nav-login { font-size: 15px; font-weight: 600; color: var(--text); padding: 11px 18px; }
-      .menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
-      .menu-toggle span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; margin: 4px 0; transition: transform 0.2s ease, opacity 0.2s ease; }
-      .menu-toggle.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-      .menu-toggle.open span:nth-child(2) { opacity: 0; }
-      .menu-toggle.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: inherit; font-weight: 600; font-size: 16px;
+      padding: 15px 26px; border-radius: 9999px; cursor: pointer;
+      border: 1px solid transparent; transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+    }
+    .btn-primary { background: var(--sage-deep); color: #fff; box-shadow: 0 12px 28px rgba(47, 90, 79, 0.22); }
+    .btn-primary:hover { background: var(--sage-deeper); transform: translateY(-2px); }
+    .btn-ghost { background: transparent; border-color: var(--line); color: var(--sage-deep); }
+    .btn-ghost:hover { background: var(--sage-soft); transform: translateY(-2px); }
+    .btn-cream { background: var(--cream); color: var(--sage-deep); }
+    .btn-cream:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
 
-      /* Mobile dropdown menu */
-      .mobile-menu { display: none; flex-direction: column; gap: 2px; padding: 6px var(--pad) 22px; background: rgba(248, 248, 244, 0.96); border-bottom: 1px solid var(--line); }
-      .mobile-menu.open { display: flex; }
-      .mobile-menu a { padding: 14px 4px; font-size: 17px; font-weight: 600; color: var(--text); border-bottom: 1px solid var(--line); }
-      .mobile-menu .mm-login { color: var(--muted); }
-      .mobile-menu .mm-cta { margin-top: 14px; border-bottom: none; justify-content: center; color: #fff; }
+    /* ---------- Nav ---------- */
+    .nav-shell { position: sticky; top: 18px; z-index: 50; padding: 0 24px; }
+    .nav {
+      max-width: var(--maxw); margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      background: rgba(255, 253, 248, 0.86); backdrop-filter: blur(14px);
+      border: 1px solid var(--line); border-radius: 9999px;
+      box-shadow: var(--shadow-sm); padding: 12px 14px 12px 22px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 22px; letter-spacing: -0.03em; color: var(--sage-deep); }
+    .brand img { height: 40px; width: auto; display: block; }
+    .nav-links { display: flex; gap: 6px; }
+    .nav-links a { padding: 9px 15px; border-radius: 9999px; font-size: 15px; font-weight: 500; color: var(--muted); transition: color 0.16s ease, background 0.16s ease; }
+    .nav-links a:hover { color: var(--sage-deep); background: var(--sage-soft); }
+    .nav-cta { display: flex; align-items: center; gap: 8px; }
+    .nav-cta .link { padding: 9px 14px; font-size: 15px; font-weight: 600; color: var(--sage-deep); border-radius: 9999px; }
+    .nav-cta .link:hover { background: var(--sage-soft); }
+    .nav-cta .btn { padding: 11px 20px; font-size: 15px; }
+    .nav-toggle { display: none; }
 
-      /* ---------- Section rhythm ---------- */
-      section { padding: clamp(72px, 11vw, 140px) 0; }
-      .section-head { text-align: center; max-width: 720px; margin: 0 auto clamp(40px, 6vw, 72px); display: grid; gap: 18px; justify-items: center; }
-      h2 { font-size: clamp(30px, 5vw, 48px); line-height: 1.08; letter-spacing: -0.025em; font-weight: 700; }
-      .section-sub { font-size: clamp(17px, 2vw, 20px); color: var(--muted); max-width: 560px; }
+    /* ---------- Hero ---------- */
+    .hero { padding: 64px 0 40px; }
+    .hero-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--sage-soft); color: var(--sage-deep);
+      font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 8px 15px; border-radius: 9999px; margin-bottom: 22px;
+    }
+    .hero h1 { font-size: clamp(42px, 6vw, 68px); font-weight: 800; }
+    .hero h1 .fade { color: var(--sage); }
+    .hero-sub { font-size: clamp(17px, 2vw, 20px); color: var(--muted); margin: 22px 0 30px; max-width: 520px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .trust-points { display: flex; flex-direction: column; gap: 11px; margin-top: 30px; }
+    .trust-points li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--muted); list-style: none; }
+    .trust-points ul { margin: 0; padding: 0; }
+    .check { flex: none; width: 20px; height: 20px; border-radius: 50%; background: var(--sage-mid); color: var(--sage-deep); display: grid; place-items: center; font-size: 12px; font-weight: 800; }
 
-      .card {
-        background: var(--card);
-        border-radius: var(--radius-card);
-        box-shadow: var(--shadow-card);
-        border: 1px solid rgba(236, 236, 230, 0.7);
-      }
+    /* ---------- Hero: Trajectory snapshot (real app card, compact) ---------- */
+    .device-stage { position: relative; }
+    .snap-shell { position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; }
+    .mock-tag { position: absolute; top: -11px; right: 18px; z-index: 4; background: var(--gold-soft); color: #7a5a12; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; padding: 5px 11px; border-radius: 9999px; box-shadow: var(--shadow-sm); }
+    .preview-topbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
+    .preview-topbar p { color: var(--muted); font-size: 12px; margin: 0 0 3px; }
+    .preview-topbar strong { font-size: 18px; letter-spacing: -0.02em; color: var(--ink); }
+    .mini-button { font-family: inherit; font-size: 13px; font-weight: 700; color: var(--sage-deep); background: var(--paper); border: 1px solid var(--line); border-radius: 9999px; padding: 8px 15px; cursor: default; }
+    .hero-card-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(150px, 0.8fr); gap: 12px; }
+    .honest-card { position: relative; overflow: hidden; min-height: 190px; border-radius: var(--radius-sm); color: #f7f4eb; background: #294f49; }
+    .landscape { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(180deg, #5f817b 0%, #345b52 54%, #263f39 100%); }
+    .sun { position: absolute; right: 40px; top: 26px; width: 44px; height: 44px; border-radius: 999px; background: #ead9ad; opacity: 0.92; }
+    .mountain { position: absolute; bottom: 0; width: 74%; height: 70%; clip-path: polygon(0 100%, 24% 48%, 36% 66%, 54% 30%, 100% 100%); }
+    .mountain-back { right: 0; background: rgba(222, 232, 223, 0.28); }
+    .mountain-front { right: -70px; background: rgba(16, 43, 39, 0.55); }
+    .path-line { position: absolute; left: 47%; bottom: -30px; width: 120px; height: 240px; border-radius: 55% 45% 0 0; border-left: 34px solid rgba(232, 216, 174, 0.9); transform: rotate(38deg); }
+    .honest-copy { position: relative; z-index: 1; max-width: 300px; padding: 20px 22px; display: grid; gap: 9px; }
+    .honest-copy span { color: inherit; font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+    .honest-copy h2 { font-size: clamp(19px, 2.2vw, 25px); line-height: 1.1; letter-spacing: -0.01em; margin: 0; }
+    .honest-copy p { font-size: 13px; line-height: 1.5; margin: 0; opacity: 0.92; }
+    .goal-card { border: 1px solid var(--line); background: var(--paper); border-radius: var(--radius-sm); padding: 18px; display: grid; align-content: start; gap: 10px; }
+    .goal-card span { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+    .goal-card h3 { font-size: 21px; letter-spacing: -0.02em; margin: 0; }
+    .goal-card p { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0; }
+    .metric-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+    .metric-strip div { border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 253, 248, 0.78); padding: 14px; }
+    .metric-strip strong { display: block; font-size: 15px; font-weight: 800; margin-bottom: 3px; color: var(--sage-deep); }
+    .metric-strip span { color: var(--muted); font-size: 12px; }
 
-      /* ---------- Hero ---------- */
-      .hero { position: relative; overflow: hidden; padding-top: clamp(48px, 7vw, 88px); }
-      .hero-path { position: absolute; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5; }
-      .hero-grid {
-        position: relative; z-index: 1;
-        display: grid;
-        grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.92fr);
-        gap: clamp(36px, 5vw, 64px);
-        align-items: center;
-      }
-      .hero h1 {
-        font-size: clamp(40px, 6.2vw, 72px);
-        line-height: 1.02;
-        letter-spacing: -0.035em;
-        font-weight: 800;
-        margin: 22px 0 0;
-      }
-      .hero-sub { font-size: clamp(18px, 2.1vw, 21px); color: var(--muted); margin-top: 22px; max-width: 480px; }
-      .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
-      .hero-proof { display: flex; align-items: center; gap: 14px; margin-top: 30px; }
-      .avatars { display: flex; }
-      .avatars span {
-        width: 38px; height: 38px; border-radius: 50%;
-        border: 2.5px solid var(--bg);
-        margin-left: -10px;
-        display: grid; place-items: center;
-        font-size: 13px; font-weight: 700; color: #fff;
-      }
-      .avatars span:first-child { margin-left: 0; }
-      .av1 { background: #5a8a78; } .av2 { background: #3f6b5c; } .av3 { background: #a9966a; } .av4 { background: #7d9b8c; }
-      .hero-proof p { font-size: 14.5px; color: var(--muted); line-height: 1.4; }
+    /* ---------- Section headers ---------- */
+    .sec { padding: 68px 0; }
+    .label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage); margin-bottom: 14px; }
+    .sec-head { text-align: center; max-width: 640px; margin: 0 auto 44px; }
+    .sec-head h2 { font-size: clamp(30px, 4vw, 44px); font-weight: 800; }
+    .sec-head p { color: var(--muted); font-size: 18px; margin-top: 14px; }
 
-      /* Honest snapshot card */
-      .snapshot { padding: clamp(26px, 3vw, 34px); }
-      .snapshot-head { display: flex; align-items: center; justify-content: space-between; }
-      .snapshot-head .eyebrow { font-size: 11.5px; }
-      .snapshot-title { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.3; margin: 18px 0 22px; }
-      .meter-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-      .meter-row span { font-size: 14px; color: var(--muted); font-weight: 500; }
-      .meter-row strong { font-size: 22px; font-weight: 800; color: var(--green); }
-      .meter { height: 8px; border-radius: 9999px; background: var(--sage-soft); overflow: hidden; }
-      .meter i { display: block; height: 100%; width: 68%; border-radius: 9999px; background: linear-gradient(90deg, var(--green), #4f8a76); }
-      .snap-stage > p { font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-      .stage-chip { display: inline-flex; align-items: center; padding: 10px 16px; border-radius: 9999px; background: var(--sage); color: var(--green-deep); font-weight: 700; font-size: 15px; }
-      .snap-stage > span { display: block; margin-top: 10px; font-size: 13px; color: var(--muted); }
-      .snap-block { margin-top: 22px; }
-      .snap-block > p { font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
-      .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-      .chip { padding: 7px 13px; border-radius: 9999px; font-size: 13.5px; font-weight: 600; background: var(--sage); color: var(--green-deep); }
-      .chip.focus { background: var(--accent-soft); color: #8a6d28; }
-      .snap-next { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-      .snap-next div p:first-child { font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-      .snap-next div p:last-child { font-size: 15px; font-weight: 600; }
-      .snap-arrow { width: 34px; height: 34px; border-radius: 50%; background: var(--sage-soft); display: grid; place-items: center; color: var(--green); flex: none; }
+    /* ---------- How it works ---------- */
+    .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+    .step { text-align: center; }
+    .step .num { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 50%; background: var(--sage-soft); color: var(--sage-deep); display: grid; place-items: center; font-size: 22px; font-weight: 800; border: 1px solid var(--sage-mid); }
+    .step h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--muted); }
 
-      /* ---------- How it works ---------- */
-      .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-      .step-card { padding: 34px; display: grid; gap: 14px; }
-      .step-icon { width: 52px; height: 52px; border-radius: 14px; background: var(--sage-soft); display: grid; place-items: center; color: var(--green); }
-      .step-num { font-size: 13px; font-weight: 700; color: var(--accent); letter-spacing: 0.08em; }
-      .step-card h3 { font-size: 21px; font-weight: 700; letter-spacing: -0.02em; }
-      .step-card p { font-size: 16.5px; color: var(--muted); line-height: 1.55; }
+    /* ---------- Small changes ---------- */
+    .compare { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: center; background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 46px; box-shadow: var(--shadow-sm); }
+    .compare h2 { font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; }
+    .compare .lede { color: var(--muted); font-size: 17px; margin: 16px 0 26px; }
+    .compare-cards { display: grid; grid-template-columns: 1fr auto 1fr; gap: 14px; align-items: center; }
+    .path-card { border-radius: var(--radius); padding: 22px; position: relative; }
+    .path-card .tag { position: absolute; top: 14px; right: 14px; font-size: 10px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #7a5a12; background: var(--gold-soft); padding: 3px 8px; border-radius: 9999px; }
+    .path-card.current { background: var(--paper-soft); border: 1px solid var(--line); }
+    .path-card.better { background: var(--sage-deep); color: #fff; box-shadow: 0 20px 46px rgba(47, 90, 79, 0.26); }
+    .path-card h4 { font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; margin: 0 0 14px; opacity: 0.85; }
+    .path-card ul { list-style: none; margin: 0 0 16px; padding: 0; }
+    .path-card li { display: flex; gap: 8px; align-items: center; font-size: 14px; padding: 5px 0; }
+    .path-card.current li::before { content: "•"; color: var(--muted); font-weight: 700; }
+    .path-card.better li::before { content: "✓"; color: var(--sage-mid); font-weight: 800; }
+    .path-card .outcome-label { font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.7; }
+    .path-card .outcome { font-size: 17px; font-weight: 700; margin-top: 3px; }
+    .arrow { color: var(--sage); font-size: 26px; font-weight: 800; text-align: center; }
 
-      /* ---------- Trajectory compare ---------- */
-      .compare { display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center; }
-      .path-card { padding: 32px; display: grid; gap: 18px; }
-      .path-card.current { background: var(--card); }
-      .path-card.improved { background: linear-gradient(180deg, #ffffff, #f6faf7); border-color: var(--sage); }
-      .path-label { display: flex; align-items: center; gap: 10px; }
-      .path-label span { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-      .path-label .marker { width: 10px; height: 10px; border-radius: 50%; }
-      .marker.gray { background: #c2c8c4; } .marker.green { background: var(--green); }
-      .path-list { display: grid; gap: 12px; }
-      .path-list li { list-style: none; display: flex; align-items: center; gap: 11px; font-size: 16px; color: var(--text); }
-      .path-list li i { width: 18px; height: 18px; border-radius: 50%; flex: none; display: grid; place-items: center; font-style: normal; font-size: 11px; }
-      .path-list li.neg i { background: #f0ddd9; color: #b5654f; }
-      .path-list li.pos i { background: var(--sage); color: var(--green); }
-      .path-outcome { margin-top: 6px; padding-top: 18px; border-top: 1px solid var(--line); }
-      .path-outcome p:first-child { font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-      .path-outcome p:last-child { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
-      .path-outcome.muted p:last-child { color: var(--muted); }
-      .path-outcome.win p:last-child { color: var(--green); }
-      .compare-arrow { width: 56px; height: 56px; border-radius: 50%; background: var(--card); box-shadow: var(--shadow-card); display: grid; place-items: center; color: var(--green); flex: none; }
+    /* ---------- What you get ---------- */
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feature { background: var(--cream); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; transition: transform 0.16s ease, box-shadow 0.16s ease; }
+    .feature:hover { transform: translateY(-4px); box-shadow: var(--shadow-sm); }
+    .feature .ic { width: 46px; height: 46px; border-radius: 13px; background: var(--sage-soft); color: var(--sage-deep); display: grid; place-items: center; margin-bottom: 16px; }
+    .feature h3 { font-size: 19px; font-weight: 700; margin-bottom: 9px; }
+    .feature p { color: var(--muted); font-size: 15px; }
+    .feature .soon { display: inline-block; margin-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--terra); background: rgba(138, 74, 47, 0.09); padding: 3px 9px; border-radius: 9999px; }
 
-      /* ---------- Honest analysis ---------- */
-      .insight-card { padding: 32px; display: grid; gap: 16px; }
-      .insight-icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; }
-      .insight-icon.s { background: var(--sage-soft); color: var(--green); }
-      .insight-icon.g { background: #f6e9e4; color: #b5654f; }
-      .insight-icon.n { background: var(--accent-soft); color: #8a6d28; }
-      .insight-card h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
-      .insight-list { display: grid; gap: 11px; }
-      .insight-list li { list-style: none; display: flex; align-items: flex-start; gap: 10px; font-size: 16px; color: var(--muted); line-height: 1.5; }
-      .insight-list li b { width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-top: 9px; flex: none; }
-      .insight-list li.gap b { background: #c98a72; }
-      .insight-foot { margin-top: 4px; }
-      .impact-tag { display: inline-flex; padding: 6px 12px; border-radius: 9999px; font-size: 12.5px; font-weight: 700; }
-      .impact-tag.keep { background: var(--sage); color: var(--green-deep); }
-      .impact-tag.focus { background: var(--accent-soft); color: #8a6d28; }
-      .impact-tag.high { background: #e7f0ea; color: var(--green-deep); }
+    /* ---------- Advisors / shaped-by ---------- */
+    .advisors { background: var(--sage-soft); border-radius: var(--radius-lg); padding: 56px 46px; }
+    .themes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
+    .theme { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; }
+    .theme .quote { font-size: 19px; font-weight: 700; color: var(--sage-deep); letter-spacing: -0.02em; line-height: 1.3; }
+    .theme p { color: var(--muted); font-size: 15px; margin: 14px 0 0; }
+    .theme .from { display: block; margin-top: 16px; font-size: 13px; font-weight: 600; color: var(--sage); }
+    .founder { max-width: 720px; margin: 40px auto 0; text-align: center; color: var(--muted); font-size: 16px; }
+    .founder strong { color: var(--sage-deep); }
 
-      /* ---------- Mentors ---------- */
-      .mentor-card { padding: 28px; display: grid; gap: 16px; }
-      .mentor-top { display: flex; align-items: center; gap: 14px; }
-      .mentor-av { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 17px; flex: none; }
-      .mentor-top h3 { font-size: 17px; font-weight: 700; }
-      .mentor-top p { font-size: 14px; color: var(--muted); }
-      .mentor-card .why { font-size: 15px; color: var(--muted); line-height: 1.55; }
-      .mentor-card .shared { font-size: 13.5px; color: var(--green-deep); font-weight: 600; background: var(--sage-soft); padding: 10px 14px; border-radius: 12px; }
+    /* ---------- Final CTA ---------- */
+    .final { background: var(--sage-deep); color: #fff; border-radius: var(--radius-lg); padding: 56px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; overflow: hidden; position: relative; }
+    .final h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 800; }
+    .final p { opacity: 0.85; font-size: 17px; margin: 16px 0 0; max-width: 460px; }
+    .final .flag { font-size: 15px; opacity: 0.8; margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+    .waitlist-cta { width: min(380px, 100%); }
+    .waitlist-form { display: flex; gap: 10px; flex-wrap: wrap; }
+    .waitlist-form input { flex: 1 1 200px; min-width: 0; font-family: inherit; font-size: 16px; padding: 15px 18px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.25); background: rgba(255, 255, 255, 0.96); color: var(--ink); }
+    .waitlist-form input::placeholder { color: var(--muted); }
+    .waitlist-form input:focus { outline: 2px solid var(--sage-mid); outline-offset: 1px; }
+    .waitlist-form button { flex: 0 0 auto; }
+    .waitlist-msg { margin: 14px 0 0; font-size: 15px; font-weight: 600; color: #fff; }
 
-      /* ---------- Action plan ---------- */
-      .plan-wrap { max-width: 880px; margin: 0 auto; }
-      .segmented { display: inline-flex; padding: 5px; background: var(--sage-soft); border-radius: 9999px; margin: 0 auto 32px; }
-      .seg-btn { border: none; background: transparent; padding: 11px 26px; border-radius: 9999px; font-size: 15px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.18s ease; font-family: inherit; }
-      .seg-btn.active { background: var(--card); color: var(--text); box-shadow: var(--shadow-soft); }
-      .seg-center { text-align: center; }
-      .task-list { display: grid; gap: 14px; }
-      .task { padding: 22px 26px; display: flex; align-items: center; gap: 18px; }
-      .task-ico { width: 44px; height: 44px; border-radius: 12px; background: var(--sage-soft); display: grid; place-items: center; color: var(--green); flex: none; }
-      .task-body { flex: 1; }
-      .task-body h4 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
-      .task-body p { font-size: 15px; color: var(--muted); margin-top: 3px; }
+    /* ---------- Footer ---------- */
+    footer { padding: 56px 0 44px; }
+    .foot-note { text-align: center; color: var(--muted); font-size: 15px; max-width: 620px; margin: 0 auto 28px; }
+    .foot-bar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 26px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; flex-wrap: wrap; }
+    .foot-bar nav { display: flex; gap: 18px; }
+    .foot-bar nav a:hover { color: var(--sage-deep); }
+    .foot-bar span a { color: var(--sage-deep); font-weight: 600; }
+    .foot-bar span a:hover { text-decoration: underline; }
 
-      /* ---------- Final CTA ---------- */
-      .cta-band {
-        background: linear-gradient(135deg, #2f6b5a, #275a4c);
-        border-radius: 32px;
-        padding: clamp(40px, 6vw, 72px);
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        gap: 36px;
-        color: #fff;
-        box-shadow: 0 30px 70px rgba(39, 90, 76, 0.3);
-      }
-      .cta-band h2 { color: #fff; font-size: clamp(28px, 4vw, 44px); max-width: 16ch; }
-      .cta-band p { color: rgba(255,255,255,0.8); font-size: 18px; margin-top: 16px; max-width: 44ch; }
-      .cta-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    /* ---------- Responsive ---------- */
+    @media (max-width: 940px) {
+      .nav-links { display: none; }
+      .nav-cta .link { display: none; }
+      .hero-grid { grid-template-columns: 1fr; gap: 60px; }
+      .device-stage { max-width: 460px; margin: 0 auto; }
+      .steps { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+      .compare { grid-template-columns: 1fr; gap: 30px; padding: 32px; }
+      .features { grid-template-columns: 1fr 1fr; }
+      .themes { grid-template-columns: 1fr; }
+      .final { grid-template-columns: 1fr; }
+      .advisors { padding: 44px 28px; }
+    }
+    @media (max-width: 560px) {
+      .wrap { padding: 0 18px; }
+      .nav { padding: 10px 12px 10px 18px; }
+      .hero { padding: 40px 0 20px; }
+      .steps { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .compare-cards { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+      .hero-card-grid { grid-template-columns: 1fr; }
+      .metric-strip { grid-template-columns: repeat(2, 1fr); }
+      .final { padding: 36px 26px; }
+      .sec { padding: 52px 0; }
+      .foot-bar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
 
-      footer { padding: 48px 0 64px; border-top: 1px solid var(--line); }
-      .foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; }
-      .foot-left { display: flex; flex-direction: column; gap: 10px; }
-      .foot p { font-size: 14px; color: var(--muted); }
-      .almar-credit { display: inline-flex; align-items: center; gap: 9px; width: fit-content; font-size: 13.5px; font-weight: 600; color: var(--muted); transition: color 0.15s ease; }
-      .almar-credit:hover { color: var(--green); }
-      .almar-credit img { height: 22px; width: auto; display: block; }
-      .foot nav { display: flex; gap: 24px; }
-      .foot nav a { font-size: 14px; color: var(--muted); }
-      .foot nav a:hover { color: var(--text); }
-
-      /* ---------- Reveal animation ---------- */
-      .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1); }
-      .reveal.in { opacity: 1; transform: none; }
-      @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
-
-      /* ---------- Responsive ---------- */
-      @media (max-width: 980px) {
-        .hero-grid { grid-template-columns: 1fr; }
-        .hero-visual { max-width: 480px; }
-        .grid-3 { grid-template-columns: 1fr; max-width: 480px; margin: 0 auto; }
-        .compare { grid-template-columns: 1fr; }
-        .compare-arrow { transform: rotate(90deg); margin: -4px auto; }
-        .nav-links { display: none; }
-        .cta-band { grid-template-columns: 1fr; }
-      }
-      @media (max-width: 560px) {
-        body { font-size: 18px; }
-        .nav-login, .nav-actions .btn { display: none; }
-        .menu-toggle { display: block; }
-        .hero-cta .btn, .cta-actions .btn { flex: 1; }
-        .segmented { display: flex; width: 100%; }
-        .seg-btn { flex: 1; padding: 11px 10px; }
-        .task { flex-direction: row; align-items: flex-start; padding: 20px; }
-      }
-    </style>
-  </head>
-  <body>
-    <header id="hdr">
-      <div class="wrap nav">
-        <a class="brand" href="#top" aria-label="4ward home"><img class="brand-logo" src="./assets/logo.png" alt="4ward" /></a>
-        <nav class="nav-links">
-          <a href="#how">How it works</a>
-          <a href="#trajectory">Trajectory</a>
-          <a href="#analysis">Dashboard</a>
-          <a href="#mentors">Mentors</a>
-        </nav>
-        <div class="nav-actions">
-          <a class="nav-login" href="./app.html">Log in</a>
-          <a class="btn btn-primary" href="./onboarding.html?fresh=1">Build My Path</a>
-          <button class="menu-toggle" id="menuToggle" aria-label="Menu" aria-expanded="false" aria-controls="mobileMenu"><span></span><span></span><span></span></button>
-        </div>
-      </div>
-      <div class="mobile-menu" id="mobileMenu">
+  <!-- 1. NAV -->
+  <div class="nav-shell">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#top" aria-label="4ward home">
+        <img src="./assets/logo.png" alt="4ward" onerror="this.style.display='none'" />
+      </a>
+      <div class="nav-links">
         <a href="#how">How it works</a>
-        <a href="#trajectory">Trajectory</a>
-        <a href="#analysis">Dashboard</a>
-        <a href="#mentors">Mentors</a>
-        <a class="mm-login" href="./app.html">Log in</a>
-        <a class="mm-cta btn btn-primary" href="./onboarding.html?fresh=1">Build My Path</a>
+        <a href="#features">For students</a>
+        <a href="#advisors">For career centers</a>
+        <a href="#features">Connections</a>
+        <a href="#advisors">About</a>
       </div>
-    </header>
+      <div class="nav-cta">
+        <a class="link" href="/app">Open the app</a>
+        <a class="btn btn-primary" href="#waitlist">Join Waitlist</a>
+      </div>
+    </nav>
+  </div>
 
-    <main id="top">
-      <!-- HERO -->
-      <section class="hero" id="hero">
-        <svg class="hero-path" viewBox="0 0 1440 700" fill="none" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-          <path d="M-50 640 C 320 600, 360 420, 640 400 S 1040 320, 1180 200 S 1360 150, 1460 120" stroke="#2f6b5a" stroke-opacity="0.14" stroke-width="2.5" stroke-dasharray="2 12" stroke-linecap="round"/>
-          <path d="M1180 120 l 0 -54" stroke="#2f6b5a" stroke-opacity="0.18" stroke-width="2.5"/>
-          <path d="M1180 66 l 34 12 l -34 14 z" fill="#2f6b5a" fill-opacity="0.16"/>
-          <circle cx="1180" cy="200" r="6" fill="#2f6b5a" fill-opacity="0.18"/>
-        </svg>
-        <div class="wrap hero-grid">
-          <div class="hero-copy reveal">
-            <span class="badge-pill"><i class="dot"></i> Honest career trajectory</span>
-            <h1>See where you're headed.</h1>
-            <p class="hero-sub">4ward analyzes your academics, experience, activities, and goals to show where your current path is leading, and what actions would change the outcome.</p>
-            <div class="hero-cta">
-              <a class="btn btn-primary" href="./onboarding.html?fresh=1">Build My Path</a>
-              <a class="btn btn-ghost" href="./app.html">Open Dashboard</a>
-            </div>
+  <!-- 2. HERO -->
+  <header id="top" class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="pill">For college students</span>
+          <h1>Clarity today.<br /><span class="fade">Confidence tomorrow.</span></h1>
+          <p class="hero-sub">4ward helps students discover what's next. Get an honest look at your path, see what changes the outcome, and take action with guidance every step of the way.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#waitlist">Join Waitlist</a>
+            <a class="btn btn-ghost" href="#how">See how it works</a>
           </div>
+          <ul class="trust-points">
+            <li><span class="check">✓</span> A guide, not a guarantee. Your path can change.</li>
+            <li><span class="check">✓</span> Prepares you for better conversations, not fewer</li>
+            <li><span class="check">✓</span> Your data. Your story. Always yours.</li>
+          </ul>
+        </div>
 
-          <div class="hero-visual reveal">
-            <div class="card snapshot">
-              <div class="snapshot-head">
-                <span class="eyebrow">Honest snapshot</span>
+        <div class="device-stage">
+          <div class="snap-shell">
+            <span class="mock-tag">Example</span>
+            <div class="preview-topbar">
+              <div>
+                <p>Good morning, Alex</p>
+                <strong>Trajectory snapshot</strong>
               </div>
-              <p class="snapshot-title">You're on a promising path toward product management.</p>
-              <div class="snap-stage">
-                <p>Current stage</p>
-                <div class="stage-chip">Exploration → Positioning</div>
-                <span>Not a grade. A position everyone moves through.</span>
-              </div>
-              <div class="snap-block">
-                <p>What's helping you</p>
-                <div class="chips"><span class="chip">Strong academics</span><span class="chip">Clear career goal</span></div>
-              </div>
-              <div class="snap-block">
-                <p>What to focus on</p>
-                <div class="chips"><span class="chip focus">Industry experience</span><span class="chip focus">Professional network</span></div>
-              </div>
-              <div class="snap-next">
-                <div>
-                  <p>Next step</p>
-                  <p>Schedule 3 informational interviews</p>
+              <button class="mini-button" type="button" tabindex="-1" aria-hidden="true">Log an update</button>
+            </div>
+            <div class="hero-card-grid">
+              <article class="honest-card">
+                <div class="landscape" aria-hidden="true">
+                  <div class="sun"></div>
+                  <div class="mountain mountain-back"></div>
+                  <div class="mountain mountain-front"></div>
+                  <div class="path-line"></div>
                 </div>
-                <span class="snap-arrow">→</span>
-              </div>
+                <div class="honest-copy">
+                  <span>The honest take</span>
+                  <h2>You're on a solid path with real potential.</h2>
+                  <p>You're building a strong foundation. To reach product management, you will need stronger product skills and more real world exposure.</p>
+                </div>
+              </article>
+              <article class="goal-card">
+                <span>Current goal</span>
+                <h3>Product Manager</h3>
+                <p>You love solving problems, leading projects, and working with people.</p>
+              </article>
+            </div>
+            <div class="metric-strip">
+              <div><strong>Strength</strong><span>Academics</span></div>
+              <div><strong>Building</strong><span>Experience</span></div>
+              <div><strong>Focus first</strong><span>Skills</span></div>
+              <div><strong>Focus first</strong><span>Network</span></div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </header>
 
-      <!-- HOW IT WORKS -->
-      <section id="how">
-        <div class="wrap">
-          <div class="section-head reveal">
-            <span class="eyebrow center">How it works</span>
-            <h2>A simple process that leads to real clarity.</h2>
-          </div>
-          <div class="grid-3">
-            <div class="card step-card reveal">
-              <div class="step-icon">👤</div>
-              <span class="step-num">STEP 1</span>
-              <h3>Tell us where you are</h3>
-              <p>Share your academics, experiences, goals, and interests.</p>
-            </div>
-            <div class="card step-card reveal">
-              <div class="step-icon">📈</div>
-              <span class="step-num">STEP 2</span>
-              <h3>See your trajectory</h3>
-              <p>Get an honest analysis of where your current path is leading.</p>
-            </div>
-            <div class="card step-card reveal">
-              <div class="step-icon">🧭</div>
-              <span class="step-num">STEP 3</span>
-              <h3>Get your next steps</h3>
-              <p>Receive a personalized action plan to reach your goals.</p>
-            </div>
-          </div>
+  <!-- 3. HOW IT WORKS -->
+  <section id="how" class="sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="label">How it works</div>
+        <h2>A simple process. A stronger future.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Tell us about yourself</h3>
+          <p>Share your goals, interests, experience, and what matters most to you.</p>
         </div>
-      </section>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Get your trajectory</h3>
+          <p>See where your current path is leading and what impacts the outcome.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Identify gaps</h3>
+          <p>We highlight what's holding you back and where to grow.</p>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <h3>Take action</h3>
+          <p>Get a personalized plan with steps for the next 30, 60, and 90 days.</p>
+        </div>
+        <div class="step">
+          <div class="num">5</div>
+          <h3>Connect &amp; grow</h3>
+          <p>See who's worth meeting, build relationships, and keep moving forward.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <!-- TRAJECTORY COMPARE -->
-      <section id="trajectory">
-        <div class="wrap">
-          <div class="section-head reveal">
-            <span class="eyebrow center">Current trajectory</span>
-            <h2>From where you are to where you could be.</h2>
+  <!-- 4. SMALL CHANGES, BIG OUTCOMES -->
+  <section class="sec">
+    <div class="wrap">
+      <div class="compare">
+        <div>
+          <div class="label">See the difference</div>
+          <h2>Small changes.<br />Big outcomes.</h2>
+          <p class="lede">Your future isn't set in stone. See how the right actions can shift your path.</p>
+          <a class="btn btn-primary" href="#waitlist">Explore your path</a>
+        </div>
+        <div class="compare-cards">
+          <div class="path-card current">
+            <span class="tag">Example</span>
+            <h4>Current path</h4>
+            <ul>
+              <li>No related experience</li>
+              <li>Limited network</li>
+              <li>Unclear direction</li>
+            </ul>
+            <div class="outcome-label">Likely outcome</div>
+            <div class="outcome">General business roles</div>
           </div>
-          <div class="compare">
-            <div class="card path-card current reveal">
-              <div class="path-label"><span class="marker gray"></span><span>Current path</span></div>
-              <ul class="path-list">
-                <li class="neg"><i></i> 3.2 GPA</li>
-                <li class="neg"><i></i> No internships</li>
-                <li class="neg"><i></i> Limited network</li>
-              </ul>
-              <div class="path-outcome muted">
-                <p>Likely outcome</p>
-                <p>General business roles</p>
-              </div>
-            </div>
-            <div class="compare-arrow reveal">→</div>
-            <div class="card path-card improved reveal">
-              <div class="path-label"><span class="marker green"></span><span>Improved path</span></div>
-              <ul class="path-list">
-                <li class="pos"><i>✓</i> Internship experience</li>
-                <li class="pos"><i>✓</i> Portfolio project</li>
-                <li class="pos"><i>✓</i> Industry connections</li>
-              </ul>
-              <div class="path-outcome win">
-                <p>Likely outcome</p>
-                <p>Product Management</p>
-              </div>
-            </div>
+          <div class="arrow">→</div>
+          <div class="path-card better">
+            <span class="tag">Example</span>
+            <h4>Better path</h4>
+            <ul>
+              <li>Internship experience</li>
+              <li>Strong network</li>
+              <li>Clear career direction</li>
+            </ul>
+            <div class="outcome-label">Likely outcome</div>
+            <div class="outcome">Product management</div>
           </div>
         </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
-      <!-- HONEST ANALYSIS -->
-      <section id="analysis">
-        <div class="wrap">
-          <div class="section-head reveal">
-            <span class="eyebrow center">Key insights</span>
-            <h2>Honest analysis. Clear direction.</h2>
-          </div>
-          <div class="grid-3">
-            <div class="card insight-card reveal">
-              <div class="insight-icon s">★</div>
-              <h3>Strengths</h3>
-              <ul class="insight-list">
-                <li><b></b> Strong academics</li>
-                <li><b></b> Clear career goal</li>
-              </ul>
-              <div class="insight-foot"><span class="impact-tag keep">Keep building</span></div>
-            </div>
-            <div class="card insight-card reveal">
-              <div class="insight-icon g">!</div>
-              <h3>Gaps</h3>
-              <ul class="insight-list">
-                <li class="gap"><b></b> Limited industry experience</li>
-                <li class="gap"><b></b> Small professional network</li>
-              </ul>
-              <div class="insight-foot"><span class="impact-tag focus">Focus here</span></div>
-            </div>
-            <div class="card insight-card reveal">
-              <div class="insight-icon n">➤</div>
-              <h3>Next move</h3>
-              <ul class="insight-list">
-                <li><b></b> Build real-world experience</li>
-                <li><b></b> Connect with people in product</li>
-              </ul>
-              <div class="insight-foot"><span class="impact-tag high">High impact</span></div>
-            </div>
-          </div>
+  <!-- 5. WHAT YOU GET -->
+  <section id="features" class="sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="label">What you get</div>
+        <h2>Everything you need to move forward.</h2>
+        <p>One calm place for your path, your gaps, and your next steps, instead of juggling ten browser tabs.</p>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <div class="ic">📈</div>
+          <h3>Honest Trajectory</h3>
+          <p>Understand where you're headed based on your real situation.</p>
         </div>
-      </section>
+        <div class="feature">
+          <div class="ic">🔍</div>
+          <h3>Gap Analyzer</h3>
+          <p>See what skills, experience, and connections you need to level up.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">🗺️</div>
+          <h3>Personalized Action Plan</h3>
+          <p>Get a step-by-step plan you can actually follow and track.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">🤝</div>
+          <h3>Connections</h3>
+          <p>See who's worth meeting, why, and the exact questions to ask before you reach out.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">🎯</div>
+          <h3>Opportunities</h3>
+          <p>Discover internships, jobs, fellowships, and programs that fit your goals.</p>
+        </div>
+        <div class="feature">
+          <div class="ic">📄</div>
+          <h3>Résumé Feedback</h3>
+          <p>Improve your résumé with real-time, honest feedback.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <!-- MENTORS -->
-      <section id="mentors">
-        <div class="wrap">
-          <div class="section-head reveal">
-            <span class="eyebrow center">Mentor network</span>
-            <h2>People worth meeting, with a clear reason why.</h2>
-            <p class="section-sub">Illustrative example of how 4ward surfaces people worth meeting. Sample profiles shown.</p>
+  <!-- 6. SHAPED BY ADVISORS (replaces named testimonials + school logos) -->
+  <section id="advisors" class="sec">
+    <div class="wrap">
+      <div class="advisors">
+        <div class="sec-head" style="margin-bottom: 0;">
+          <div class="label">Shaped by career advisors</div>
+          <h2>Built for better conversations.</h2>
+          <p>Here's what advisors told us matters most, and what 4ward is built around.</p>
+        </div>
+        <div class="themes">
+          <div class="theme">
+            <div class="quote">"Prepare students, don't replace advisors."</div>
+            <p>4ward gets students to appointments with clearer questions and a plan, so the human conversation goes further.</p>
+            <span class="from">A theme we heard in every advisor conversation</span>
           </div>
-          <div class="grid-3">
-            <div class="card mentor-card reveal">
-              <div class="mentor-top">
-                <span class="mentor-av" style="background:#5a8a78">TM</span>
-                <div><h3>Taylor M.</h3><p>Product Manager · Spotify</p></div>
-              </div>
-              <p class="why">Taylor moved from marketing internships into product, the exact path you're considering.</p>
-              <p class="shared">Shared: consumer products, music, student mentoring</p>
-            </div>
-            <div class="card mentor-card reveal">
-              <div class="mentor-top">
-                <span class="mentor-av" style="background:#3f6b5c">JL</span>
-                <div><h3>Jordan L.</h3><p>Senior PM · Google</p></div>
-              </div>
-              <p class="why">Jordan reviews early PM portfolios and can tell you what actually stands out.</p>
-              <p class="shared">Shared: analytics, product strategy, case competitions</p>
-            </div>
-            <div class="card mentor-card reveal">
-              <div class="mentor-top">
-                <span class="mentor-av" style="background:#a9966a">RS</span>
-                <div><h3>Riley S.</h3><p>Product Lead · Notion</p></div>
-              </div>
-              <p class="why">Riley can explain product craft and how to prepare for interviews.</p>
-              <p class="shared">Shared: productivity tools, systems thinking, design</p>
-            </div>
+          <div class="theme">
+            <div class="quote">"Human connection is the difference."</div>
+            <p>Networking came up as the #1 factor. 4ward shows students who to meet and the questions to ask before they reach out.</p>
+            <span class="from">What career advisors kept returning to</span>
+          </div>
+          <div class="theme">
+            <div class="quote">"Careers aren't linear."</div>
+            <p>4ward is a guide, not a guarantee. Your path can change, and the tool is built to move with you, not box you in.</p>
+            <span class="from">Advice we heard again and again</span>
           </div>
         </div>
-      </section>
+        <p class="founder">4ward is built by a <strong>student</strong> who's been through the same confusion, and <strong>shaped by conversations with career advisors across NESCAC and beyond.</strong></p>
+      </div>
+    </div>
+  </section>
 
-      <!-- ACTION PLAN -->
-      <section id="plan">
-        <div class="wrap plan-wrap">
-          <div class="section-head reveal">
-            <span class="eyebrow center">Action plan</span>
-            <h2>High-impact steps for the next 90 days.</h2>
-          </div>
-          <div class="seg-center reveal">
-            <div class="segmented" role="tablist">
-              <button class="seg-btn active" data-plan="30">30 Days</button>
-              <button class="seg-btn" data-plan="60">60 Days</button>
-              <button class="seg-btn" data-plan="90">90 Days</button>
-            </div>
-          </div>
-          <div class="task-list reveal" id="taskList"></div>
+  <!-- 7. FINAL CTA -->
+  <section id="waitlist" class="sec">
+    <div class="wrap">
+      <div class="final">
+        <div>
+          <h2>Most students are guessing.<br />You don't have to.</h2>
+          <p>Be one of the first students to plan smarter and build a stronger future with 4ward.</p>
+          <div class="flag">🚩 Clarity today. Confidence tomorrow.</div>
         </div>
-      </section>
+        <div class="waitlist-cta">
+          <form class="waitlist-form" id="waitlistForm" novalidate>
+            <input id="waitlistEmail" type="email" name="email" autocomplete="email" placeholder="you@school.edu" aria-label="Your email" required />
+            <button type="submit" class="btn btn-cream">Join the Waitlist</button>
+          </form>
+          <p class="waitlist-msg" id="waitlistMsg" role="status" hidden></p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <!-- FINAL CTA -->
-      <section id="cta" style="padding-bottom: clamp(72px,11vw,140px)">
-        <div class="wrap">
-          <div class="cta-band reveal">
-            <div>
-              <h2>Most students are guessing. 4ward helps you see the path ahead.</h2>
-              <p>Get your honest trajectory and a clear plan to reach your goals.</p>
-            </div>
-            <div class="cta-actions">
-              <a class="btn btn-on-green" href="./onboarding.html?fresh=1">Build My Path</a>
-              <a class="btn btn-outline-green" href="./app.html">Open Dashboard</a>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="wrap foot">
-        <div class="foot-left">
-          <p>© 2026 4ward · Honest career trajectory for college students</p>
-          <a class="almar-credit" href="https://almar-site.vercel.app/" target="_blank" rel="noopener">
-            <!-- To add the Almar logo, drop the file in assets/ (e.g. almar-logo.png)
-                 and uncomment the next line: -->
-            <!-- <img src="./assets/almar-logo.png" alt="Almar Group" /> -->
-            Part of Almar Group ↗
-          </a>
-        </div>
+  <!-- 8. FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p class="foot-note">Shaped by conversations with advisors across NESCAC and beyond.</p>
+      <div class="foot-bar">
+        <span>© 2026 4ward · Honest career trajectory for college students · Part of <a href="https://thealmargroup.com/" target="_blank" rel="noopener">the Almar Group</a></span>
         <nav>
           <a href="#how">How it works</a>
-          <a href="#trajectory">Trajectory</a>
-          <a href="#mentors">Mentors</a>
+          <a href="#features">Features</a>
+          <a href="#advisors">About</a>
+          <a href="/app">Open the app</a>
         </nav>
       </div>
-    </footer>
+    </div>
+  </footer>
 
-    <script>
-      // Sticky header border on scroll
-      const hdr = document.getElementById('hdr');
-      const onScroll = () => hdr.classList.toggle('scrolled', window.scrollY > 8);
-      onScroll();
-      window.addEventListener('scroll', onScroll, { passive: true });
+  <script>
+    (function () {
+      // ── WAITLIST ──────────────────────────────────────────────
+      // Paste your Google Apps Script Web App URL below (it ends in /exec).
+      // Until it's set, the form validates and greets, but does not save.
+      var WAITLIST_ENDPOINT = "https://script.google.com/macros/s/AKfycbyTpEimzBsgA1c0L3xeMTc4N5-DpWe-xDAGxgbvZ3TucqUbs4rCpq8ISoSjFQiSNLr9nQ/exec";
 
-      // Mobile menu toggle
-      const menuToggle = document.getElementById('menuToggle');
-      const mobileMenu = document.getElementById('mobileMenu');
-      menuToggle.addEventListener('click', () => {
-        const open = mobileMenu.classList.toggle('open');
-        menuToggle.classList.toggle('open', open);
-        menuToggle.setAttribute('aria-expanded', open);
-      });
-      // Close the menu after tapping any link inside it
-      mobileMenu.querySelectorAll('a').forEach((link) => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.remove('open');
-          menuToggle.classList.remove('open');
-          menuToggle.setAttribute('aria-expanded', 'false');
-        });
-      });
+      var form = document.getElementById("waitlistForm");
+      var email = document.getElementById("waitlistEmail");
+      var msg = document.getElementById("waitlistMsg");
 
-      // Reveal on scroll (Framer-style fade-up, no library)
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-      document.querySelectorAll('.reveal').forEach((el, i) => {
-        el.style.transitionDelay = (Math.min(i % 3, 2) * 80) + 'ms';
-        io.observe(el);
-      });
-
-      // Action plan segmented control
-      const plans = {
-        '30': [
-          ['Reach out to 3 alumni', 'Ask for short, specific conversations about product work.'],
-          ['Complete a product case study', 'Choose one product you use and show problem framing, metrics, and tradeoffs.'],
-          ['Join a product or entrepreneurship community', 'Find a club or online group with active projects.'],
-        ],
-        '60': [
-          ['Ship a small portfolio project', 'Turn your case study into something public you can point to.'],
-          ['Have 5 mentor conversations', 'Convert your outreach into real, repeat relationships.'],
-          ['Apply to 10 targeted internships', 'Focus on roles that match your improved trajectory.'],
-        ],
-        '90': [
-          ['Refine your story', 'Tighten how you explain your path from where you were to where you are going.'],
-          ['Lead one initiative end to end', 'Own a club or project outcome you can measure.'],
-          ['Apply with stronger proof', 'Go back to target roles with experience and a portfolio in hand.'],
-        ],
-      };
-      const icons = { 0: '✉', 1: '✎', 2: '◎' };
-      const tags = ['High impact', 'High impact', 'Medium impact'];
-      const list = document.getElementById('taskList');
-      function render(key) {
-        list.innerHTML = plans[key].map((t, i) => `
-          <div class="card task">
-            <div class="task-ico">${icons[i]}</div>
-            <div class="task-body"><h4>${t[0]}</h4><p>${t[1]}</p></div>
-            <span class="impact-tag ${i < 2 ? 'high' : 'keep'}">${tags[i]}</span>
-          </div>`).join('');
+      function show(text, ok) {
+        msg.hidden = false;
+        msg.textContent = text;
+        msg.style.color = ok ? "#fff" : "#ffd9c9";
       }
-      render('30');
-      document.querySelectorAll('.seg-btn').forEach((b) => {
-        b.addEventListener('click', () => {
-          document.querySelectorAll('.seg-btn').forEach((x) => x.classList.remove('active'));
-          b.classList.add('active');
-          render(b.dataset.plan);
+
+      // Focus the email box whenever a "Join Waitlist" link scrolls here.
+      document.querySelectorAll('a[href="#waitlist"]').forEach(function (a) {
+        a.addEventListener("click", function () {
+          setTimeout(function () { if (email) email.focus(); }, 500);
         });
       });
-    </script>
-  </body>
+
+      if (!form) return;
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var val = (email.value || "").trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          show("Please enter a valid email.", false);
+          email.focus();
+          return;
+        }
+        var btn = form.querySelector("button");
+        btn.disabled = true;
+        btn.textContent = "Joining…";
+
+        if (!WAITLIST_ENDPOINT) {
+          show("Almost ready. The waitlist goes live shortly.", true);
+          btn.disabled = false;
+          btn.textContent = "Join the Waitlist";
+          return;
+        }
+
+        var body = new URLSearchParams({ email: val, source: "landing", ts: new Date().toISOString() });
+        fetch(WAITLIST_ENDPOINT, { method: "POST", mode: "no-cors", body: body })
+          .then(function () {
+            form.reset();
+            show("You're on the list. We'll be in touch.", true);
+          })
+          .catch(function () {
+            show("Something went wrong. Please try again.", false);
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = "Join the Waitlist";
+          });
+      });
+    })();
+  </script>
+
+</body>
 </html>
