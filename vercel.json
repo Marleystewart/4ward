@@ -1,12 +1,4 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/",
-      "has": [{ "type": "host", "value": "www.getfwrd.co" }],
-      "destination": "/onboarding",
-      "permanent": false
-    }
-  ]
+  "trailingSlash": false
 }
