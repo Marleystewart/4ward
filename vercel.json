@@ -1,4 +1,12 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "figured-almar.vercel.app" }],
+      "destination": "/home",
+      "permanent": false
+    }
+  ]
 }
