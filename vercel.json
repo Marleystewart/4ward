@@ -4,7 +4,7 @@
   "rewrites": [
     {
       "source": "/",
-      "has": [{ "type": "host", "value": "app.getfwrd.co" }],
+      "has": [{ "type": "host", "value": "www.getfwrd.co" }],
       "destination": "/onboarding.html"
     }
   ]
